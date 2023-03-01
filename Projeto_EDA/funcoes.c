@@ -292,12 +292,47 @@ Gestor* escreverFicheiro_gestores_bin(Gestor* inicio_gestores, FILE* dados_gesto
 
 // ---------------------------------------------------INICIO-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
 
+Gestor* modoGestor(Gestor* inicio_gestores) {
+    int codigo_inserido;
+    char senha[20];
+    if (inicio_gestores == NULL)
+    {
+        printf("Ficheiro nao lido.\n");
+        return 0;
+    }
+    printf("Insira o codigo de utilizador:");
+    scanf("%d", &codigo_inserido);
+    printf("Insira a senha:");
+    scanf("%s", senha);
+    if (inicio_gestores->codigo != codigo_inserido && inicio_gestores->senha != senha)
+    {
+        printf("Senha e codigo errados.\n");
+        return 0;
+    }
+    else
+    {
+        printf("Modo gestor ativado.\n");
+        return 1;
+    }
+}
+
 Meio* inserirMeio(Meio* inicio_meios)
 {
+    printf("Teste\n");
+
+}
+
+Cliente* inserirCliente(Cliente* inicio_clientes)
+{
+    printf("Teste\n");
 
 }
 
 
+Gestor* inserirGestor(Gestor* inicio_gestor)
+{
+    printf("Teste\n");
+}
 
 // ---------------------------------------------------FIM-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
 

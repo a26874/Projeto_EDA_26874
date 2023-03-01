@@ -51,11 +51,11 @@ int main() {
             escreverFicheiro_gestores_bin(inicio_gestor, dados_gestor);
             break;
         case 7:
-            bool = modoGestor();
-            if (modoGestor != 1)
+            bool = modoGestor(inicio_gestor);
+            if (bool != 1)
             {
                 printf("Modo de gestor nao ativado.\n");
-                return 0;
+                break;
             }
             else
             {
@@ -70,12 +70,15 @@ int main() {
                 {
                 case 1:
                     inserirMeio(inicio_meios);
+                    break;
                 case 2:
                     inserirCliente(inicio_clientes);
+                    break;
                 case 3:
                     inserirGestor(inicio_gestor);
+                    break;
                 case 0:
-                    return 0;
+                    break;
                 }
             }
         case 0:

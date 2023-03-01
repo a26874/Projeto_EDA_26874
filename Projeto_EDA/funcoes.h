@@ -76,7 +76,12 @@ Gestor* escreverFicheiro_gestores_bin(Gestor* inicio_gestor, FILE* dados_gestor)
 
 
 // ---------------------------------------------------FUNÇÕES_I-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
+
+Gestor* modoGestor(Gestor* inicio_gestores);
+
 Meio* inserirMeio(Meio* inicio_meios);
+
+
 
 Cliente* inserirCliente(Cliente* inicio_clientes);
 
