@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #define MAX_LINE_LEN 256
 
 typedef struct registo_meios
@@ -32,6 +33,11 @@ typedef struct registo_gestor
 
 int menu();
 
+int menu_utilizador();
+
+int menu_gestor();
+
+
 // -------------------------------------------------FUN합ES_I-LEITURA/ESCRITA/REPRESENTA플O DE MEIOS-------------------------------------------------
 
 
@@ -59,6 +65,16 @@ void listarClientes(Cliente* inicio_clientes);
 Cliente* escreverFicheiro_clientes(Cliente* inicio_clientes, FILE* dados_clientes);
 
 Cliente* escreverFicheiro_clientes_bin(Cliente* inicio_clientes, FILE* dados_clientes);
+
+Cliente *carregarSaldo(Cliente* inicio_clientes);
+
+Cliente *consultaSaldo(Cliente * inicio_clientes);
+
+Cliente* alterarDadosCliente(Cliente* inicio_clientes);
+
+int existeCliente(Cliente* inicio_clientes, int cod);
+
+
 // -------------------------------------------------FUN합ES_F-LEITURA/ESCRITA/REPRESENTA플O DE CLIENTES-------------------------------------------------
 
 

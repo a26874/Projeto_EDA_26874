@@ -1,6 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "funcoes.h"
 
@@ -11,9 +11,15 @@ int main() {
     Cliente* inicio_clientes = NULL;
     Gestor* inicio_gestor = NULL;
     FILE* dados_meios, * dados_clientes, * dados_gestor;
-    int op, bool;
+    int op, bool, op_utilizador, utilizador_login = 0;
 
-
+    // No arranque é feito imediato a leitura dos ficheiros.
+    dados_meios = fopen("meios.txt", "rt");
+    inicio_meios = lerFicheiro_meios(inicio_meios, dados_meios);
+    dados_clientes = fopen("clientes.txt", "rt");
+    inicio_clientes = lerFicheiro_clientes(inicio_clientes, dados_clientes);
+    dados_gestor = fopen("gestores.txt", "rt");
+    inicio_gestor = lerFicheiro_gestores(inicio_gestor, dados_gestor);
     // Criação de Menu.
     do
     {
@@ -21,34 +27,43 @@ int main() {
         switch (op)
         {
         case 1:
-            dados_meios = fopen("meios.txt", "rt");
-            inicio_meios = lerFicheiro_meios(inicio_meios, dados_meios);
-            listarMeios(inicio_meios);
-            break;
+            utilizador_login = 1;
+            while (utilizador_login > 0)
+            {
+                op_utilizador = menu_utilizador();
+                switch (op_utilizador) {
+                case 1:
+                    listarMeios(inicio_meios);
+                    break;
+                case 2:
+                    carregarSaldo(inicio_clientes);
+                    break;
+                case 3:
+                    consultaSaldo(inicio_clientes);
+                    break;
+                case 4:
+                    alterarDadosCliente(inicio_clientes);
+                    break;
+                case 0:
+                    utilizador_login = 0;
+                    break;
+                }
+            }
         case 2:
-            dados_meios = fopen("meios.txt", "rt");
-            escreverFicheiro_meios(inicio_meios, dados_meios);
-            escreverFicheiro_meios_bin(inicio_meios, dados_meios);
+            
             break;
         case 3:
-            dados_clientes = fopen("clientes.txt", "rt");
-            inicio_clientes = lerFicheiro_clientes(inicio_clientes, dados_clientes);
+            
             listarClientes(inicio_clientes);
             break;
         case 4:
-            dados_clientes = fopen("clientes.txt", "rt");
-            escreverFicheiro_clientes(inicio_clientes, dados_clientes);
-            escreverFicheiro_clientes_bin(inicio_clientes, dados_clientes);
+
             break;
         case 5:
-            dados_gestor = fopen("gestores.txt", "rt");
-            inicio_gestor = lerFicheiro_gestores(inicio_gestor, dados_gestor);
+           
             listarGestores(inicio_gestor);
             break;
         case 6:
-            dados_gestor = fopen("gestores.txt", "rt");
-            escreverFicheiro_gestores(inicio_gestor, dados_gestor);
-            escreverFicheiro_gestores_bin(inicio_gestor, dados_gestor);
             break;
         case 7:
             bool = modoGestor(inicio_gestor);
@@ -82,6 +97,16 @@ int main() {
                 }
             }
         case 0:
+            // No encerramento do programa é escrito tudo que foi adicionado/removido/alterado de novo para os seus respetivos ficheiros.
+            dados_meios = fopen("meios.txt", "rt");
+            escreverFicheiro_meios(inicio_meios, dados_meios);
+            escreverFicheiro_meios_bin(inicio_meios, dados_meios);
+            dados_clientes = fopen("clientes.txt", "rt");
+            escreverFicheiro_clientes(inicio_clientes, dados_clientes);
+            escreverFicheiro_clientes_bin(inicio_clientes, dados_clientes);
+            dados_gestor = fopen("gestores.txt", "rt");
+            escreverFicheiro_gestores(inicio_gestor, dados_gestor);
+            escreverFicheiro_gestores_bin(inicio_gestor, dados_gestor);
             printf("O programa ira ser encerrado.\n");
             return 0;
         default:
@@ -89,6 +114,4 @@ int main() {
             break;
         }
     } while (op != 0);
-
-    return 0;
 }

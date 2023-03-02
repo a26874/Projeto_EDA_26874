@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "funcoes.h"
 
@@ -10,23 +11,50 @@ int menu()
 {
     int escolha;
     printf("O que pretende fazer?\n");
-    printf("1- Listar os meios disponiveis.\n");
-    printf("2- Escrever toda a informacao para o ficheiro meios em txt e binario.\n");
-    printf("3- Listar os clientes existentes\n");
-    printf("4- Escrever toda a informacao para o ficheiro clientes em txt e binario.\n");
-    printf("5- Listar os gestores disponiveis.\n");
-    printf("6- Escrever toda a informacao para o ficheiro gestores em txt e binario.\n");
-    printf("7- Adicionar Meios.\n");
-    printf("8- Adicionar clientes.\n");
-    printf("9- Adicionar Gestores.\n");
-    printf("10- Listar os meios disponiveis.\n");
-    printf("11- Listar os meios disponiveis.\n");
+    printf("1- Menu utilizador.\n");
+    printf("2- Menu Gestor.\n");
+    printf("A sua escolha:");
+    scanf("%d", &escolha);
+    system("cls");
+
+    return escolha;
+}
+#pragma endregion 
+
+#pragma region MENU_GESTOR
+int menu_admin()
+{
+    int escolha;
+    printf("O que pretende fazer?\n");
+    printf("1- Listar os clientes existentes.\n");
+    printf("2- Listar os gestores existentes.\n");
+    printf("2- Listar os meios existentes.\n");
+    printf("4- Adicionar Meios.\n");
+    printf("5- Adicionar Clientes.\n");
     printf("A sua escolha:");
     scanf("%d", &escolha);
 
     return escolha;
 }
-#pragma endregion 
+
+#pragma endregion
+
+#pragma region MENU_UTILIZADOR
+int menu_utilizador()
+{
+    int escolha;
+    printf("O que pretende fazer?\n");
+    printf("1- Listar os meios existentes.\n");
+    printf("2- Carregamento de saldo.\n");
+    printf("3- Consulta de saldo.\n");
+    printf("4- Alteracao dos seus dados.\n");
+    printf("A sua escolha:");
+    scanf("%d", &escolha);
+    system("cls");
+
+    return escolha;
+}
+#pragma endregion
 
 // -------------------------------------------------------------FIM-MENU-------------------------------------------------------------
 
@@ -122,7 +150,6 @@ Meio* escreverFicheiro_meios_bin(Meio* inicio_meios, FILE* dados_meios)
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS--------------------------------------------------------
 
 
-
 // --------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES--------------------------------------------------
 
 #pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES
@@ -206,10 +233,38 @@ Cliente* escreverFicheiro_clientes_bin(Cliente* inicio_clientes, FILE* dados_cli
     fclose(dados_clientes);
 }
 
+int existeClienteCod(Cliente* inicio_clientes, int cod)
+{
+    while (inicio_clientes != NULL)
+    {
+        if (inicio_clientes->codigo == cod)
+        {
+            printf("Ja existe alguem com o codigo %d.\n", cod);
+            return 0;
+        }
+        inicio_clientes = inicio_clientes->seguinte_cliente;
+    }
+    if (inicio_clientes == NULL)
+        return 1;
+}
+
+int existeClienteNIF(Cliente* inicio_clientes, int NIF)
+{
+    while (inicio_clientes != NULL)
+    {
+        if (inicio_clientes->NIF == NIF)
+        {
+            printf("Ja existe alguem com o NIF %d.\n", NIF);
+            return 0;
+        }
+        inicio_clientes = inicio_clientes->seguinte_cliente;
+    }
+    if (inicio_clientes == NULL)
+        return 1;
+}
 #pragma endregion
 
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES----------------------------------------------------
-
 
 
 // ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES----------------------------------------------------
@@ -289,8 +344,8 @@ Gestor* escreverFicheiro_gestores_bin(Gestor* inicio_gestores, FILE* dados_gesto
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES----------------------------------------------------
 
 
-
 // ---------------------------------------------------INICIO-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
+#pragma region INSERIR
 
 Gestor* modoGestor(Gestor* inicio_gestores) {
     int codigo_inserido;
@@ -328,43 +383,132 @@ Cliente* inserirCliente(Cliente* inicio_clientes)
 
 }
 
-
 Gestor* inserirGestor(Gestor* inicio_gestor)
 {
     printf("Teste\n");
 }
 
+#pragma endregion 
+
 // ---------------------------------------------------FIM-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
 
 
-//// listar na consola o conteúdo da lista ligada dos meios disponiveis.
-//void listarMeios(Meio* inicio_meios)
-//{
-//    printf("Dados de meios disponiveis:\n------------------------------------------------------------\n");
-//    while (inicio_meios != NULL)
-//    {
-//        printf("%d;%s;%.2f;%.2f\n", inicio_meios->codigo, inicio_meios->tipo,
-//            inicio_meios->bateria, inicio_meios->autonomia);
-//        inicio_meios = inicio_meios->seguinte_meio;
-//    }
-//}
+// ---------------------------------------------------------------INICIO_OP_UTILIZADOR-----------------------------------------------------------------
+
+Cliente* carregarSaldo(Cliente* inicio_clientes) {
+    int codigo, NIF;
+    printf("Introduza o seu codigo:");
+    scanf("%d", &codigo);
+    printf("Introduza o seu NIF:");
+    scanf("%d", &NIF);
+    while (inicio_clientes != NULL)
+    {
+        if (inicio_clientes->codigo == codigo && inicio_clientes->NIF == NIF)
+        {
+            int saldo_carregar;
+            printf("O seu saldo: %d\n", inicio_clientes->saldo);
+            printf("Quanto saldo deseja carregar?\n");
+            printf("Digite:");
+            scanf("%d", &saldo_carregar);
+            if (saldo_carregar < 0)
+                printf("Nao pode carregar saldo negativo.\n");
+            inicio_clientes->saldo = saldo_carregar + inicio_clientes->saldo;
+            printf("%d carregado com sucesso. Tem agora %d de saldo.\n", saldo_carregar, inicio_clientes->saldo);
+            return 1;
+        }
+        inicio_clientes = inicio_clientes->seguinte_cliente;
+    }
+    if (inicio_clientes == NULL)
+    {
+        printf("Nao existe nenhum cliente com esse codigo.\n");
+        return 0;
+    }
+    return inicio_clientes;
+}
+
+Cliente* consultaSaldo(Cliente* inicio_clientes) {
+    int codigo, NIF;
+    printf("Introduza o seu codigo:");
+    scanf("%d", &codigo);
+    //printf("Introduza o seu NIF:");
+    //scanf("%d", &NIF);
+    while (inicio_clientes != NULL)
+    {
+        if (inicio_clientes->codigo == codigo /*&& inicio_clientes->NIF == NIF*/)
+        {
+            printf("Voce tem %d de saldo.\n", inicio_clientes->saldo);
+            return 1;
+        }
+        inicio_clientes = inicio_clientes->seguinte_cliente;
+    }
+    return 0;
+}
+
+Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
+    int codigo, NIF, novo_codigo, novo_NIF;
+    char novo_nome[50];
+    Cliente* aux = inicio_clientes;
+    printf("Introduza o seu codigo:");
+    scanf("%d", &codigo);
+    //printf("Introduza o seu NIF:");
+    //scanf("%d", &NIF);
+    while (inicio_clientes != NULL)
+    {
+        if (inicio_clientes->codigo == codigo /*&& inicio_clientes->NIF == NIF*/)
+        {
+            printf("Este sao os seus dados.\n");
+            int escolha;
+            printf("------------------------------------------------------------------------------------------------------------------------\n");
+            printf("Nome:%s     Codigo:%d       NIF:%d\n", inicio_clientes->nome, inicio_clientes->codigo, inicio_clientes->NIF);
+            printf("------------------------------------------------------------------------------------------------------------------------\n");
+            printf("O que deseja alterar?\n");
+            printf("1- Nome.\n");
+            printf("2- Codigo.\n");
+            printf("3- NIF.\n");
+            printf("4- Sair.\n");
+            printf("A sua escolha:");
+            scanf("%d", &escolha);
+            switch (escolha)
+            {
+            case 1:
+                getchar();
+                printf("Insira o seu novo nome:");
+                scanf("%[^\n]", novo_nome);
+                strcpy(inicio_clientes->nome, novo_nome);
+                printf("Nome alterado com sucesso para %s\n", inicio_clientes->nome);
+                break;
+            case 2:
+                printf("Insira o seu novo codigo:");
+                scanf("%d", &novo_codigo);
+                if (existeClienteCod(aux, novo_codigo))
+                {
+                    inicio_clientes->codigo = novo_codigo;
+                    printf("O seu novo codigo %d\n", inicio_clientes->codigo);
+                }
+                break;
+            case 3:
+                printf("Insira o seu novo NIF(deve conter 9 numeros e comecar por 192):");
+                scanf("%d", &novo_NIF);
+                if (novo_NIF < 192000000)
+                {
+                    printf("Por favor tente de novo.\n");
+                    break;
+                }
+                else
+                {
+                    if (existeClienteNIF(aux, novo_NIF))
+                    {
+                        inicio_clientes->NIF = novo_NIF;
+                        printf("O seu novo NIF %d\n", inicio_clientes->NIF);
+                    }
+                }
+            }
+        }
+        inicio_clientes = inicio_clientes->seguinte_cliente;
+
+    }
+}
 
 
-// Determinar existência do 'codigo' na lista ligada 'inicio'
-// devolve 1 se existir ou 0 caso contrário
-//int existeMeio(Meio* inicio, int cod)
-//{
-//    while (inicio != NULL)
-//    {
-//        if (inicio->codigo == cod) return(1);
-//        inicio = inicio->seguinte_meio;
-//    }
-//    return(0);
-//}
 
-
-
-
-
-
-
+// -----------------------------------------------------------------FIM_OP_UTILIZADOR-------------------------------------------------------------------
