@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #define MAX_LINE_LEN 256
 
 typedef struct registo_meios
@@ -23,10 +24,19 @@ typedef struct registo_clientes
 
 typedef struct registo_gestor
 {
-	int codigo; // código do gestor
+	int codigo; // Identificação do gestor
 	char nome[50]; // nome do gestor
+	char senha[20]; // Senha do gestor
 	struct registo_gestor* seguinte_gestor; // endereço de memória para uma struct registo_gestor
 } Gestor;
+
+
+int menu();
+
+int menu_utilizador();
+
+int menu_gestor();
+
 
 // -------------------------------------------------FUNÇÕES_I-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS-------------------------------------------------
 
@@ -55,17 +65,42 @@ void listarClientes(Cliente* inicio_clientes);
 Cliente* escreverFicheiro_clientes(Cliente* inicio_clientes, FILE* dados_clientes);
 
 Cliente* escreverFicheiro_clientes_bin(Cliente* inicio_clientes, FILE* dados_clientes);
+
+Cliente *carregarSaldo(Cliente* inicio_clientes);
+
+Cliente *consultaSaldo(Cliente * inicio_clientes);
+
+Cliente* alterarDadosCliente(Cliente* inicio_clientes);
+
+int existeCliente(Cliente* inicio_clientes, int cod);
+
+
 // -------------------------------------------------FUNÇÕES_F-LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES-------------------------------------------------
-
-
 
 
 // -------------------------------------------------FUNÇÕES_I-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES-------------------------------------------------
 
+Gestor* lerFicheiro_gestores(Gestor* inicio_gestor, FILE* dados_gestor);
 
-//void listarGestor(Gestor* inicio_gestor);
+void listarGestores(Gestor* inicio_gestor);
 
+Gestor* escreverFicheiro_gestores(Gestor* inicio_gestor, FILE* dados_gestor);
 
-
+Gestor* escreverFicheiro_gestores_bin(Gestor* inicio_gestor, FILE* dados_gestor);
 
 // -------------------------------------------------FUNÇÕES_F-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES-------------------------------------------------
+
+
+// ---------------------------------------------------FUNÇÕES_I-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
+
+Gestor* modoGestor(Gestor* inicio_gestores);
+
+Meio* inserirMeio(Meio* inicio_meios);
+
+
+
+Cliente* inserirCliente(Cliente* inicio_clientes);
+
+Gestor* inserirGestor(Gestor* inicio_gestor);
+
+// ---------------------------------------------------FUNÇÕES_F-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
