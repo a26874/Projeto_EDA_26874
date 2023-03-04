@@ -7,6 +7,8 @@
 // ---------------------------------------------------------------MENU---------------------------------------------------------------
 
 #pragma region MENU
+
+// Menu inicial do programa. Retorna o valor escolhido pelo utilizador.
 int menu()
 {
     int escolha;
@@ -22,6 +24,8 @@ int menu()
 #pragma endregion 
 
 #pragma region MENU_GESTOR
+
+//Menu do gestor. Retorna a opção escolhida pelo gestor, para executar uma tarefa.
 int menu_gestor()
 {
     int escolha;
@@ -41,6 +45,8 @@ int menu_gestor()
 #pragma endregion
 
 #pragma region MENU_UTILIZADOR
+
+//Menu do utilizador. Retorna o valor escolhido, para execução de uma tarefa.
 int menu_utilizador()
 {
     int escolha;
@@ -66,8 +72,8 @@ int menu_utilizador()
 
 #pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS
 
-// Ler ficheiro de texto, contendo informação sobre os clientes.
-// Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.Meio* lerFicheiro_meios(Meio* inicio, FILE* dados_meios)
+// Ler ficheiro de texto, contendo informação sobre os meios.
+// Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
 Meio* lerFicheiro_meios(Meio* inicio_meios, FILE* dados_meios)
 {
     // Definição de variáveis.
@@ -85,9 +91,7 @@ Meio* lerFicheiro_meios(Meio* inicio_meios, FILE* dados_meios)
     fclose(dados_meios);
 
     return inicio_meios;
-
 }
-
 
 // Apresenta na consola toda a informação existente sobre os clientes.
 void listarMeios(Meio* inicio_meios)
@@ -104,7 +108,7 @@ void listarMeios(Meio* inicio_meios)
     printf("------------------------------------------------------------------------------------------------------------------------\n");
 }
 
-//Escreve todos os dados inseridos sobre os clientes p
+// Escreve todos os dados inseridos sobre os meios, em ficheiro de texto.
 Meio* escreverFicheiro_meios(Meio* inicio_meios, FILE* dados_meios)
 {
     if (inicio_meios == NULL)
@@ -127,6 +131,7 @@ Meio* escreverFicheiro_meios(Meio* inicio_meios, FILE* dados_meios)
     fclose(dados_meios);
 }
 
+// Escreve todos os dados inseridos sobre os meios, em ficheiro binário.
 Meio* escreverFicheiro_meios_bin(Meio* inicio_meios, FILE* dados_meios)
 {
     if (inicio_meios == NULL)
@@ -149,6 +154,7 @@ Meio* escreverFicheiro_meios_bin(Meio* inicio_meios, FILE* dados_meios)
     fclose(dados_meios);
 }
 
+// Verifica, consoante o endereço de memória de certo meio, se o seu código é igual ao que foi inserido para um novo meio.
 Meio* existeMeio(Meio* inicio_meios, int cod)
 {
     while (inicio_meios != NULL)
@@ -163,6 +169,52 @@ Meio* existeMeio(Meio* inicio_meios, int cod)
     if (inicio_meios == NULL)
         return 1;
 }
+
+Meio* bubbleSortMeios(Meio* inicio_meios)
+{
+    Meio* atual, * seguinte;
+    int b = 1, aux_codigo, aux_custo;
+    float aux_bat, aux_aut;
+    char aux_nome[50], aux_geo[50];
+    while (b)
+    {
+        b = 0;
+        atual = inicio_meios;
+        while (atual->seguinte_meio != NULL)
+        {
+            seguinte = atual->seguinte_meio;
+            if (atual->codigo > seguinte->codigo)
+            {
+                aux_codigo = atual->codigo;
+                aux_bat = atual->bateria;
+                aux_aut = atual->autonomia;
+                aux_custo = atual->custo;
+                strcpy(aux_nome, atual->tipo);
+                strcpy(aux_geo, atual->geocodigo);
+
+                atual->codigo = seguinte->codigo;
+                atual->bateria = seguinte->bateria;
+                atual->autonomia = seguinte->autonomia;
+                atual->custo = seguinte->custo;
+                strcpy(atual->tipo, seguinte->tipo);
+                strcpy(atual->geocodigo, seguinte->geocodigo);
+
+                seguinte->codigo = aux_codigo;
+                seguinte->bateria = aux_bat;
+                seguinte->autonomia = aux_aut;
+                seguinte->custo = aux_custo;
+                strcpy(seguinte->tipo, aux_nome);
+                strcpy(seguinte->geocodigo, aux_geo);
+
+                b = 1;
+            }
+            atual = seguinte;
+        }
+    }
+    inicio_meios = atual;
+    return inicio_meios;
+}
+
 #pragma endregion 
 
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS--------------------------------------------------------
@@ -208,6 +260,7 @@ void listarClientes(Cliente* inicio_clientes)
     printf("------------------------------------------------------------------------------------------------------------------------");
 }
 
+// Escreve todos os dados inseridos sobre os clientes, em ficheiro de texto.
 Cliente* escreverFicheiro_clientes(Cliente* inicio_clientes, FILE* dados_clientes)
 {
     if (inicio_clientes == NULL)
@@ -230,6 +283,7 @@ Cliente* escreverFicheiro_clientes(Cliente* inicio_clientes, FILE* dados_cliente
     fclose(dados_clientes);
 }
 
+// Escreve todos os dados inseridos sobre os clientes, em ficheiro binário.
 Cliente* escreverFicheiro_clientes_bin(Cliente* inicio_clientes, FILE* dados_clientes)
 {
     if (inicio_clientes == NULL)
@@ -251,6 +305,7 @@ Cliente* escreverFicheiro_clientes_bin(Cliente* inicio_clientes, FILE* dados_cli
     fclose(dados_clientes);
 }
 
+// Verifica, consoante o endereço de memória de um certo utilizador, se o seu código é igual ao que foi inserido para um novo utilizador.
 int existeClienteCod(Cliente* inicio_clientes, int cod)
 {
     while (inicio_clientes != NULL)
@@ -266,6 +321,7 @@ int existeClienteCod(Cliente* inicio_clientes, int cod)
         return 1;
 }
 
+// Verifica, consoante o endereço de memória de um certo utilizador, se o seu NIF é igual ao que foi inserido para um novo utilizador.
 int existeClienteNIF(Cliente* inicio_clientes, int NIF)
 {
     while (inicio_clientes != NULL)
@@ -280,6 +336,43 @@ int existeClienteNIF(Cliente* inicio_clientes, int NIF)
     if (inicio_clientes == NULL)
         return 1;
 }
+
+Cliente* bubbleSortClientes(Cliente* inicio_clientes) {
+    Cliente* atual, * seguinte;
+    int b = 1, aux_codigo, aux_NIF, aux_saldo;
+    char aux_nome[50];
+    while (b)
+    {
+        b = 0;
+        atual = inicio_clientes;
+        while (atual->seguinte_cliente != NULL)
+        {
+            seguinte = atual->seguinte_cliente;
+            if (atual->codigo > seguinte->codigo)
+            {
+                aux_codigo = atual->codigo;
+                strcpy(aux_nome, atual->nome);
+                aux_NIF = atual->NIF;
+                aux_saldo = atual->saldo;
+
+                atual->codigo = seguinte->codigo;
+                strcpy(atual->nome, seguinte->nome);
+                atual->NIF= seguinte->NIF;
+                atual->saldo = seguinte->saldo;
+
+                seguinte->codigo = aux_codigo;
+                strcpy(seguinte->nome, aux_nome);
+                seguinte->NIF = aux_NIF;
+                seguinte->saldo = aux_saldo;
+
+                b = 1;
+            }
+            atual = seguinte;
+        }
+    }
+    inicio_clientes = atual;
+    return inicio_clientes;
+}
 #pragma endregion
 
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES----------------------------------------------------
@@ -288,13 +381,16 @@ int existeClienteNIF(Cliente* inicio_clientes, int NIF)
 // ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES----------------------------------------------------
 
 #pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES
+
+// Ler ficheiro de texto, contendo informação sobre os gestores.
+// Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
 Gestor* lerFicheiro_gestores(Gestor* inicio_gestor, FILE* dados_gestor)
 {
     char linha[MAX_LINE_LEN];
     while (fgets(linha, MAX_LINE_LEN, dados_gestor))
     {
         Gestor* novo_nodo = malloc(sizeof(struct registo_gestor));
-        sscanf(linha, "%d;%[^;];%s\n", &novo_nodo->codigo, novo_nodo->nome, novo_nodo->senha);
+        sscanf(linha, "%d;%[^;];%[^\n]\n", &novo_nodo->codigo, novo_nodo->nome, novo_nodo->senha);
         novo_nodo->seguinte_gestor = inicio_gestor;
         inicio_gestor = novo_nodo;
     }
@@ -302,6 +398,7 @@ Gestor* lerFicheiro_gestores(Gestor* inicio_gestor, FILE* dados_gestor)
     return inicio_gestor;
 }
 
+// Apresenta na consola toda a informação existente sobre os gestores.
 void listarGestores(Gestor* inicio_gestor)
 {
     printf("\nDados de Gestores:\n------------------------------------------------------------------------------------------------------------------------\n");
@@ -314,6 +411,7 @@ void listarGestores(Gestor* inicio_gestor)
     printf("------------------------------------------------------------------------------------------------------------------------\n");
 }
 
+// Escreve todos os dados inseridos sobre os gestores, em ficheiro de texto.
 Gestor* escreverFicheiro_gestores(Gestor* inicio_gestores, FILE* dados_gestores)
 {
     if (inicio_gestores == NULL)
@@ -336,6 +434,7 @@ Gestor* escreverFicheiro_gestores(Gestor* inicio_gestores, FILE* dados_gestores)
     fclose(dados_gestores);
 }
 
+// Escreve todos os dados inseridos sobre os gestores, em ficheiro binário.
 Gestor* escreverFicheiro_gestores_bin(Gestor* inicio_gestores, FILE* dados_gestores)
 {
     if (inicio_gestores == NULL)
@@ -357,6 +456,7 @@ Gestor* escreverFicheiro_gestores_bin(Gestor* inicio_gestores, FILE* dados_gesto
     fclose(dados_gestores);
 }
 
+// Verifica, consoante o endereço de memória de um certo gestor, se o seu código é igual ao que foi inserido para um novo gestor.
 int existeGestor(Gestor* inicio_gestores, int cod)
 {
     while (inicio_gestores != NULL)
@@ -372,6 +472,41 @@ int existeGestor(Gestor* inicio_gestores, int cod)
         return 1;
 }
 
+Gestor* bubbleSortGestores(Gestor* inicio_gestor) {
+    Gestor* atual, * seguinte;
+    int aux_codigo, b = 1;
+    char aux_senha[50], aux_nome[50];
+    while (b)
+    {
+        b = 0;
+        atual = inicio_gestor;
+        while (atual->seguinte_gestor != NULL)
+        {
+            seguinte = atual->seguinte_gestor;
+            if (atual->codigo > seguinte->codigo)
+            {
+                aux_codigo = atual->codigo;
+                strcpy(aux_nome, atual->nome);
+                strcpy(aux_senha, atual->senha);
+
+                atual->codigo = seguinte->codigo;
+                strcpy(atual->nome, seguinte->nome);
+                strcpy(atual->senha, seguinte->senha);
+
+                seguinte->codigo = aux_codigo;
+                strcpy(seguinte->nome, aux_nome);
+                strcpy(seguinte->senha, aux_nome);
+
+                b = 1;
+            }
+            atual = seguinte;
+        }
+    }
+    inicio_gestor = atual;
+    return inicio_gestor;
+}
+
+
 #pragma endregion
 
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES----------------------------------------------------
@@ -380,6 +515,8 @@ int existeGestor(Gestor* inicio_gestores, int cod)
 // ---------------------------------------------------INICIO-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
 #pragma region INSERIR
 
+// Função para entrar em modo gestor, no qual é pedido um codigo e uma senha. Caso sejam iguais ao que está no ficheiro é garantido o acesso
+// a funções de gestor.
 Gestor* modoGestor(Gestor* inicio_gestores) {
     int codigo_inserido;
     char senha[20];
@@ -392,18 +529,27 @@ Gestor* modoGestor(Gestor* inicio_gestores) {
     scanf("%d", &codigo_inserido);
     printf("Insira a senha:");
     scanf("%s", senha);
-    if (inicio_gestores->codigo == codigo_inserido && strcmp(inicio_gestores->senha, senha) ==0)
+    while (inicio_gestores != NULL)
     {
-        printf("Modo gestor ativado.\n");
-        return 1;
+        if (inicio_gestores->codigo == codigo_inserido && strcmp(inicio_gestores->senha, senha) == 0)
+        {
+            printf("Modo gestor ativado.\n");
+            return 1;
+        }
+        else
+        {
+            inicio_gestores = inicio_gestores->seguinte_gestor;
+        }
     }
-    else
+    if (inicio_gestores == NULL)
     {
-        printf("Senha ou codigo errados.\n");
+        printf("Codigo ou senha errados.\n");
         return 0;
     }
 }
 
+// Função para inserir um novo meio elétrico, é pedido ao gestor na função main, um novo codigo, nome, nivel bateria, autonomia, o seu custo 
+// e a sua geolocalização. De seguida é inserido no ultimo lugar da lista ligada dos meios, quando é o ultimo endereço NULL.
 Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float aut, int custo, char geo[50])
 {
     int inserir = 0;
@@ -428,6 +574,8 @@ Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float a
     return inicio_meios;
 }
 
+// Função para inserir um novo cliente, é pedido ao gestor na função main, um novo codigo, nome, NIF e saldo.  
+// De seguida é inserido no ultimo lugar da lista ligada dos clientes, quando é o ultimo endereço NULL.
 Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NIF, int saldo)
 {
     int inserir = 0;
@@ -450,6 +598,8 @@ Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NI
     return inicio_clientes;
 }
 
+// Função para inserir um novo gestor, é pedido ao gestor na função main, um novo codigo, nome e senha.  
+// De seguida é inserido no ultimo lugar da lista ligada dos gestores, quando é o ultimo endereço NULL.
 Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[50])
 {
     int inserir = 0;
@@ -472,6 +622,7 @@ Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[
     return inicio_gestor;
 }
 
+//Desenvolvimento.
 int encryptSenha(Gestor* inicio_gestor, char senha[50])
 {
     for (int i = 0; i < strlen(senha); i++)
@@ -490,6 +641,8 @@ int encryptSenha(Gestor* inicio_gestor, char senha[50])
 
 // ---------------------------------------------------------------INICIO_OP_UTILIZADOR-----------------------------------------------------------------
 
+// Função para carregamento de saldo, de um certo utilizador.
+// É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel carregar o saldo desse mesmo utilizador.
 Cliente* carregarSaldo(Cliente* inicio_clientes) {
     int codigo, NIF;
     printf("Introduza o seu codigo:");
@@ -521,6 +674,8 @@ Cliente* carregarSaldo(Cliente* inicio_clientes) {
     return inicio_clientes;
 }
 
+// Função para consulta de saldo, de um certo utilizador.
+// É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel visualizar quando saldo está disponível.
 Cliente* consultaSaldo(Cliente* inicio_clientes) {
     int codigo, NIF;
     printf("Introduza o seu codigo:");
@@ -539,6 +694,8 @@ Cliente* consultaSaldo(Cliente* inicio_clientes) {
     return 0;
 }
 
+// Função para alteração de dados do cliente.
+// É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel fazer alteração de nome, codigo e NIF.
 Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
     int codigo, NIF, novo_codigo, novo_NIF;
     char novo_nome[50];
@@ -600,7 +757,6 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
             }
         }
         inicio_clientes = inicio_clientes->seguinte_cliente;
-
     }
 }
 

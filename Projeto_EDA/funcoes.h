@@ -52,6 +52,9 @@ Meio* escreverFicheiro_meios_bin(Meio* inicio_meios, FILE* dados_meios);
 
 Meio* existeMeio(Meio* inicio_meios, int cod);
 
+Meio* bubbleSortMeios(Meio* inicio_meios);
+
+
 // -------------------------------------------------FUN합ES_F-LEITURA/ESCRITA/REPRESENTA플O DE MEIOS-------------------------------------------------
 
 
@@ -78,6 +81,7 @@ int existeClienteCod(Cliente* inicio_clientes, int cod);
 
 int existeClienteNIF(Cliente* inicio_clientes, int NIF);
 
+Cliente* bubbleSortClientes(Cliente* inicio_clientes);
 
 
 // -------------------------------------------------FUN합ES_F-LEITURA/ESCRITA/REPRESENTA플O DE CLIENTES-------------------------------------------------
@@ -94,6 +98,8 @@ Gestor* escreverFicheiro_gestores(Gestor* inicio_gestor, FILE* dados_gestor);
 Gestor* escreverFicheiro_gestores_bin(Gestor* inicio_gestor, FILE* dados_gestor);
 
 int existeGestor(Gestor* inicio_gestor, int cod);
+
+Gestor* bubbleSortGestores(Gestor* inicio_gestores);
 
 
 // -------------------------------------------------FUN합ES_F-LEITURA/ESCRITA/REPRESENTA플O DE GESTORES-------------------------------------------------

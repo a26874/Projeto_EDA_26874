@@ -17,7 +17,7 @@ int main() {
     char novo_cliente_nome[50], novo_meio_nome[50], novo_meio_geocodigo[50], novo_gestor_nome[50], novo_gestor_senha[50];
 
 
-    // No arranque é feito imediato a leitura dos ficheiros.
+    // No arranque é feito de imediato a leitura dos ficheiros.
     dados_meios = fopen("meios.txt", "rt");
     inicio_meios = lerFicheiro_meios(inicio_meios, dados_meios);
     dados_clientes = fopen("clientes.txt", "rt");
@@ -37,6 +37,7 @@ int main() {
                 op_utilizador = menu_utilizador();
                 switch (op_utilizador) {
                 case 1:
+                    bubbleSortMeios(inicio_meios);
                     listarMeios(inicio_meios);
                     break;
                 case 2:
@@ -68,12 +69,15 @@ int main() {
                     switch (op_gestor)
                     {
                     case 1:
+                        bubbleSortClientes(inicio_clientes);
                         listarClientes(inicio_clientes);
                         break;
                     case 2:
+                        bubbleSortGestores(inicio_gestor);
                         listarGestores(inicio_gestor);
                         break;
                     case 3:
+                        bubbleSortMeios(inicio_meios);
                         listarMeios(inicio_meios);
                         break;
                     case 4:

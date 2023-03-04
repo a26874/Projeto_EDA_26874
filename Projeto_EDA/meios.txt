@@ -1,8 +1,8 @@
--539346333;dfsm;0.00;0.00;2;we
-123;safdasfa;0.00;0.00;123;asdqdw
-3;Bicicleta;50.00;10.00;15;encolheu.vegetação.capuz
-4;Scooter;100.00;50.00;50;choro.atinja.chão
-2;Carro;100.00;100.00;200;ouvido.afiada.povos
 1;Trotinete;30.00;5.00;20;joga.andante.cujo
-12345;masdfak;0.00;0.00;1;jaksd
-1235656;nsadjk;0.00;0.00;2;jsadfka.feqwfej
+2;Carro;100.00;100.00;200;ouvido.afiada.povos
+3;Bicicleta;50.00;10.00;15;encolheu.vegetacao
+4;Scooter;100.00;50.00;50;choro.atinja.chão
+123;teste1;1.00;1.00;123;teste1
+12345;teste2;2.00;2.00;1;teste2
+12441;teste;0.00;0.00;2;teste
+1235656;teste3;3.00;3.00;2;teste3
