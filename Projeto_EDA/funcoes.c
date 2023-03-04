@@ -22,15 +22,16 @@ int menu()
 #pragma endregion 
 
 #pragma region MENU_GESTOR
-int menu_admin()
+int menu_gestor()
 {
     int escolha;
     printf("O que pretende fazer?\n");
     printf("1- Listar os clientes existentes.\n");
     printf("2- Listar os gestores existentes.\n");
-    printf("2- Listar os meios existentes.\n");
-    printf("4- Adicionar Meios.\n");
-    printf("5- Adicionar Clientes.\n");
+    printf("3- Listar os meios existentes.\n");
+    printf("4- Adicionar Clientes.\n");
+    printf("5- Adicionar Meios.\n");
+    printf("6- Adicionar Gestor.\n");
     printf("A sua escolha:");
     scanf("%d", &escolha);
 
@@ -59,6 +60,8 @@ int menu_utilizador()
 // -------------------------------------------------------------FIM-MENU-------------------------------------------------------------
 
 
+
+
 // -------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS-------------------------------------------------
 
 #pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS
@@ -75,7 +78,7 @@ Meio* lerFicheiro_meios(Meio* inicio_meios, FILE* dados_meios)
     while (fgets(linha, MAX_LINE_LEN, dados_meios))
     {
         Meio* novo_nodo = malloc(sizeof(Meio));
-        sscanf(linha,"%d;%[^;];%f;%f;%s\n", &novo_nodo->codigo, novo_nodo->tipo, &novo_nodo->bateria, &novo_nodo->autonomia, novo_nodo->geocodigo);
+        sscanf(linha,"%d;%[^;];%f;%f;%d;%s\n", &novo_nodo->codigo, novo_nodo->tipo, &novo_nodo->bateria, &novo_nodo->autonomia,&novo_nodo->custo, novo_nodo->geocodigo);
         novo_nodo->seguinte_meio = inicio_meios;
         inicio_meios = novo_nodo;
     }
@@ -94,8 +97,8 @@ void listarMeios(Meio* inicio_meios)
     printf("Dados de meios disponiveis:\n------------------------------------------------------------------------------------------------------------------------\n");
     while (inicio_meios != NULL)
     {
-        printf("Codigo:%d      Tipo:%s    Nivel Bateria:%.2f     Autonomia:%.2f     Geocodigo:%s\n", inicio_meios->codigo, inicio_meios->tipo,
-            inicio_meios->bateria, inicio_meios->autonomia, inicio_meios->geocodigo);
+        printf("Codigo:%d      Tipo:%s    Nivel Bateria:%.2f     Autonomia:%.2f     Custo:%d    Geocodigo:%s\n", inicio_meios->codigo, inicio_meios->tipo,
+            inicio_meios->bateria, inicio_meios->autonomia, inicio_meios->custo, inicio_meios->geocodigo);
         inicio_meios = inicio_meios->seguinte_meio;
     }
     printf("------------------------------------------------------------------------------------------------------------------------\n");
@@ -117,8 +120,8 @@ Meio* escreverFicheiro_meios(Meio* inicio_meios, FILE* dados_meios)
     }
     while (inicio_meios != NULL)
     {
-        fprintf(dados_meios, "%d;%s;%.2f;%.2f;%s\n", inicio_meios->codigo, inicio_meios->tipo, inicio_meios->bateria, inicio_meios->autonomia,
-            inicio_meios->geocodigo);
+        fprintf(dados_meios, "%d;%s;%.2f;%.2f;%d;%s\n", inicio_meios->codigo, inicio_meios->tipo, inicio_meios->bateria, inicio_meios->autonomia,
+            inicio_meios->custo, inicio_meios->geocodigo);
         inicio_meios = inicio_meios->seguinte_meio;
     }
     fclose(dados_meios);
@@ -144,6 +147,21 @@ Meio* escreverFicheiro_meios_bin(Meio* inicio_meios, FILE* dados_meios)
         inicio_meios = inicio_meios->seguinte_meio;
     }
     fclose(dados_meios);
+}
+
+Meio* existeMeio(Meio* inicio_meios, int cod)
+{
+    while (inicio_meios != NULL)
+    {
+        if (inicio_meios->codigo == cod)
+        {
+            printf("Ja existe um meio com o cod %d.\n", cod);
+            return 0;
+        }
+        inicio_meios = inicio_meios->seguinte_meio;
+    }
+    if (inicio_meios == NULL)
+        return 1;
 }
 #pragma endregion 
 
@@ -276,7 +294,7 @@ Gestor* lerFicheiro_gestores(Gestor* inicio_gestor, FILE* dados_gestor)
     while (fgets(linha, MAX_LINE_LEN, dados_gestor))
     {
         Gestor* novo_nodo = malloc(sizeof(struct registo_gestor));
-        sscanf(linha, "%d;%[^;];%[^;]\n", &novo_nodo->codigo, novo_nodo->nome, novo_nodo->senha);
+        sscanf(linha, "%d;%[^;];%s\n", &novo_nodo->codigo, novo_nodo->nome, novo_nodo->senha);
         novo_nodo->seguinte_gestor = inicio_gestor;
         inicio_gestor = novo_nodo;
     }
@@ -339,6 +357,21 @@ Gestor* escreverFicheiro_gestores_bin(Gestor* inicio_gestores, FILE* dados_gesto
     fclose(dados_gestores);
 }
 
+int existeGestor(Gestor* inicio_gestores, int cod)
+{
+    while (inicio_gestores != NULL)
+    {
+        if (inicio_gestores->codigo == cod)
+        {
+            printf("Ja existe um gestor com o codigo %d", cod);
+            break;
+        }
+        inicio_gestores = inicio_gestores->seguinte_gestor;
+    }
+    if (inicio_gestores == NULL)
+        return 1;
+}
+
 #pragma endregion
 
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES----------------------------------------------------
@@ -359,33 +392,95 @@ Gestor* modoGestor(Gestor* inicio_gestores) {
     scanf("%d", &codigo_inserido);
     printf("Insira a senha:");
     scanf("%s", senha);
-    if (inicio_gestores->codigo != codigo_inserido && inicio_gestores->senha != senha)
-    {
-        printf("Senha e codigo errados.\n");
-        return 0;
-    }
-    else
+    if (inicio_gestores->codigo == codigo_inserido && strcmp(inicio_gestores->senha, senha) ==0)
     {
         printf("Modo gestor ativado.\n");
         return 1;
     }
+    else
+    {
+        printf("Senha ou codigo errados.\n");
+        return 0;
+    }
 }
 
-Meio* inserirMeio(Meio* inicio_meios)
+Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float aut, int custo, char geo[50])
 {
-    printf("Teste\n");
-
+    int inserir = 0;
+    while (inserir !=1)
+    {
+        inicio_meios = inicio_meios->seguinte_meio;
+        if (inicio_meios->seguinte_meio == NULL)
+        {
+            Meio* novo_meio = malloc(sizeof(Meio));
+            novo_meio->codigo = cod;
+            strcpy(novo_meio->tipo, nome);
+            novo_meio->bateria = bat;
+            novo_meio->autonomia = aut;
+            novo_meio->custo = custo;
+            strcpy(novo_meio->geocodigo, geo);
+            inicio_meios->seguinte_meio = novo_meio;
+            novo_meio->seguinte_meio = NULL;
+            inicio_meios = novo_meio;
+            inserir = 1;
+        }
+    }
+    return inicio_meios;
 }
 
-Cliente* inserirCliente(Cliente* inicio_clientes)
+Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NIF, int saldo)
 {
-    printf("Teste\n");
-
+    int inserir = 0;
+    while (inserir != 1)
+    {
+        inicio_clientes = inicio_clientes->seguinte_cliente;
+        if (inicio_clientes->seguinte_cliente == NULL)
+        {
+            Cliente* novo_cliente = malloc(sizeof(Cliente));
+            novo_cliente->codigo = cod;
+            strcpy(novo_cliente->nome, nome);
+            novo_cliente->NIF = NIF;
+            novo_cliente->saldo = saldo;
+            inicio_clientes->seguinte_cliente = novo_cliente;
+            novo_cliente->seguinte_cliente = NULL;
+            inicio_clientes = novo_cliente;
+            inserir = 1;
+        }
+    }
+    return inicio_clientes;
 }
 
-Gestor* inserirGestor(Gestor* inicio_gestor)
+Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[50])
 {
-    printf("Teste\n");
+    int inserir = 0;
+    while (inserir != 1)
+    {
+        if (inicio_gestor->seguinte_gestor == NULL)
+        {
+            Gestor* novo_gestor = malloc(sizeof(Gestor));
+            novo_gestor->codigo = cod;
+            strcpy(novo_gestor->nome, nome);
+            strcpy(novo_gestor->senha, senha);
+            //encryptSenha(novo_gestor,novo_gestor->senha);
+            inicio_gestor->seguinte_gestor = novo_gestor;
+            novo_gestor->seguinte_gestor = NULL;
+            inicio_gestor = novo_gestor;
+            inserir = 1;
+        }
+        inicio_gestor = inicio_gestor->seguinte_gestor;
+    }
+    return inicio_gestor;
+}
+
+int encryptSenha(Gestor* inicio_gestor, char senha[50])
+{
+    for (int i = 0; i < strlen(senha); i++)
+    {
+        senha[i] = senha[i] + 64;
+    }
+    puts(senha);
+    printf("\n");
+    return 1;
 }
 
 #pragma endregion 
@@ -489,7 +584,7 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
             case 3:
                 printf("Insira o seu novo NIF(deve conter 9 numeros e comecar por 192):");
                 scanf("%d", &novo_NIF);
-                if (novo_NIF < 192000000)
+                if (novo_NIF <= 192000000 || novo_NIF >= 193000000)
                 {
                     printf("Por favor tente de novo.\n");
                     break;
