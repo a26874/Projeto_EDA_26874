@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define MAX_LINE_LEN 256
+#define MAX_LINE_LEN 350
 
 typedef struct registo_meios
 {
@@ -9,6 +9,7 @@ typedef struct registo_meios
 	float bateria;
 	float autonomia;
 	char geocodigo[100];
+	int custo;
 	struct registo_meio* seguinte_meio; // endereço de memória para uma struct registo_meio
 } Meio;
 
@@ -49,6 +50,7 @@ Meio* escreverFicheiro_meios(Meio* inicio_meios, FILE* dados_meios);
 
 Meio* escreverFicheiro_meios_bin(Meio* inicio_meios, FILE* dados_meios);
 
+Meio* existeMeio(Meio* inicio_meios, int cod);
 
 // -------------------------------------------------FUNÇÕES_F-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS-------------------------------------------------
 
@@ -72,7 +74,10 @@ Cliente *consultaSaldo(Cliente * inicio_clientes);
 
 Cliente* alterarDadosCliente(Cliente* inicio_clientes);
 
-int existeCliente(Cliente* inicio_clientes, int cod);
+int existeClienteCod(Cliente* inicio_clientes, int cod);
+
+int existeClienteNIF(Cliente* inicio_clientes, int NIF);
+
 
 
 // -------------------------------------------------FUNÇÕES_F-LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES-------------------------------------------------
@@ -88,6 +93,9 @@ Gestor* escreverFicheiro_gestores(Gestor* inicio_gestor, FILE* dados_gestor);
 
 Gestor* escreverFicheiro_gestores_bin(Gestor* inicio_gestor, FILE* dados_gestor);
 
+int existeGestor(Gestor* inicio_gestor, int cod);
+
+
 // -------------------------------------------------FUNÇÕES_F-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES-------------------------------------------------
 
 
@@ -95,12 +103,11 @@ Gestor* escreverFicheiro_gestores_bin(Gestor* inicio_gestor, FILE* dados_gestor)
 
 Gestor* modoGestor(Gestor* inicio_gestores);
 
-Meio* inserirMeio(Meio* inicio_meios);
+Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float aut, int custo, char geo[50]);
 
 
+Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NIF, int saldo);
 
-Cliente* inserirCliente(Cliente* inicio_clientes);
-
-Gestor* inserirGestor(Gestor* inicio_gestor);
+Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[50]);
 
 // ---------------------------------------------------FUNÇÕES_F-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
