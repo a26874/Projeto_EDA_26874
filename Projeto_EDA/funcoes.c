@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include "funcoes.h"
 
 // ---------------------------------------------------------------MENU---------------------------------------------------------------
@@ -36,6 +37,11 @@ int menu_gestor()
     printf("4- Adicionar Clientes.\n");
     printf("5- Adicionar Meios.\n");
     printf("6- Adicionar Gestor.\n");
+    printf("7- Remover Meio.\n");
+    printf("8- Remover Cliente.\n");
+    printf("9- Remover Gestor.\n");
+    printf("10- Historico de compras.\n");
+    printf("0- Sair.\n");
     printf("A sua escolha:");
     scanf("%d", &escolha);
 
@@ -55,6 +61,7 @@ int menu_utilizador()
     printf("2- Carregamento de saldo.\n");
     printf("3- Consulta de saldo.\n");
     printf("4- Alteracao dos seus dados.\n");
+    printf("5- Alugar algum meio.\n");
     printf("A sua escolha:");
     scanf("%d", &escolha);
     system("cls");
@@ -64,8 +71,6 @@ int menu_utilizador()
 #pragma endregion
 
 // -------------------------------------------------------------FIM-MENU-------------------------------------------------------------
-
-
 
 
 // -------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS-------------------------------------------------
@@ -161,7 +166,6 @@ Meio* existeMeio(Meio* inicio_meios, int cod)
     {
         if (inicio_meios->codigo == cod)
         {
-            printf("Ja existe um meio com o cod %d.\n", cod);
             return 0;
         }
         inicio_meios = inicio_meios->seguinte_meio;
@@ -170,6 +174,8 @@ Meio* existeMeio(Meio* inicio_meios, int cod)
         return 1;
 }
 
+// Verifica cada meio existente, se o seu codigo do elemento que está a verificar for maior que o elemento seguinte, irá ser feita uma troca
+// para ordenar todos os elementos da lista ligada por um valor crescente.
 Meio* bubbleSortMeios(Meio* inicio_meios)
 {
     Meio* atual, * seguinte;
@@ -308,11 +314,11 @@ Cliente* escreverFicheiro_clientes_bin(Cliente* inicio_clientes, FILE* dados_cli
 // Verifica, consoante o endereço de memória de um certo utilizador, se o seu código é igual ao que foi inserido para um novo utilizador.
 int existeClienteCod(Cliente* inicio_clientes, int cod)
 {
+    Cliente* aux;
     while (inicio_clientes != NULL)
     {
         if (inicio_clientes->codigo == cod)
         {
-            printf("Ja existe alguem com o codigo %d.\n", cod);
             return 0;
         }
         inicio_clientes = inicio_clientes->seguinte_cliente;
@@ -328,7 +334,6 @@ int existeClienteNIF(Cliente* inicio_clientes, int NIF)
     {
         if (inicio_clientes->NIF == NIF)
         {
-            printf("Ja existe alguem com o NIF %d.\n", NIF);
             return 0;
         }
         inicio_clientes = inicio_clientes->seguinte_cliente;
@@ -337,6 +342,8 @@ int existeClienteNIF(Cliente* inicio_clientes, int NIF)
         return 1;
 }
 
+// Verifica cada cliente existente, se o seu codigo do elemento que está a verificar for maior que o elemento seguinte, irá ser feita uma troca
+// para ordenar todos os elementos da lista ligada por um valor crescente.
 Cliente* bubbleSortClientes(Cliente* inicio_clientes) {
     Cliente* atual, * seguinte;
     int b = 1, aux_codigo, aux_NIF, aux_saldo;
@@ -463,8 +470,7 @@ int existeGestor(Gestor* inicio_gestores, int cod)
     {
         if (inicio_gestores->codigo == cod)
         {
-            printf("Ja existe um gestor com o codigo %d", cod);
-            break;
+            return 0;
         }
         inicio_gestores = inicio_gestores->seguinte_gestor;
     }
@@ -472,6 +478,8 @@ int existeGestor(Gestor* inicio_gestores, int cod)
         return 1;
 }
 
+// Verifica cada gestor existente, se o seu codigo do elemento que está a verificar for maior que o elemento seguinte, irá ser feita uma troca
+// para ordenar todos os elementos da lista ligada por um valor crescente.
 Gestor* bubbleSortGestores(Gestor* inicio_gestor) {
     Gestor* atual, * seguinte;
     int aux_codigo, b = 1;
@@ -636,6 +644,78 @@ int encryptSenha(Gestor* inicio_gestor, char senha[50])
 
 #pragma endregion 
 
+#pragma region REMOVER
+
+// Função para remover algum meio, a partir do código inserido pelo gestor. É removido o meio e de seguida é retornada toda a lista ligada
+// com o meio removido.
+Meio* removerMeio(Meio* inicio_meios, int cod)
+{
+    Meio* atual=inicio_meios, * anterior = inicio_meios, * aux;
+    atual = inicio_meios;
+    while ((atual != NULL) && (atual->codigo != cod))
+    {
+        anterior = atual;
+        atual = atual->seguinte_meio;
+    }
+    if (atual == NULL)
+    {
+        return inicio_meios;
+    }
+    else
+    {
+        anterior->seguinte_meio = atual->seguinte_meio;
+        free(atual);
+        return(inicio_meios);
+    }
+}
+
+// Função para remover algum cliente, a partir do código inserido pelo gestor. É removido o cliente e de seguida é retornada toda a lista ligada
+// com o meio removido.
+Cliente* removerCliente(Cliente* inicio_clientes, int cod)
+{
+    Cliente* atual = inicio_clientes, * anterior = inicio_clientes, * aux;
+    atual = inicio_clientes;
+    while ((atual != NULL) && (atual->codigo != cod))
+    {
+        anterior = atual;
+        atual = atual->seguinte_cliente;
+    }
+    if (atual == NULL)
+    {
+        return inicio_clientes;
+    }
+    else
+    {
+        anterior->seguinte_cliente = atual->seguinte_cliente;
+        free(atual);
+        return(inicio_clientes);
+    }
+}
+
+// Função para remover algum gestor, a partir do código inserido pelo gestor. É removido o gestor e de seguida é retornada toda a lista ligada
+// com o meio removido.
+Gestor* removerGestor(Gestor* inicio_gestores, int cod)
+{
+    Gestor* atual = inicio_gestores, * anterior = inicio_gestores, * aux;
+    atual = inicio_gestores;
+    while ((atual != NULL) && (atual->codigo != cod))
+    {
+        anterior = atual;
+        atual = atual->seguinte_gestor;
+    }
+    if (atual == NULL)
+    {
+        return inicio_gestores;
+    }
+    else
+    {
+        anterior->seguinte_gestor = atual->seguinte_gestor;
+        free(atual);
+        return(inicio_gestores);
+    }
+}
+#pragma endregion
+
 // ---------------------------------------------------FIM-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
 
 
@@ -760,6 +840,50 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
     }
 }
 
-
+Cliente* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio* inicio_meios)
+{
+    int meio_Alugar, codigo_utilizador, NIF;
+    printf("Insira o seu codigo:");
+    scanf("%d", &codigo_utilizador);
+    if (existeClienteCod(inicio_clientes, codigo_utilizador)==0);
+    {
+        while (inicio_clientes->codigo != codigo_utilizador)
+            inicio_clientes = inicio_clientes->seguinte_cliente;
+        //printf("codigo e nome %d %s\n", inicio_clientes->codigo, inicio_clientes->nome);
+        printf("Qual meio deseja alugar?\n");
+        scanf("%d", &meio_Alugar);
+        if (existeMeio(inicio_meios, meio_Alugar) == 0)
+        {
+            while (inicio_meios->codigo != meio_Alugar)
+            {
+                inicio_meios = inicio_meios->seguinte_meio;
+            }
+            printf("Nome do meio %s\n", inicio_meios->tipo);
+            printf("O meio custa:%d\n", inicio_meios->custo);
+            printf("Voce tem:%d\n", inicio_clientes->saldo);
+            int escolha_compra;
+            printf("Deseja comprar? 1-Sim/2-Nao\n");
+            printf("A sua escolha:");
+            scanf("%d", &escolha_compra);
+            if (escolha_compra != 1)
+            {
+                return 0;
+            }
+            else
+            {
+                char dia[50];
+                time_t dataCompra;
+                time(&dataCompra);
+                strcpy(dia, dataCompra);
+                Aluguer* novo_aluguer = malloc(sizeof(Aluguer));
+                printf("Data da compra %s", ctime(&dataCompra));
+                novo_aluguer->comprador = inicio_clientes->codigo;
+                strcpy(novo_aluguer->dia_compra, dia);
+                return 1;
+            }
+        }
+    }
+    return 1;
+}
 
 // -----------------------------------------------------------------FIM_OP_UTILIZADOR-------------------------------------------------------------------
