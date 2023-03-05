@@ -27,6 +27,9 @@ int main() {
     inicio_clientes = lerFicheiro_clientes(inicio_clientes, dados_clientes);
     dados_gestor = fopen("gestores.txt", "rt");
     inicio_gestor = lerFicheiro_gestores(inicio_gestor, dados_gestor);
+    bubbleSortMeios(inicio_meios);
+    bubbleSortClientes(inicio_clientes);
+    bubbleSortGestores(inicio_gestor);
     // Criação de Menu.
     do
     {
@@ -40,7 +43,6 @@ int main() {
                 op_utilizador = menu_utilizador();
                 switch (op_utilizador) {
                 case 1:
-                    bubbleSortMeios(inicio_meios);
                     listarMeios(inicio_meios);
                     break;
                 case 2:
@@ -53,7 +55,6 @@ int main() {
                     alterarDadosCliente(inicio_clientes);
                     break;
                 case 5:
-                    bubbleSortMeios(inicio_meios);
                     listarMeios(inicio_meios);
                     realizarAluguer(inicio_clientes, inicio_aluguer, inicio_meios);
                     break;
@@ -78,15 +79,12 @@ int main() {
                     switch (op_gestor)
                     {
                     case 1:
-                        bubbleSortClientes(inicio_clientes);
                         listarClientes(inicio_clientes);
                         break;
                     case 2:
-                        bubbleSortGestores(inicio_gestor);
                         listarGestores(inicio_gestor);
                         break;
                     case 3:
-                        bubbleSortMeios(inicio_meios);
                         listarMeios(inicio_meios);
                         break;
                     case 4:
