@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include "funcoes.h"
 
 
@@ -10,9 +11,11 @@ int main() {
     Meio* inicio_meios = NULL;
     Cliente* inicio_clientes = NULL;
     Gestor* inicio_gestor = NULL;
+    Aluguer* inicio_aluguer = NULL;
     FILE* dados_meios, * dados_clientes, * dados_gestor;
     int op, bool, op_utilizador, utilizador_login = 0, gestor_login = 0, op_gestor;
-    int novo_cliente_codigo, novo_cliente_NIF, novo_cliente_saldo, novo_meio_codigo, novo_meio_custo, novo_gestor_codigo;
+    int novo_cliente_codigo, novo_cliente_NIF, novo_cliente_saldo, novo_meio_codigo, novo_meio_custo, novo_gestor_codigo, codigo_meio_remover
+        , codigo_cliente_remover, codigo_gestor_remover, codigo_login_utilizador;
     float novo_meio_bateria, novo_meio_autonomia;
     char novo_cliente_nome[50], novo_meio_nome[50], novo_meio_geocodigo[50], novo_gestor_nome[50], novo_gestor_senha[50];
 
@@ -49,11 +52,17 @@ int main() {
                 case 4:
                     alterarDadosCliente(inicio_clientes);
                     break;
+                case 5:
+                    bubbleSortMeios(inicio_meios);
+                    listarMeios(inicio_meios);
+                    realizarAluguer(inicio_clientes, inicio_aluguer, inicio_meios);
+                    break;
                 case 0:
                     utilizador_login = 0;
                     break;
                 }
             }
+                
             break;
         case 2:
             if (!modoGestor(inicio_gestor))
@@ -103,6 +112,8 @@ int main() {
                         }
                         else
                         {
+                            printf("Ja existe alguem com o codigo %d.\n", novo_cliente_codigo);
+                            printf("Ja existe alguem com o NIF %d.\n", novo_cliente_NIF);
                             break;
                         }
                     case 5:
@@ -137,7 +148,10 @@ int main() {
                             break;
                         }
                         else
+                        {
+                            printf("Ja existe um meio com o cod %d.\n", novo_meio_codigo);
                             break;
+                        }
                         break;
                     case 6:
                         printf("Insira os dados de um novo gestor:\n");
@@ -156,9 +170,48 @@ int main() {
                         }
                         else
                         {
+                            printf("Ja existe um gestor com o codigo %d", novo_gestor_codigo);
                             break;
                         }
                         break;
+                    case 7:
+                        printf("Insira o codigo de meio a remover:");
+                        scanf("%d", &codigo_meio_remover);
+                        if (existeMeio(inicio_meios, codigo_meio_remover) == 0)
+                        {
+                            removerMeio(inicio_meios, codigo_meio_remover);
+                            break;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    case 8:
+                        printf("Insira o codigo de cliente a remover:");
+                        scanf("%d", &codigo_cliente_remover);
+                        if (existeClienteCod(inicio_clientes, codigo_cliente_remover) == 0)
+                        {
+                            removerCliente(inicio_clientes, codigo_cliente_remover);
+                            break;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    case 9:
+                        printf("Insira o codigo de gestor a remover:");
+                        scanf("%d", &codigo_gestor_remover);
+                        if (existeGestor(inicio_gestor, codigo_gestor_remover) == 0)
+                        {
+                            removerGestor(inicio_gestor, codigo_gestor_remover);
+                            break;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    case 10:
+                        printf("Teste.\n");
                     case 0:
                         gestor_login = 0;
                         break;

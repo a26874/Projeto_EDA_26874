@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #define MAX_LINE_LEN 350
 
 typedef struct registo_meios
@@ -10,6 +11,7 @@ typedef struct registo_meios
 	float autonomia;
 	char geocodigo[100];
 	int custo;
+	struct registo_aluguer* alugado;
 	struct registo_meio* seguinte_meio; // endereço de memória para uma struct registo_meio
 } Meio;
 
@@ -19,7 +21,7 @@ typedef struct registo_clientes
 	char nome[50]; // nome do cliente
 	int NIF; // NIF do cliente
 	int saldo; // saldo do cliente
-
+	struct registo_aluguer* comprador;
 	struct registo_clientes* seguinte_cliente; // endereço de memória para uma struct registo_clientes
 } Cliente;
 
@@ -30,6 +32,14 @@ typedef struct registo_gestor
 	char senha[20]; // Senha do gestor
 	struct registo_gestor* seguinte_gestor; // endereço de memória para uma struct registo_gestor
 } Gestor;
+
+typedef struct registo_aluguer
+{
+	char dia_compra[50];
+	int comprador;
+	int asd;
+	struct registo_aluguer* seguinte_compra;
+}Aluguer;
 
 
 int menu();
@@ -77,6 +87,8 @@ Cliente *consultaSaldo(Cliente * inicio_clientes);
 
 Cliente* alterarDadosCliente(Cliente* inicio_clientes);
 
+Cliente* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio* inicio_meios);
+
 int existeClienteCod(Cliente* inicio_clientes, int cod);
 
 int existeClienteNIF(Cliente* inicio_clientes, int NIF);
@@ -111,9 +123,13 @@ Gestor* modoGestor(Gestor* inicio_gestores);
 
 Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float aut, int custo, char geo[50]);
 
-
 Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NIF, int saldo);
 
 Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[50]);
 
+Meio* removerMeio(Meio* inicio_meios, int cod);
+
+Cliente* removerCliente(Cliente* inicio_clientes, int cod);
+
 // ---------------------------------------------------FUNÇÕES_F-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
+
