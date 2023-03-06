@@ -11,6 +11,7 @@ typedef struct registo_meios
 	float autonomia;
 	char geocodigo[100];
 	int custo;
+	int ativo;
 	struct registo_aluguer* alugado;
 	struct registo_meio* seguinte_meio; // endereço de memória para uma struct registo_meio
 } Meio;
@@ -30,14 +31,15 @@ typedef struct registo_gestor
 	int codigo; // Identificação do gestor
 	char nome[50]; // nome do gestor
 	char senha[20]; // Senha do gestor
+	char area_responsavel[50];
 	struct registo_gestor* seguinte_gestor; // endereço de memória para uma struct registo_gestor
 } Gestor;
 
 typedef struct registo_aluguer
 {
-	char dia_compra[50];
-	int comprador;
-	int asd;
+	char data_compra[50];
+	char nome_comprador[50];
+	int cod_comprador;
 	struct registo_aluguer* seguinte_compra;
 }Aluguer;
 
@@ -87,8 +89,6 @@ Cliente *consultaSaldo(Cliente * inicio_clientes);
 
 Cliente* alterarDadosCliente(Cliente* inicio_clientes);
 
-Cliente* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio* inicio_meios);
-
 int existeClienteCod(Cliente* inicio_clientes, int cod);
 
 int existeClienteNIF(Cliente* inicio_clientes, int NIF);
@@ -132,4 +132,20 @@ Meio* removerMeio(Meio* inicio_meios, int cod);
 Cliente* removerCliente(Cliente* inicio_clientes, int cod);
 
 // ---------------------------------------------------FUNÇÕES_F-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
+
+// -------------------------------------------------------------------FUNÇÕES_I-ALUGUER--------------------------------------------------------------------
+
+Aluguer* lerFicheiro_Aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer);
+
+void listarAluguer(Aluguer* inicio_aluguer);
+
+Aluguer* bubbleSortAluguer(Aluguer* inicio_aluguer);
+
+Aluguer* escreverFicheiro_aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer);
+
+Aluguer* escreverFicheiro_aluguer_bin(Aluguer* inicio_aluguer, FILE* dados_aluguer);
+
+Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio* inicio_meios);
+
+// -------------------------------------------------------------------FUNÇÕES_F-ALUGUER--------------------------------------------------------------------
 
