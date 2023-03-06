@@ -12,7 +12,7 @@ int main() {
     Cliente* inicio_clientes = NULL;
     Gestor* inicio_gestor = NULL;
     Aluguer* inicio_aluguer = NULL;
-    FILE* dados_meios, * dados_clientes, * dados_gestor;
+    FILE* dados_meios, * dados_clientes, * dados_gestor, * dados_aluguer;
     int op, bool, op_utilizador, utilizador_login = 0, gestor_login = 0, op_gestor;
     int novo_cliente_codigo, novo_cliente_NIF, novo_cliente_saldo, novo_meio_codigo, novo_meio_custo, novo_gestor_codigo, codigo_meio_remover
         , codigo_cliente_remover, codigo_gestor_remover, codigo_login_utilizador;
@@ -27,9 +27,12 @@ int main() {
     inicio_clientes = lerFicheiro_clientes(inicio_clientes, dados_clientes);
     dados_gestor = fopen("gestores.txt", "rt");
     inicio_gestor = lerFicheiro_gestores(inicio_gestor, dados_gestor);
+    dados_aluguer = fopen("historico_compras.txt", "rt");
+    inicio_aluguer = lerFicheiro_Aluguer(inicio_aluguer, dados_aluguer);
     bubbleSortMeios(inicio_meios);
     bubbleSortClientes(inicio_clientes);
     bubbleSortGestores(inicio_gestor);
+    bubbleSortAluguer(inicio_aluguer);
     // Criação de Menu.
     do
     {
@@ -209,7 +212,7 @@ int main() {
                             break;
                         }
                     case 10:
-                        printf("Teste.\n");
+                        listarAluguer(inicio_aluguer);
                     case 0:
                         gestor_login = 0;
                         break;
@@ -228,6 +231,9 @@ int main() {
             dados_gestor = fopen("gestores.txt", "rt");
             escreverFicheiro_gestores(inicio_gestor, dados_gestor);
             escreverFicheiro_gestores_bin(inicio_gestor, dados_gestor);
+            dados_aluguer = fopen("historico_compras.txt", "rt");
+            escreverFicheiro_aluguer(inicio_aluguer, dados_aluguer);
+            escreverFicheiro_aluguer_bin(inicio_aluguer, dados_aluguer);
             printf("O programa ira ser encerrado.\n");
             return 0;
         default:

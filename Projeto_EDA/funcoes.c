@@ -89,7 +89,7 @@ Meio* lerFicheiro_meios(Meio* inicio_meios, FILE* dados_meios)
     while (fgets(linha, MAX_LINE_LEN, dados_meios))
     {
         Meio* novo_nodo = malloc(sizeof(Meio));
-        sscanf(linha,"%d;%[^;];%f;%f;%d;%s\n", &novo_nodo->codigo, novo_nodo->tipo, &novo_nodo->bateria, &novo_nodo->autonomia,&novo_nodo->custo, novo_nodo->geocodigo);
+        sscanf(linha,"%d;%[^;];%f;%f;%d;%[^;];%d\n", &novo_nodo->codigo, novo_nodo->tipo, &novo_nodo->bateria, &novo_nodo->autonomia,&novo_nodo->custo, novo_nodo->geocodigo, &novo_nodo->ativo);
         novo_nodo->seguinte_meio = inicio_meios;
         inicio_meios = novo_nodo;
     }
@@ -106,8 +106,8 @@ void listarMeios(Meio* inicio_meios)
     printf("Dados de meios disponiveis:\n------------------------------------------------------------------------------------------------------------------------\n");
     while (inicio_meios != NULL)
     {
-        printf("Codigo:%d      Tipo:%s    Nivel Bateria:%.2f     Autonomia:%.2f     Custo:%d    Geocodigo:%s\n", inicio_meios->codigo, inicio_meios->tipo,
-            inicio_meios->bateria, inicio_meios->autonomia, inicio_meios->custo, inicio_meios->geocodigo);
+        printf("Codigo:%d    Tipo:%s  Nivel Bateria:%.2f  Autonomia:%.2f  Custo:%d Geocodigo:%s Ativo:%d\n", inicio_meios->codigo, inicio_meios->tipo,
+            inicio_meios->bateria, inicio_meios->autonomia, inicio_meios->custo, inicio_meios->geocodigo, inicio_meios->ativo);
         inicio_meios = inicio_meios->seguinte_meio;
     }
     printf("------------------------------------------------------------------------------------------------------------------------\n");
@@ -129,8 +129,8 @@ Meio* escreverFicheiro_meios(Meio* inicio_meios, FILE* dados_meios)
     }
     while (inicio_meios != NULL)
     {
-        fprintf(dados_meios, "%d;%s;%.2f;%.2f;%d;%s\n", inicio_meios->codigo, inicio_meios->tipo, inicio_meios->bateria, inicio_meios->autonomia,
-            inicio_meios->custo, inicio_meios->geocodigo);
+        fprintf(dados_meios, "%d;%s;%.2f;%.2f;%d;%s;%d\n", inicio_meios->codigo, inicio_meios->tipo, inicio_meios->bateria, inicio_meios->autonomia,
+            inicio_meios->custo, inicio_meios->geocodigo, inicio_meios->ativo);
         inicio_meios = inicio_meios->seguinte_meio;
     }
     fclose(dados_meios);
@@ -152,8 +152,8 @@ Meio* escreverFicheiro_meios_bin(Meio* inicio_meios, FILE* dados_meios)
     }
     while (inicio_meios != NULL)
     {
-        fprintf(dados_meios, "%d;%s;%.2f;%.2f;%s\n", inicio_meios->codigo, inicio_meios->tipo, inicio_meios->bateria, inicio_meios->autonomia,
-            inicio_meios->geocodigo);
+        fprintf(dados_meios, "%d;%s;%.2f;%.2f;%d;%s;%d\n", inicio_meios->codigo, inicio_meios->tipo, inicio_meios->bateria, inicio_meios->autonomia,
+            inicio_meios->custo, inicio_meios->geocodigo, inicio_meios->ativo);
         inicio_meios = inicio_meios->seguinte_meio;
     }
     fclose(dados_meios);
@@ -503,7 +503,7 @@ Gestor* bubbleSortGestores(Gestor* inicio_gestor) {
 
                 seguinte->codigo = aux_codigo;
                 strcpy(seguinte->nome, aux_nome);
-                strcpy(seguinte->senha, aux_nome);
+                strcpy(seguinte->senha, aux_senha);
 
                 b = 1;
             }
@@ -613,6 +613,7 @@ Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[
     int inserir = 0;
     while (inserir != 1)
     {
+        inicio_gestor = inicio_gestor->seguinte_gestor;
         if (inicio_gestor->seguinte_gestor == NULL)
         {
             Gestor* novo_gestor = malloc(sizeof(Gestor));
@@ -625,7 +626,6 @@ Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[
             inicio_gestor = novo_gestor;
             inserir = 1;
         }
-        inicio_gestor = inicio_gestor->seguinte_gestor;
     }
     return inicio_gestor;
 }
@@ -840,7 +840,7 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
     }
 }
 
-Cliente* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio* inicio_meios)
+Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio* inicio_meios)
 {
     int meio_Alugar, codigo_utilizador, NIF;
     printf("Insira o seu codigo:");
@@ -871,19 +871,137 @@ Cliente* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
             }
             else
             {
-                char dia[50];
                 time_t dataCompra;
                 time(&dataCompra);
-                strcpy(dia, dataCompra);
-                Aluguer* novo_aluguer = malloc(sizeof(Aluguer));
                 printf("Data da compra %s", ctime(&dataCompra));
-                novo_aluguer->comprador = inicio_clientes->codigo;
-                strcpy(novo_aluguer->dia_compra, dia);
-                return 1;
+                int inserir = 0;
+                while (inserir != 1)
+                {
+                    inicio_aluguer = inicio_aluguer->seguinte_compra;
+                    if (inicio_aluguer->seguinte_compra == NULL)
+                    {
+                        Aluguer* novo_nodo = malloc(sizeof(Aluguer));
+                        novo_nodo->cod_comprador = inicio_clientes->codigo;
+                        strcpy(novo_nodo->nome_comprador, inicio_clientes->nome);
+                        strcpy(novo_nodo->data_compra, &dataCompra);
+                        //encryptSenha(novo_gestor,novo_gestor->senha);
+                        inicio_aluguer->seguinte_compra = novo_nodo;
+                        novo_nodo->seguinte_compra = NULL;
+                        inicio_aluguer = novo_nodo;
+                        inserir = 1;
+                    }
+                }
             }
         }
     }
-    return 1;
 }
 
 // -----------------------------------------------------------------FIM_OP_UTILIZADOR-------------------------------------------------------------------
+
+
+// ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE ALUGUER----------------------------------------------------
+
+Aluguer* lerFicheiro_Aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer)
+{
+    char linha[MAX_LINE_LEN];
+    while (fgets(linha, MAX_LINE_LEN, dados_aluguer))
+    {
+        Aluguer* novo_nodo = malloc(sizeof(Aluguer));
+        sscanf(linha, "%d;%[^;];%[^\n]\n", &novo_nodo->cod_comprador, novo_nodo->data_compra, novo_nodo->nome_comprador);
+        novo_nodo->seguinte_compra = inicio_aluguer;
+        inicio_aluguer = novo_nodo;
+    }
+    fclose(dados_aluguer);
+    return inicio_aluguer;
+}
+
+void listarAluguer(Aluguer* inicio_aluguer)
+{
+    printf("\nDados de Alugueres:\n------------------------------------------------------------------------------------------------------------------------\n");
+    while (inicio_aluguer != NULL)
+    {
+        printf("Codigo:%d   Data de compra:%s       Nome:%s\n", inicio_aluguer->cod_comprador, inicio_aluguer->data_compra, inicio_aluguer->nome_comprador);
+        inicio_aluguer = inicio_aluguer->seguinte_compra;
+    }
+    printf("------------------------------------------------------------------------------------------------------------------------\n");
+}
+
+Aluguer* bubbleSortAluguer(Aluguer* inicio_aluguer) {
+    Aluguer* atual, * seguinte;
+    int aux_codigo, b = 1;
+    char aux_data[50], aux_comprador[50];
+    while (b)
+    {
+        b = 0;
+        atual = inicio_aluguer;
+        while (atual->seguinte_compra != NULL)
+        {
+            seguinte = atual->seguinte_compra;
+            if (atual->cod_comprador > seguinte->cod_comprador)
+            {
+                aux_codigo = atual->cod_comprador;
+                strcpy(aux_comprador, atual->nome_comprador);
+                strcpy(aux_data, atual->data_compra);
+
+                atual->cod_comprador = seguinte->cod_comprador;
+                strcpy(atual->nome_comprador, seguinte->nome_comprador);
+                strcpy(atual->data_compra, seguinte->data_compra);
+
+                seguinte->cod_comprador = aux_codigo;
+                strcpy(seguinte->nome_comprador, aux_comprador);
+                strcpy(seguinte->data_compra, aux_data);
+
+                b = 1;
+            }
+            atual = seguinte;
+        }
+    }
+    inicio_aluguer = atual;
+    return inicio_aluguer;
+}
+
+// Escreve todos os dados sobre os alugueres, em ficheiro de texto.
+Aluguer* escreverFicheiro_aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer)
+{
+    if (inicio_aluguer == NULL)
+    {
+        printf("O ficheiro nao foi lido.\n");
+        return 0;
+    }
+    dados_aluguer = fopen("historico_compras.txt", "wt");
+    if (dados_aluguer == NULL)
+    {
+        printf("Nao foi possivel abrir o ficheiro.\n");
+        return 0;
+    }
+    while (inicio_aluguer != NULL)
+    {
+        fprintf(dados_aluguer, "%d;%s;%s\n", inicio_aluguer->cod_comprador, inicio_aluguer->nome_comprador, inicio_aluguer->data_compra);
+        inicio_aluguer = inicio_aluguer->seguinte_compra;
+    }
+    fclose(dados_aluguer);
+}
+
+// Escreve todos os dados sobre os alugueres, em ficheiro binário.
+Aluguer* escreverFicheiro_aluguer_bin(Aluguer* inicio_aluguer, FILE* dados_aluguer)
+{
+    if (inicio_aluguer == NULL)
+    {
+        printf("O ficheiro nao foi lido.\n");
+        return 0;
+    }
+    dados_aluguer = fopen("historico_compras.bin", "wb");
+    if (dados_aluguer == NULL)
+    {
+        printf("Nao foi possivel abrir o ficheiro.\n");
+        return 0;
+    }
+    while (inicio_aluguer != NULL)
+    {
+        fprintf(dados_aluguer, "%d;%s;%s\n", inicio_aluguer->cod_comprador, inicio_aluguer->nome_comprador, inicio_aluguer->data_compra);
+        inicio_aluguer = inicio_aluguer->seguinte_compra;
+    }
+    fclose(dados_aluguer);
+}
+
+// ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE ALUGUER----------------------------------------------------
