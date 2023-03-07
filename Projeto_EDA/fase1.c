@@ -59,7 +59,14 @@ int main() {
                     break;
                 case 5:
                     listarMeios(inicio_meios);
-                    realizarAluguer(inicio_clientes, inicio_aluguer, inicio_meios);
+                    if (inicio_aluguer == NULL)
+                    {
+                        inicio_aluguer = realizarAluguer(inicio_clientes, inicio_aluguer, inicio_meios);
+                    }
+                    else
+                    {
+                        realizarAluguer(inicio_clientes, inicio_aluguer, inicio_meios);
+                    }
                     break;
                 case 0:
                     utilizador_login = 0;
@@ -126,6 +133,7 @@ int main() {
                         scanf("%[^\n]", novo_meio_nome);
                         printf("Bateria(0.00 - 100.00):");
                         scanf("%f", &novo_meio_bateria);
+                        printf("nivel:%f\n", novo_meio_bateria);
                         if (novo_meio_bateria <= 0.00 || novo_meio_bateria > 100.0001)
                         {
                             printf("Tente de novo.\n");
@@ -133,6 +141,7 @@ int main() {
                         }
                         printf("Autonomia(0.00 - 100.00):");
                         scanf("%f", &novo_meio_autonomia);
+                        printf("nivel:%f\n", novo_meio_autonomia);
                         if (novo_meio_autonomia <= 0.00 || novo_meio_autonomia >= 100.0001)
                         {
                             printf("Tente de novo.\n");

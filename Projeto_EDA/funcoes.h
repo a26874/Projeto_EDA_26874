@@ -31,15 +31,17 @@ typedef struct registo_gestor
 	int codigo; // Identificação do gestor
 	char nome[50]; // nome do gestor
 	char senha[20]; // Senha do gestor
-	char area_responsavel[50];
+	int encriptado; // Se a senha está encriptada.
+	//char area_responsavel[50];
 	struct registo_gestor* seguinte_gestor; // endereço de memória para uma struct registo_gestor
 } Gestor;
 
 typedef struct registo_aluguer
 {
-	char data_compra[50];
-	char nome_comprador[50];
-	int cod_comprador;
+	char data_compra[50]; // Data de compra de um certo meio
+	char nome_comprador[50]; // Nome do comprador.
+	char nome_meio_comprado[50]; // Nome do meio.
+	int cod_comprador; // Codigo do comprador.
 	struct registo_aluguer* seguinte_compra;
 }Aluguer;
 
@@ -131,6 +133,9 @@ Meio* removerMeio(Meio* inicio_meios, int cod);
 
 Cliente* removerCliente(Cliente* inicio_clientes, int cod);
 
+int encryptSenha(Gestor* inicio_gestor, char senha[50]);
+
+int decryptSenha(Gestor* inicio_gestor, char senha[50]);
 // ---------------------------------------------------FUNÇÕES_F-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
 
 // -------------------------------------------------------------------FUNÇÕES_I-ALUGUER--------------------------------------------------------------------

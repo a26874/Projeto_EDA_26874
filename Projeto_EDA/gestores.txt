@@ -1,4 +1,1 @@
-1;Marco Macedo;1324ESI2023
-20;teste;teste
-124;marco;marco
-1234;Maa;1234
+1;Marco Macedo;1324ESI2023;0
