@@ -179,7 +179,7 @@ Meio* existeMeio(Meio* inicio_meios, int cod)
 Meio* bubbleSortMeios(Meio* inicio_meios)
 {
     Meio* atual, * seguinte;
-    int b = 1, aux_codigo, aux_custo;
+    int b = 1, aux_codigo, aux_custo, aux_ativo;
     float aux_bat, aux_aut;
     char aux_nome[50], aux_geo[50];
     while (b)
@@ -197,6 +197,7 @@ Meio* bubbleSortMeios(Meio* inicio_meios)
                 aux_custo = atual->custo;
                 strcpy(aux_nome, atual->tipo);
                 strcpy(aux_geo, atual->geocodigo);
+                aux_ativo = atual->ativo;
 
                 atual->codigo = seguinte->codigo;
                 atual->bateria = seguinte->bateria;
@@ -204,6 +205,7 @@ Meio* bubbleSortMeios(Meio* inicio_meios)
                 atual->custo = seguinte->custo;
                 strcpy(atual->tipo, seguinte->tipo);
                 strcpy(atual->geocodigo, seguinte->geocodigo);
+                atual->ativo = seguinte->ativo;
 
                 seguinte->codigo = aux_codigo;
                 seguinte->bateria = aux_bat;
@@ -211,6 +213,7 @@ Meio* bubbleSortMeios(Meio* inicio_meios)
                 seguinte->custo = aux_custo;
                 strcpy(seguinte->tipo, aux_nome);
                 strcpy(seguinte->geocodigo, aux_geo);
+                seguinte->ativo = aux_ativo;
 
                 b = 1;
             }
@@ -397,7 +400,7 @@ Gestor* lerFicheiro_gestores(Gestor* inicio_gestor, FILE* dados_gestor)
     while (fgets(linha, MAX_LINE_LEN, dados_gestor))
     {
         Gestor* novo_nodo = malloc(sizeof(struct registo_gestor));
-        sscanf(linha, "%d;%[^;];%[^\n]\n", &novo_nodo->codigo, novo_nodo->nome, novo_nodo->senha);
+        sscanf(linha, "%d;%[^;];%[^;];%d\n", &novo_nodo->codigo, novo_nodo->nome, novo_nodo->senha,&novo_nodo->encriptado);
         novo_nodo->seguinte_gestor = inicio_gestor;
         inicio_gestor = novo_nodo;
     }
@@ -434,7 +437,7 @@ Gestor* escreverFicheiro_gestores(Gestor* inicio_gestores, FILE* dados_gestores)
     }
     while (inicio_gestores != NULL)
     {
-        fprintf(dados_gestores, "%d;%s;%s\n", inicio_gestores->codigo, inicio_gestores->nome,inicio_gestores->senha);
+        fprintf(dados_gestores, "%d;%s;%s;%d\n", inicio_gestores->codigo, inicio_gestores->nome,inicio_gestores->senha, inicio_gestores->encriptado);
         inicio_gestores = inicio_gestores->seguinte_gestor;
     }
 
@@ -457,7 +460,7 @@ Gestor* escreverFicheiro_gestores_bin(Gestor* inicio_gestores, FILE* dados_gesto
     }
     while (inicio_gestores != NULL)
     {
-        fprintf(dados_gestores, "%d;%s;%s\n", inicio_gestores->codigo, inicio_gestores->nome,inicio_gestores->senha);
+        fprintf(dados_gestores, "%d;%s;%s;%d\n", inicio_gestores->codigo, inicio_gestores->nome,inicio_gestores->senha,inicio_gestores->encriptado);
         inicio_gestores = inicio_gestores->seguinte_gestor;
     }
     fclose(dados_gestores);
@@ -482,7 +485,7 @@ int existeGestor(Gestor* inicio_gestores, int cod)
 // para ordenar todos os elementos da lista ligada por um valor crescente.
 Gestor* bubbleSortGestores(Gestor* inicio_gestor) {
     Gestor* atual, * seguinte;
-    int aux_codigo, b = 1;
+    int aux_codigo, b = 1, aux_encriptado;
     char aux_senha[50], aux_nome[50];
     while (b)
     {
@@ -496,14 +499,17 @@ Gestor* bubbleSortGestores(Gestor* inicio_gestor) {
                 aux_codigo = atual->codigo;
                 strcpy(aux_nome, atual->nome);
                 strcpy(aux_senha, atual->senha);
+                aux_encriptado = atual->encriptado;
 
                 atual->codigo = seguinte->codigo;
                 strcpy(atual->nome, seguinte->nome);
                 strcpy(atual->senha, seguinte->senha);
+                atual->encriptado = seguinte->encriptado;
 
                 seguinte->codigo = aux_codigo;
                 strcpy(seguinte->nome, aux_nome);
                 strcpy(seguinte->senha, aux_senha);
+                seguinte->encriptado = aux_encriptado;
 
                 b = 1;
             }
@@ -539,10 +545,24 @@ Gestor* modoGestor(Gestor* inicio_gestores) {
     scanf("%s", senha);
     while (inicio_gestores != NULL)
     {
-        if (inicio_gestores->codigo == codigo_inserido && strcmp(inicio_gestores->senha, senha) == 0)
+        if (inicio_gestores->codigo == codigo_inserido && strcmp(inicio_gestores->senha, senha) == 0 && inicio_gestores->encriptado == 0)
         {
             printf("Modo gestor ativado.\n");
             return 1;
+        }
+        else if (inicio_gestores->codigo == codigo_inserido && inicio_gestores->encriptado == 1)
+        {
+            decryptSenha(inicio_gestores, inicio_gestores->senha);
+            if (strcmp(senha, inicio_gestores->senha) == 0)
+            {
+                printf("Modo gestor ativado.\n");
+                return 1;
+            }
+            else
+            {
+                printf("Senha errada.\n");
+                return 0;
+            }
         }
         else
         {
@@ -563,7 +583,6 @@ Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float a
     int inserir = 0;
     while (inserir !=1)
     {
-        inicio_meios = inicio_meios->seguinte_meio;
         if (inicio_meios->seguinte_meio == NULL)
         {
             Meio* novo_meio = malloc(sizeof(Meio));
@@ -573,11 +592,13 @@ Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float a
             novo_meio->autonomia = aut;
             novo_meio->custo = custo;
             strcpy(novo_meio->geocodigo, geo);
+            inicio_meios->ativo = 0;
             inicio_meios->seguinte_meio = novo_meio;
             novo_meio->seguinte_meio = NULL;
             inicio_meios = novo_meio;
             inserir = 1;
         }
+        inicio_meios = inicio_meios->seguinte_meio;
     }
     return inicio_meios;
 }
@@ -610,27 +631,35 @@ Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NI
 // De seguida é inserido no ultimo lugar da lista ligada dos gestores, quando é o ultimo endereço NULL.
 Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[50])
 {
-    int inserir = 0;
+    int inserir = 0, encriptado;
     while (inserir != 1)
     {
-        inicio_gestor = inicio_gestor->seguinte_gestor;
         if (inicio_gestor->seguinte_gestor == NULL)
         {
             Gestor* novo_gestor = malloc(sizeof(Gestor));
             novo_gestor->codigo = cod;
             strcpy(novo_gestor->nome, nome);
             strcpy(novo_gestor->senha, senha);
+            printf("Deseja encriptar a sua senha?\n1-Sim/2-Nao\n");
+            printf("A sua escolha:");
+            scanf("%d", &encriptado);
+            if (encriptado == 1)
+            {
+                novo_gestor->encriptado = 1;
+                encryptSenha(novo_gestor, novo_gestor->senha);
+            }
             //encryptSenha(novo_gestor,novo_gestor->senha);
             inicio_gestor->seguinte_gestor = novo_gestor;
             novo_gestor->seguinte_gestor = NULL;
             inicio_gestor = novo_gestor;
             inserir = 1;
         }
+        inicio_gestor = inicio_gestor->seguinte_gestor;
     }
     return inicio_gestor;
 }
 
-//Desenvolvimento.
+// Pequena função para encriptação da senha do gestor.
 int encryptSenha(Gestor* inicio_gestor, char senha[50])
 {
     for (int i = 0; i < strlen(senha); i++)
@@ -642,6 +671,17 @@ int encryptSenha(Gestor* inicio_gestor, char senha[50])
     return 1;
 }
 
+// Pequena função para desencriptação da senha do gestor.
+int decryptSenha(Gestor* inicio_gestor, char senha[50])
+{
+    for (int i = 0; i < strlen(senha); i++)
+    {
+        senha[i] = senha[i] - 64;
+    }
+    puts(senha);
+    printf("\n");
+    return 1;
+}
 #pragma endregion 
 
 #pragma region REMOVER
@@ -871,24 +911,60 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
             }
             else
             {
-                time_t dataCompra;
-                time(&dataCompra);
-                printf("Data da compra %s", ctime(&dataCompra));
-                int inserir = 0;
-                while (inserir != 1)
+                if (inicio_clientes->saldo < inicio_meios->custo)
                 {
-                    inicio_aluguer = inicio_aluguer->seguinte_compra;
-                    if (inicio_aluguer->seguinte_compra == NULL)
+                    printf("Nao tem saldo suficiente para efetuar a compra.\n");
+                    return 0;
+                }
+                else if (inicio_meios->ativo == 1)
+                {
+                    printf("Nao pode alugar esse meio, pois ja esta alugado.\n");
+                }
+                else
+                {
+                    time_t dataCompra = NULL;
+                    char aux[50];
+                    strcpy(aux, ctime(&dataCompra));
+                    for (int i = 0; i < strlen(aux); i++)
                     {
-                        Aluguer* novo_nodo = malloc(sizeof(Aluguer));
-                        novo_nodo->cod_comprador = inicio_clientes->codigo;
-                        strcpy(novo_nodo->nome_comprador, inicio_clientes->nome);
-                        strcpy(novo_nodo->data_compra, &dataCompra);
-                        //encryptSenha(novo_gestor,novo_gestor->senha);
-                        inicio_aluguer->seguinte_compra = novo_nodo;
-                        novo_nodo->seguinte_compra = NULL;
-                        inicio_aluguer = novo_nodo;
-                        inserir = 1;
+                        if (aux[i] == '\n')
+                            aux[i] = '\0';
+                    }
+                    int inserir = 0;
+                    inicio_clientes->saldo = inicio_clientes->saldo - inicio_meios->custo;
+                    printf("O seu novo saldo %d\n", inicio_clientes->saldo);
+                    while (inserir != 1)
+                    {
+                        if (inicio_aluguer == NULL)
+                        {
+                            Aluguer* novo_nodo = malloc(sizeof(Aluguer));
+                            novo_nodo->cod_comprador = inicio_clientes->codigo;
+                            strcpy(novo_nodo->nome_comprador, inicio_clientes->nome);
+                            strcpy(novo_nodo->data_compra, aux);
+                            strcpy(novo_nodo->nome_meio_comprado, inicio_meios->tipo);
+                            inicio_meios->ativo = 1;
+                            inicio_aluguer = novo_nodo;
+                            inicio_aluguer->seguinte_compra = NULL;
+                            printf("Compra efetuada com sucesso.\n");
+                            inserir = 1;
+                            return inicio_aluguer;
+                        }
+                        if (inicio_aluguer->seguinte_compra == NULL)
+                        {
+                            Aluguer* novo_nodo = malloc(sizeof(Aluguer));
+                            novo_nodo->cod_comprador = inicio_clientes->codigo;
+                            strcpy(novo_nodo->nome_comprador, inicio_clientes->nome);
+                            strcpy(novo_nodo->data_compra, ctime(&dataCompra));
+                            strcpy(novo_nodo->nome_meio_comprado, inicio_meios->tipo);
+                            inicio_meios->ativo = 1;
+                            inicio_aluguer->seguinte_compra = novo_nodo;
+                            novo_nodo->seguinte_compra = NULL;
+                            inicio_aluguer = novo_nodo;
+                            printf("Compra efetuada com sucesso.\n");
+                            inserir = 1;
+                            return inicio_aluguer;
+                        }
+                        inicio_aluguer = inicio_aluguer->seguinte_compra;
                     }
                 }
             }
@@ -907,7 +983,7 @@ Aluguer* lerFicheiro_Aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer)
     while (fgets(linha, MAX_LINE_LEN, dados_aluguer))
     {
         Aluguer* novo_nodo = malloc(sizeof(Aluguer));
-        sscanf(linha, "%d;%[^;];%[^\n]\n", &novo_nodo->cod_comprador, novo_nodo->data_compra, novo_nodo->nome_comprador);
+        sscanf(linha, "%d;%[^;];%[^;];%[^\n]\n", &novo_nodo->cod_comprador, novo_nodo->data_compra, novo_nodo->nome_comprador, novo_nodo->nome_meio_comprado);
         novo_nodo->seguinte_compra = inicio_aluguer;
         inicio_aluguer = novo_nodo;
     }
@@ -920,7 +996,7 @@ void listarAluguer(Aluguer* inicio_aluguer)
     printf("\nDados de Alugueres:\n------------------------------------------------------------------------------------------------------------------------\n");
     while (inicio_aluguer != NULL)
     {
-        printf("Codigo:%d   Data de compra:%s       Nome:%s\n", inicio_aluguer->cod_comprador, inicio_aluguer->data_compra, inicio_aluguer->nome_comprador);
+        printf("Codigo:%d   Data de compra:%s       Nome:%s Meio:%s\n", inicio_aluguer->cod_comprador, inicio_aluguer->data_compra, inicio_aluguer->nome_comprador, inicio_aluguer->nome_meio_comprado);
         inicio_aluguer = inicio_aluguer->seguinte_compra;
     }
     printf("------------------------------------------------------------------------------------------------------------------------\n");
@@ -930,34 +1006,38 @@ Aluguer* bubbleSortAluguer(Aluguer* inicio_aluguer) {
     Aluguer* atual, * seguinte;
     int aux_codigo, b = 1;
     char aux_data[50], aux_comprador[50];
-    while (b)
-    {
-        b = 0;
-        atual = inicio_aluguer;
-        while (atual->seguinte_compra != NULL)
+        while (b)
         {
-            seguinte = atual->seguinte_compra;
-            if (atual->cod_comprador > seguinte->cod_comprador)
+            b = 0;
+            atual = inicio_aluguer;
+            if (inicio_aluguer == NULL)
             {
-                aux_codigo = atual->cod_comprador;
-                strcpy(aux_comprador, atual->nome_comprador);
-                strcpy(aux_data, atual->data_compra);
-
-                atual->cod_comprador = seguinte->cod_comprador;
-                strcpy(atual->nome_comprador, seguinte->nome_comprador);
-                strcpy(atual->data_compra, seguinte->data_compra);
-
-                seguinte->cod_comprador = aux_codigo;
-                strcpy(seguinte->nome_comprador, aux_comprador);
-                strcpy(seguinte->data_compra, aux_data);
-
-                b = 1;
+                return 0;
             }
-            atual = seguinte;
+            while (atual->seguinte_compra != NULL)
+            {
+                seguinte = atual->seguinte_compra;
+                if (atual->cod_comprador > seguinte->cod_comprador)
+                {
+                    aux_codigo = atual->cod_comprador;
+                    strcpy(aux_comprador, atual->nome_comprador);
+                    strcpy(aux_data, atual->data_compra);
+
+                    atual->cod_comprador = seguinte->cod_comprador;
+                    strcpy(atual->nome_comprador, seguinte->nome_comprador);
+                    strcpy(atual->data_compra, seguinte->data_compra);
+
+                    seguinte->cod_comprador = aux_codigo;
+                    strcpy(seguinte->nome_comprador, aux_comprador);
+                    strcpy(seguinte->data_compra, aux_data);
+
+                    b = 1;
+                }
+                atual = seguinte;
+            }
         }
-    }
-    inicio_aluguer = atual;
-    return inicio_aluguer;
+        inicio_aluguer = atual;
+        return inicio_aluguer;
 }
 
 // Escreve todos os dados sobre os alugueres, em ficheiro de texto.
@@ -976,7 +1056,7 @@ Aluguer* escreverFicheiro_aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer)
     }
     while (inicio_aluguer != NULL)
     {
-        fprintf(dados_aluguer, "%d;%s;%s\n", inicio_aluguer->cod_comprador, inicio_aluguer->nome_comprador, inicio_aluguer->data_compra);
+        fprintf(dados_aluguer, "%d;%s;%s;%s\n", inicio_aluguer->cod_comprador, inicio_aluguer->nome_comprador, inicio_aluguer->data_compra,inicio_aluguer->nome_meio_comprado);
         inicio_aluguer = inicio_aluguer->seguinte_compra;
     }
     fclose(dados_aluguer);
@@ -998,7 +1078,7 @@ Aluguer* escreverFicheiro_aluguer_bin(Aluguer* inicio_aluguer, FILE* dados_alugu
     }
     while (inicio_aluguer != NULL)
     {
-        fprintf(dados_aluguer, "%d;%s;%s\n", inicio_aluguer->cod_comprador, inicio_aluguer->nome_comprador, inicio_aluguer->data_compra);
+        fprintf(dados_aluguer, "%d;%s;%s;%s\n", inicio_aluguer->cod_comprador, inicio_aluguer->nome_comprador, inicio_aluguer->data_compra, inicio_aluguer->nome_meio_comprado);
         inicio_aluguer = inicio_aluguer->seguinte_compra;
     }
     fclose(dados_aluguer);
