@@ -1,8 +1,8 @@
-1;Trotinete;30.00;5.00;20;joga.andante.cujo;1
-2;Carro;10.00;10.00;2000;asd.asd;1
-3;Bicicleta;50.00;10.00;15;encolheu.vegetacao;1
-4;Scooter;100.00;50.00;50;choro.atinja.chão;1
-123;teste1;1.00;1.00;123;teste1;1
-12345;teste2;2.00;2.00;1;teste2;1
-12441;teste;20.00;50.00;2;teste;0
-1235656;teste3;3.00;3.00;2;teste3;0
+12441;teste;20.00;50.00;2;ocupei.embasando.ralar;0
+4;Scooter;100.00;50.00;50;encolheu.vegetacao;0
+3;Bicicleta;50.00;10.00;15;encolheu.vegetacao;0
+2;Carro;10.00;10.00;2000;ocupei.embasando.ralar;0
+112;NovoTipo;60.00;60.00;1000;teste.teste;1
+1235656;teste3;3.00;3.00;2;ocupei.embasando.ralar;0
+12345;teste2;2.00;2.00;1;ocupei.embasando.ralar;0
+123;teste1;1.00;1.00;123;encolheu.vegetacao;0

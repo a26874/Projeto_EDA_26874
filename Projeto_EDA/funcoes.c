@@ -41,6 +41,9 @@ int menu_gestor()
     printf("8- Remover Cliente.\n");
     printf("9- Remover Gestor.\n");
     printf("10- Historico de compras.\n");
+    printf("11- Alterar dados gestor.\n");
+    printf("12- Alterar dados cliente.\n");
+    printf("13- Alterar dados meios.\n");
     printf("0- Sair.\n");
     printf("A sua escolha:");
     scanf("%d", &escolha);
@@ -189,7 +192,7 @@ Meio* bubbleSortMeios(Meio* inicio_meios)
         while (atual->seguinte_meio != NULL)
         {
             seguinte = atual->seguinte_meio;
-            if (atual->codigo > seguinte->codigo)
+            if (atual->autonomia < seguinte->autonomia)
             {
                 aux_codigo = atual->codigo;
                 aux_bat = atual->bateria;
@@ -400,7 +403,7 @@ Gestor* lerFicheiro_gestores(Gestor* inicio_gestor, FILE* dados_gestor)
     while (fgets(linha, MAX_LINE_LEN, dados_gestor))
     {
         Gestor* novo_nodo = malloc(sizeof(struct registo_gestor));
-        sscanf(linha, "%d;%[^;];%[^;];%d\n", &novo_nodo->codigo, novo_nodo->nome, novo_nodo->senha,&novo_nodo->encriptado);
+        sscanf(linha, "%d;%[^;];%[^;];%d;%s\n", &novo_nodo->codigo, novo_nodo->nome, novo_nodo->senha,&novo_nodo->encriptado, novo_nodo->area_responsavel);
         novo_nodo->seguinte_gestor = inicio_gestor;
         inicio_gestor = novo_nodo;
     }
@@ -415,7 +418,7 @@ void listarGestores(Gestor* inicio_gestor)
 
     while (inicio_gestor != NULL)
     {
-        printf("Codigo:%d        Nome:%s \n", inicio_gestor->codigo, inicio_gestor->nome);
+        printf("Codigo:%d        Nome:%s    Area:%s\n", inicio_gestor->codigo, inicio_gestor->nome, inicio_gestor->area_responsavel);
         inicio_gestor = inicio_gestor->seguinte_gestor;
     }
     printf("------------------------------------------------------------------------------------------------------------------------\n");
@@ -437,7 +440,7 @@ Gestor* escreverFicheiro_gestores(Gestor* inicio_gestores, FILE* dados_gestores)
     }
     while (inicio_gestores != NULL)
     {
-        fprintf(dados_gestores, "%d;%s;%s;%d\n", inicio_gestores->codigo, inicio_gestores->nome,inicio_gestores->senha, inicio_gestores->encriptado);
+        fprintf(dados_gestores, "%d;%s;%s;%d;%s\n", inicio_gestores->codigo, inicio_gestores->nome,inicio_gestores->senha, inicio_gestores->encriptado, inicio_gestores->area_responsavel);
         inicio_gestores = inicio_gestores->seguinte_gestor;
     }
 
@@ -460,7 +463,7 @@ Gestor* escreverFicheiro_gestores_bin(Gestor* inicio_gestores, FILE* dados_gesto
     }
     while (inicio_gestores != NULL)
     {
-        fprintf(dados_gestores, "%d;%s;%s;%d\n", inicio_gestores->codigo, inicio_gestores->nome,inicio_gestores->senha,inicio_gestores->encriptado);
+        fprintf(dados_gestores, "%d;%s;%s;%d;%s\n", inicio_gestores->codigo, inicio_gestores->nome,inicio_gestores->senha,inicio_gestores->encriptado, inicio_gestores->area_responsavel);
         inicio_gestores = inicio_gestores->seguinte_gestor;
     }
     fclose(dados_gestores);
@@ -486,7 +489,7 @@ int existeGestor(Gestor* inicio_gestores, int cod)
 Gestor* bubbleSortGestores(Gestor* inicio_gestor) {
     Gestor* atual, * seguinte;
     int aux_codigo, b = 1, aux_encriptado;
-    char aux_senha[50], aux_nome[50];
+    char aux_senha[50], aux_nome[50], aux_area_responsavel[50];
     while (b)
     {
         b = 0;
@@ -500,16 +503,19 @@ Gestor* bubbleSortGestores(Gestor* inicio_gestor) {
                 strcpy(aux_nome, atual->nome);
                 strcpy(aux_senha, atual->senha);
                 aux_encriptado = atual->encriptado;
+                strcpy(aux_area_responsavel, atual->area_responsavel);
 
                 atual->codigo = seguinte->codigo;
                 strcpy(atual->nome, seguinte->nome);
                 strcpy(atual->senha, seguinte->senha);
                 atual->encriptado = seguinte->encriptado;
+                strcpy(atual->area_responsavel, seguinte->area_responsavel);
 
                 seguinte->codigo = aux_codigo;
                 strcpy(seguinte->nome, aux_nome);
                 strcpy(seguinte->senha, aux_senha);
                 seguinte->encriptado = aux_encriptado;
+                strcpy(seguinte->area_responsavel, aux_area_responsavel);
 
                 b = 1;
             }
@@ -519,7 +525,6 @@ Gestor* bubbleSortGestores(Gestor* inicio_gestor) {
     inicio_gestor = atual;
     return inicio_gestor;
 }
-
 
 #pragma endregion
 
@@ -547,7 +552,7 @@ Gestor* modoGestor(Gestor* inicio_gestores) {
     {
         if (inicio_gestores->codigo == codigo_inserido && strcmp(inicio_gestores->senha, senha) == 0 && inicio_gestores->encriptado == 0)
         {
-            printf("Modo gestor ativado.\n");
+            printf("Bem-vindo %s\n", inicio_gestores->nome);
             return 1;
         }
         else if (inicio_gestores->codigo == codigo_inserido && inicio_gestores->encriptado == 1)
@@ -555,7 +560,8 @@ Gestor* modoGestor(Gestor* inicio_gestores) {
             decryptSenha(inicio_gestores, inicio_gestores->senha);
             if (strcmp(senha, inicio_gestores->senha) == 0)
             {
-                printf("Modo gestor ativado.\n");
+                printf("Bem-vindo %s\n", inicio_gestores->nome);
+                encryptSenha(inicio_gestores, inicio_gestores->senha);
                 return 1;
             }
             else
@@ -629,7 +635,7 @@ Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NI
 
 // Função para inserir um novo gestor, é pedido ao gestor na função main, um novo codigo, nome e senha.  
 // De seguida é inserido no ultimo lugar da lista ligada dos gestores, quando é o ultimo endereço NULL.
-Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[50])
+Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[50], char area[50])
 {
     int inserir = 0, encriptado;
     while (inserir != 1)
@@ -648,7 +654,11 @@ Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[
                 novo_gestor->encriptado = 1;
                 encryptSenha(novo_gestor, novo_gestor->senha);
             }
-            //encryptSenha(novo_gestor,novo_gestor->senha);
+            else
+            {
+                novo_gestor->encriptado = 0;
+            }
+            strcpy(novo_gestor->area_responsavel, area);
             inicio_gestor->seguinte_gestor = novo_gestor;
             novo_gestor->seguinte_gestor = NULL;
             inicio_gestor = novo_gestor;
@@ -664,10 +674,8 @@ int encryptSenha(Gestor* inicio_gestor, char senha[50])
 {
     for (int i = 0; i < strlen(senha); i++)
     {
-        senha[i] = senha[i] + 64;
+        senha[i] = senha[i] + 5;
     }
-    puts(senha);
-    printf("\n");
     return 1;
 }
 
@@ -676,10 +684,8 @@ int decryptSenha(Gestor* inicio_gestor, char senha[50])
 {
     for (int i = 0; i < strlen(senha); i++)
     {
-        senha[i] = senha[i] - 64;
+        senha[i] = senha[i] - 5;
     }
-    puts(senha);
-    printf("\n");
     return 1;
 }
 #pragma endregion 
@@ -756,62 +762,83 @@ Gestor* removerGestor(Gestor* inicio_gestores, int cod)
 }
 #pragma endregion
 
-// ---------------------------------------------------FIM-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
+#pragma region ALTERAR
 
-
-// ---------------------------------------------------------------INICIO_OP_UTILIZADOR-----------------------------------------------------------------
-
-// Função para carregamento de saldo, de um certo utilizador.
-// É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel carregar o saldo desse mesmo utilizador.
-Cliente* carregarSaldo(Cliente* inicio_clientes) {
-    int codigo, NIF;
+Gestor* alterarGestor(Gestor* inicio_gestores)
+{
+    int cod, escolha, novo_cod, encriptar, acabadoAlterar = 1;
+    char nova_senha[50], novo_nome[50], senha[50], nova_area_responsavel[50];
+    Gestor* aux = inicio_gestores;
     printf("Introduza o seu codigo:");
-    scanf("%d", &codigo);
-    printf("Introduza o seu NIF:");
-    scanf("%d", &NIF);
-    while (inicio_clientes != NULL)
+    scanf("%d", &cod);
+    while (inicio_gestores != NULL)
     {
-        if (inicio_clientes->codigo == codigo && inicio_clientes->NIF == NIF)
+        if (inicio_gestores->codigo == cod)
         {
-            int saldo_carregar;
-            printf("O seu saldo: %d\n", inicio_clientes->saldo);
-            printf("Quanto saldo deseja carregar?\n");
-            printf("Digite:");
-            scanf("%d", &saldo_carregar);
-            if (saldo_carregar < 0)
-                printf("Nao pode carregar saldo negativo.\n");
-            inicio_clientes->saldo = saldo_carregar + inicio_clientes->saldo;
-            printf("%d carregado com sucesso. Tem agora %d de saldo.\n", saldo_carregar, inicio_clientes->saldo);
-            return 1;
+            printf("Este sao os seus dados.\n");
+            printf("------------------------------------------------------------------------------------------------------------------------\n");
+            printf("Nome:%s     Codigo:%d       Area:%s\n", inicio_gestores->nome, inicio_gestores->codigo, inicio_gestores->area_responsavel);
+            printf("------------------------------------------------------------------------------------------------------------------------\n");
+            printf("O que deseja alterar?\n");
+            printf("1- Codigo.\n");
+            printf("2- Nome.\n");
+            printf("3- Area responsavel.\n");
+            printf("4- Senha.\n");
+            printf("0- Sair.\n");
+            printf("A sua escolha:");
+            scanf("%d", &escolha);
+            switch (escolha)
+            {
+            case 1:
+                printf("Introduza um novo codigo:");
+                scanf("%d", &novo_cod);
+                if (!existeGestor(aux, novo_cod))
+                {
+                    printf("Ja existe alguem com esse codigo.\n");
+                    break;
+                }
+                else
+                {
+                    inicio_gestores->codigo = novo_cod;
+                    printf("Codigo alterado com sucesso. O seu novo codigo %d\n", inicio_gestores->codigo);
+                }
+                break;
+            case 2:
+                printf("Introduza um novo nome:");
+                scanf("%s", novo_nome);
+                strcpy(inicio_gestores->nome, novo_nome);
+                break;
+            case 3:
+                printf("Introduza a nova area para ser responsavel:");
+                scanf("%s", nova_area_responsavel);
+                strcpy(inicio_gestores->area_responsavel, nova_area_responsavel);
+                printf("Area responsavel alterada com sucesso.\n");
+                printf("A sua nova area e a seguinte: %s", inicio_gestores->area_responsavel);
+                break;
+            case 4:
+                printf("Introduza a sua nova senha:");
+                scanf("%s", nova_senha);
+                printf("Deseja encriptar? 1-Sim/0-Nao");
+                scanf("%d", &encriptar);
+                if (encriptar == 0)
+                {
+                    printf("Senha alterada com sucesso.\n");
+                    break;
+                }
+                else
+                {
+                    inicio_gestores->encriptado = 1;
+                    encryptSenha(inicio_gestores, nova_senha);
+                    strcpy(inicio_gestores->senha, nova_senha);
+                    printf("Senha encriptada e alterada com sucesso.\n");
+                    break;
+                }
+            case 0:
+                return 0;
+            }
         }
-        inicio_clientes = inicio_clientes->seguinte_cliente;
+        inicio_gestores = inicio_gestores->seguinte_gestor;
     }
-    if (inicio_clientes == NULL)
-    {
-        printf("Nao existe nenhum cliente com esse codigo.\n");
-        return 0;
-    }
-    return inicio_clientes;
-}
-
-// Função para consulta de saldo, de um certo utilizador.
-// É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel visualizar quando saldo está disponível.
-Cliente* consultaSaldo(Cliente* inicio_clientes) {
-    int codigo, NIF;
-    printf("Introduza o seu codigo:");
-    scanf("%d", &codigo);
-    //printf("Introduza o seu NIF:");
-    //scanf("%d", &NIF);
-    while (inicio_clientes != NULL)
-    {
-        if (inicio_clientes->codigo == codigo /*&& inicio_clientes->NIF == NIF*/)
-        {
-            printf("Voce tem %d de saldo.\n", inicio_clientes->saldo);
-            return 1;
-        }
-        inicio_clientes = inicio_clientes->seguinte_cliente;
-    }
-    return 0;
 }
 
 // Função para alteração de dados do cliente.
@@ -880,6 +907,162 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
     }
 }
 
+Meio* alterarMeio(Meio* inicio_meios)
+{
+    int cod, cod_alterar, ativo_alterar, custo_alterar, escolha;
+    float bat_alterar, aut_alterar;
+    char meio_nome_alterar[50], geocodigo_alterar[50];
+    Meio* aux = inicio_meios;
+    printf("Introduza o codigo do meio que pretende alterar:");
+    scanf("%d", &cod);
+    while (inicio_meios != NULL)
+    {
+        if (inicio_meios->codigo == cod)
+        {
+            printf("Este sao os dados do meio.\n");
+            //&novo_nodo->codigo, novo_nodo->tipo, & novo_nodo->bateria, & novo_nodo->autonomia, & novo_nodo->custo, novo_nodo->geocodigo, & novo_nodo->ativo);
+            printf("------------------------------------------------------------------------------------------------------------------------\n");
+            printf("Codigo:%d\nTipo:%s\nBateria:%.2f\nAut:%.2f\nCusto:%d\nGeo:%s\nAtivo:%d\n", inicio_meios->codigo, inicio_meios->tipo, inicio_meios->bateria, inicio_meios->autonomia, inicio_meios->custo, inicio_meios->geocodigo, inicio_meios->ativo);
+            printf("------------------------------------------------------------------------------------------------------------------------\n");
+            printf("O que deseja alterar?\n");
+            printf("1- Codigo.\n");
+            printf("2- Tipo.\n");
+            printf("3- Bateria.\n");
+            printf("4- Autonomia.\n");
+            printf("5- Custo.\n");
+            printf("6- Geocodigo.\n");
+            printf("7- Ativo.\n");
+            printf("A sua escolha:");
+            scanf("%d", &escolha);
+            switch (escolha)
+            {
+            case 1:
+                printf("Insira o novo codigo:");
+                scanf("%d", &cod_alterar);
+                if (!existeMeio(aux, cod_alterar))
+                {
+                    printf("Ja existe um meio com esse codigo.\n");
+                }
+                else
+                {
+                    inicio_meios->codigo = cod_alterar;
+                    printf("Codigo alterado com sucesso. Novo codigo %d.\n", inicio_meios->codigo);
+                }
+                break;
+            case 2:
+                printf("Insira o novo tipo de meio:");
+                scanf("%s", meio_nome_alterar);
+                strcpy(inicio_meios->tipo, meio_nome_alterar);
+                printf("Nome alterado com sucesso para %s.\n", inicio_meios->tipo);
+                break;
+            case 3:
+                printf("Insira o novo nivel de bateria:");
+                scanf("%f", &bat_alterar);
+                inicio_meios->bateria = bat_alterar;
+                printf("Novo nivel de bateria %.2f\n", inicio_meios->bateria);
+                break;
+            case 4:
+                printf("Insira o novo nivel de autonomia:");
+                scanf("%f", &aut_alterar);
+                inicio_meios->autonomia = aut_alterar;
+                printf("Novo nivel de autonomia %.2f\n", inicio_meios->autonomia);
+                break;
+            case 5:
+                printf("Insira o novo custo:");
+                scanf("%d", &custo_alterar);
+                inicio_meios->custo = custo_alterar;
+                printf("Novo custo do meio %d\n", inicio_meios->custo);
+                break;
+            case 6:
+                printf("Insira um novo geocodigo:");
+                scanf("%s", geocodigo_alterar);
+                strcpy(inicio_meios->geocodigo, geocodigo_alterar);
+                printf("Novo geocodigo %s\n", inicio_meios->geocodigo);
+                break;
+            case 7:
+                printf("Este veiculo esta ativo?1-Sim/0-Nao");
+                scanf("%d", &ativo_alterar);
+                if (ativo_alterar == 1)
+                {
+                    if (inicio_meios->ativo == 1)
+                        printf("Meio ja esta ativo.\n");
+                    else
+                        inicio_meios->ativo = 1;
+                }
+                else
+                {
+                    if (inicio_meios->ativo == 0)
+                        printf("Meio ja nao estava ativo.\n");
+                    else
+                        inicio_meios->ativo = 0;
+                }
+                break;
+            }
+        }
+        inicio_meios = inicio_meios->seguinte_meio;
+    }
+}
+#pragma endregion
+// ---------------------------------------------------FIM-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
+
+
+// ---------------------------------------------------------------INICIO_OP_UTILIZADOR-----------------------------------------------------------------
+
+// Função para carregamento de saldo, de um certo utilizador.
+// É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel carregar o saldo desse mesmo utilizador.
+Cliente* carregarSaldo(Cliente* inicio_clientes) {
+    int codigo, NIF;
+    printf("Introduza o seu codigo:");
+    scanf("%d", &codigo);
+    printf("Introduza o seu NIF:");
+    scanf("%d", &NIF);
+    while (inicio_clientes != NULL)
+    {
+        if (inicio_clientes->codigo == codigo && inicio_clientes->NIF == NIF)
+        {
+            int saldo_carregar;
+            printf("O seu saldo: %d\n", inicio_clientes->saldo);
+            printf("Quanto saldo deseja carregar?\n");
+            printf("Digite:");
+            scanf("%d", &saldo_carregar);
+            if (saldo_carregar < 0)
+                printf("Nao pode carregar saldo negativo.\n");
+            inicio_clientes->saldo = saldo_carregar + inicio_clientes->saldo;
+            printf("%d carregado com sucesso. Tem agora %d de saldo.\n", saldo_carregar, inicio_clientes->saldo);
+            return 1;
+        }
+        inicio_clientes = inicio_clientes->seguinte_cliente;
+    }
+    if (inicio_clientes == NULL)
+    {
+        printf("Nao existe nenhum cliente com esse codigo.\n");
+        return 0;
+    }
+    return inicio_clientes;
+}
+
+// Função para consulta de saldo, de um certo utilizador.
+// É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel visualizar quando saldo está disponível.
+Cliente* consultaSaldo(Cliente* inicio_clientes) {
+    int codigo, NIF;
+    printf("Introduza o seu codigo:");
+    scanf("%d", &codigo);
+    //printf("Introduza o seu NIF:");
+    //scanf("%d", &NIF);
+    while (inicio_clientes != NULL)
+    {
+        if (inicio_clientes->codigo == codigo /*&& inicio_clientes->NIF == NIF*/)
+        {
+            printf("Voce tem %d de saldo.\n", inicio_clientes->saldo);
+            return 1;
+        }
+        inicio_clientes = inicio_clientes->seguinte_cliente;
+    }
+    return 0;
+}
+
+
+
 Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio* inicio_meios)
 {
     int meio_Alugar, codigo_utilizador, NIF;
@@ -922,7 +1105,7 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
                 }
                 else
                 {
-                    time_t dataCompra = NULL;
+                    time_t dataCompra = 0;
                     char aux[50];
                     strcpy(aux, ctime(&dataCompra));
                     for (int i = 0; i < strlen(aux); i++)
@@ -938,16 +1121,18 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
                         if (inicio_aluguer == NULL)
                         {
                             Aluguer* novo_nodo = malloc(sizeof(Aluguer));
-                            novo_nodo->cod_comprador = inicio_clientes->codigo;
-                            strcpy(novo_nodo->nome_comprador, inicio_clientes->nome);
-                            strcpy(novo_nodo->data_compra, aux);
-                            strcpy(novo_nodo->nome_meio_comprado, inicio_meios->tipo);
-                            inicio_meios->ativo = 1;
+                            novo_nodo->seguinte_compra = NULL;
                             inicio_aluguer = novo_nodo;
-                            inicio_aluguer->seguinte_compra = NULL;
-                            printf("Compra efetuada com sucesso.\n");
-                            inserir = 1;
-                            return inicio_aluguer;
+                            //novo_nodo->cod_comprador = inicio_clientes->codigo;
+                            //strcpy(novo_nodo->nome_comprador, inicio_clientes->nome);
+                            //strcpy(novo_nodo->data_compra, aux);
+                            //strcpy(novo_nodo->nome_meio_comprado, inicio_meios->tipo);
+                            //inicio_meios->ativo = 1;
+                            //inicio_aluguer = novo_nodo;
+                            //inicio_aluguer->seguinte_compra = NULL;
+                            //printf("Compra efetuada com sucesso.\n");
+                            //inserir = 1;
+                            //return inicio_aluguer;
                         }
                         if (inicio_aluguer->seguinte_compra == NULL)
                         {
@@ -993,6 +1178,11 @@ Aluguer* lerFicheiro_Aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer)
 
 void listarAluguer(Aluguer* inicio_aluguer)
 {
+    if (inicio_aluguer == NULL)
+    {
+        printf("Nao existem alugueres.\n");
+        return 0;
+    }
     printf("\nDados de Alugueres:\n------------------------------------------------------------------------------------------------------------------------\n");
     while (inicio_aluguer != NULL)
     {
