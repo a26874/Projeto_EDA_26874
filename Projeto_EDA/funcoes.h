@@ -32,7 +32,7 @@ typedef struct registo_gestor
 	char nome[50]; // nome do gestor
 	char senha[20]; // Senha do gestor
 	int encriptado; // Se a senha está encriptada.
-	//char area_responsavel[50];
+	char area_responsavel[50];
 	struct registo_gestor* seguinte_gestor; // endereço de memória para uma struct registo_gestor
 } Gestor;
 
@@ -132,6 +132,12 @@ Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[
 Meio* removerMeio(Meio* inicio_meios, int cod);
 
 Cliente* removerCliente(Cliente* inicio_clientes, int cod);
+
+Gestor* removerGestor(Gestor* inicio_gestores, int cod);
+
+Meio* alterarMeio(Meio* inicio_meios);
+
+Gestor* alterarGestor(Gestor* inicio_gestores);
 
 int encryptSenha(Gestor* inicio_gestor, char senha[50]);
 

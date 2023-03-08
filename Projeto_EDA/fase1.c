@@ -17,7 +17,7 @@ int main() {
     int novo_cliente_codigo, novo_cliente_NIF, novo_cliente_saldo, novo_meio_codigo, novo_meio_custo, novo_gestor_codigo, codigo_meio_remover
         , codigo_cliente_remover, codigo_gestor_remover, codigo_login_utilizador;
     float novo_meio_bateria, novo_meio_autonomia;
-    char novo_cliente_nome[50], novo_meio_nome[50], novo_meio_geocodigo[50], novo_gestor_nome[50], novo_gestor_senha[50];
+    char novo_cliente_nome[50], novo_meio_nome[50], novo_meio_geocodigo[50], novo_gestor_nome[50], novo_gestor_senha[50], novo_gestor_area[50];
 
 
     // No arranque é feito de imediato a leitura dos ficheiros.
@@ -173,9 +173,12 @@ int main() {
                         getchar();
                         printf("Senha:");
                         scanf("%[^\n]", novo_gestor_senha);
+                        getchar();
+                        printf("Area:");
+                        scanf("%[^\n]", novo_gestor_area);
                         if (existeGestor(inicio_gestor, novo_gestor_codigo) == 1)
                         {
-                            inserirGestor(inicio_gestor, novo_gestor_codigo, novo_gestor_nome, novo_gestor_senha);
+                            inserirGestor(inicio_gestor, novo_gestor_codigo, novo_gestor_nome, novo_gestor_senha, novo_gestor_area);
                             break;
                         }
                         else
@@ -222,6 +225,13 @@ int main() {
                         }
                     case 10:
                         listarAluguer(inicio_aluguer);
+                        break;
+                    case 11:
+                        alterarGestor(inicio_gestor);
+                        break;
+                    case 12:
+                        alterarMeio(inicio_meios);
+                        break;
                     case 0:
                         gestor_login = 0;
                         break;
