@@ -60,6 +60,8 @@ Meio* lerFicheiro_meios(Meio* inicio, FILE* dados_meios);
 
 void listarMeios(Meio* inicio_meios);
 
+void listarGeocodigo(Meio* inicio_meios);
+
 Meio* escreverFicheiro_meios(Meio* inicio_meios, FILE* dados_meios);
 
 Meio* escreverFicheiro_meios_bin(Meio* inicio_meios, FILE* dados_meios);
@@ -67,6 +69,7 @@ Meio* escreverFicheiro_meios_bin(Meio* inicio_meios, FILE* dados_meios);
 Meio* existeMeio(Meio* inicio_meios, int cod);
 
 Meio* bubbleSortMeios(Meio* inicio_meios);
+
 
 
 // -------------------------------------------------FUNÇÕES_F-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS-------------------------------------------------

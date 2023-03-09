@@ -42,8 +42,8 @@ int menu_gestor()
     printf("9- Remover Gestor.\n");
     printf("10- Historico de compras.\n");
     printf("11- Alterar dados gestor.\n");
-    printf("12- Alterar dados cliente.\n");
-    printf("13- Alterar dados meios.\n");
+    printf("12- Alterar dados meios.\n");
+    printf("13- Alterar dados cliente.\n");
     printf("0- Sair.\n");
     printf("A sua escolha:");
     scanf("%d", &escolha);
@@ -65,6 +65,7 @@ int menu_utilizador()
     printf("3- Consulta de saldo.\n");
     printf("4- Alteracao dos seus dados.\n");
     printf("5- Alugar algum meio.\n");
+    printf("6- Listar por geocodigo.\n");
     printf("A sua escolha:");
     scanf("%d", &escolha);
     system("cls");
@@ -177,8 +178,8 @@ Meio* existeMeio(Meio* inicio_meios, int cod)
         return 1;
 }
 
-// Verifica cada meio existente, se o seu codigo do elemento que está a verificar for maior que o elemento seguinte, irá ser feita uma troca
-// para ordenar todos os elementos da lista ligada por um valor crescente.
+// Verifica cada meio existente, se o seu valor de autonomia do elemento que está a verificar for maior que o elemento seguinte, irá ser feita uma troca
+// para ordenar todos os elementos da lista ligada por um valor decrescente a nivel de autonomia.
 Meio* bubbleSortMeios(Meio* inicio_meios)
 {
     Meio* atual, * seguinte;
@@ -764,6 +765,8 @@ Gestor* removerGestor(Gestor* inicio_gestores, int cod)
 
 #pragma region ALTERAR
 
+// Função para alteração de dados de algum gestor.
+// Apenas é pedido o codigo de gestor. É possivel alterar codigo, nome, senha, area responsavel.
 Gestor* alterarGestor(Gestor* inicio_gestores)
 {
     int cod, escolha, novo_cod, encriptar, acabadoAlterar = 1;
@@ -907,6 +910,8 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
     }
 }
 
+// Função para alteração de dados de algum meio.
+// É pedido o codigo do meio a alterar. É possivel alterar o seu codigo, tipo, se está ativo, custo, bat, aut, etc...
 Meio* alterarMeio(Meio* inicio_meios)
 {
     int cod, cod_alterar, ativo_alterar, custo_alterar, escolha;
@@ -1061,10 +1066,13 @@ Cliente* consultaSaldo(Cliente* inicio_clientes) {
     return 0;
 }
 
-
-
+// Funçáo para realização de aluguer de qualquer meio existente, que não esteja ativo.
+// É pedido o codigo de utilizador, é verificado se existe esse mesmo utilizador. De seguida é perguntado qual o meio que deseja alugar. 
+// São apresentados dados, tais como o tipo de meio, o seu custo e o saldo do utilizador. Caso o utilizador, decida comprar o meio
+// É criado um novo registo na lista ligada de alugueres.
 Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio* inicio_meios)
 {
+
     int meio_Alugar, codigo_utilizador, NIF;
     printf("Insira o seu codigo:");
     scanf("%d", &codigo_utilizador);
@@ -1072,7 +1080,6 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
     {
         while (inicio_clientes->codigo != codigo_utilizador)
             inicio_clientes = inicio_clientes->seguinte_cliente;
-        //printf("codigo e nome %d %s\n", inicio_clientes->codigo, inicio_clientes->nome);
         printf("Qual meio deseja alugar?\n");
         scanf("%d", &meio_Alugar);
         if (existeMeio(inicio_meios, meio_Alugar) == 0)
@@ -1105,14 +1112,16 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
                 }
                 else
                 {
-                    time_t dataCompra = 0;
-                    char aux[50];
-                    strcpy(aux, ctime(&dataCompra));
-                    for (int i = 0; i < strlen(aux); i++)
+                    time_t dataCompra;
+                    time(&dataCompra);
+                    char aux_data_compra[50];
+                    strcpy(aux_data_compra, ctime(&dataCompra));
+                    for (int i = 0; i < strlen(aux_data_compra); i++)
                     {
-                        if (aux[i] == '\n')
-                            aux[i] = '\0';
+                        if (aux_data_compra[i] == '\n')
+                            aux_data_compra[i] = '\0';
                     }
+                    printf("%s\n", ctime(&dataCompra));
                     int inserir = 0;
                     inicio_clientes->saldo = inicio_clientes->saldo - inicio_meios->custo;
                     printf("O seu novo saldo %d\n", inicio_clientes->saldo);
@@ -1139,7 +1148,7 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
                             Aluguer* novo_nodo = malloc(sizeof(Aluguer));
                             novo_nodo->cod_comprador = inicio_clientes->codigo;
                             strcpy(novo_nodo->nome_comprador, inicio_clientes->nome);
-                            strcpy(novo_nodo->data_compra, ctime(&dataCompra));
+                            strcpy(novo_nodo->data_compra, aux_data_compra);
                             strcpy(novo_nodo->nome_meio_comprado, inicio_meios->tipo);
                             inicio_meios->ativo = 1;
                             inicio_aluguer->seguinte_compra = novo_nodo;
@@ -1157,11 +1166,31 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
     }
 }
 
+// Função para listar na consola, todos os meios existentes com um certo geocodigo.
+void listarGeocodigo(Meio* inicio_meios)
+{
+    char verificar_geocodigo[50];
+    printf("Introduza o geocodigo que pretende verificar:");
+    scanf("%s", verificar_geocodigo);
+    printf("Estes sao os meios com o geocodigo %s\n", verificar_geocodigo);
+    while (inicio_meios != NULL)
+    {
+        if (strcmp(verificar_geocodigo, inicio_meios->geocodigo) == 0)
+        {
+            printf("Codigo:%d      Tipo:%s      Bat:%f      Aut:%f      Custo:%d\n", inicio_meios->codigo, inicio_meios->tipo, inicio_meios->bateria, inicio_meios->autonomia, inicio_meios->custo);
+        }
+        inicio_meios = inicio_meios->seguinte_meio;
+    }
+    if (inicio_meios == NULL)
+        return 0;
+}
 // -----------------------------------------------------------------FIM_OP_UTILIZADOR-------------------------------------------------------------------
 
 
 // ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE ALUGUER----------------------------------------------------
 
+// Ler ficheiro de texto, contendo informação sobre os alugueres.
+// Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
 Aluguer* lerFicheiro_Aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer)
 {
     char linha[MAX_LINE_LEN];
@@ -1176,6 +1205,7 @@ Aluguer* lerFicheiro_Aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer)
     return inicio_aluguer;
 }
 
+// Função para listar na consola, o historico dos alugueres já feitos.
 void listarAluguer(Aluguer* inicio_aluguer)
 {
     if (inicio_aluguer == NULL)
@@ -1192,10 +1222,12 @@ void listarAluguer(Aluguer* inicio_aluguer)
     printf("------------------------------------------------------------------------------------------------------------------------\n");
 }
 
+// Verifica cada aluguer existente, se a sua data for maior que a do seguinte elemento, irá ser feita uma troca
+// para ordenar todos os elementos por ordem de compra.
 Aluguer* bubbleSortAluguer(Aluguer* inicio_aluguer) {
     Aluguer* atual, * seguinte;
     int aux_codigo, b = 1;
-    char aux_data[50], aux_comprador[50];
+    char aux_data[50], aux_comprador[50], aux_meio_comprado[50];
         while (b)
         {
             b = 0;
@@ -1207,20 +1239,22 @@ Aluguer* bubbleSortAluguer(Aluguer* inicio_aluguer) {
             while (atual->seguinte_compra != NULL)
             {
                 seguinte = atual->seguinte_compra;
-                if (atual->cod_comprador > seguinte->cod_comprador)
+                if (atual->data_compra > seguinte->data_compra)
                 {
                     aux_codigo = atual->cod_comprador;
                     strcpy(aux_comprador, atual->nome_comprador);
                     strcpy(aux_data, atual->data_compra);
+                    strcpy(aux_meio_comprado, atual->nome_meio_comprado);
 
                     atual->cod_comprador = seguinte->cod_comprador;
                     strcpy(atual->nome_comprador, seguinte->nome_comprador);
                     strcpy(atual->data_compra, seguinte->data_compra);
+                    strcpy(atual->nome_meio_comprado, seguinte->nome_meio_comprado);
 
                     seguinte->cod_comprador = aux_codigo;
                     strcpy(seguinte->nome_comprador, aux_comprador);
                     strcpy(seguinte->data_compra, aux_data);
-
+                    strcpy(seguinte->nome_meio_comprado, aux_meio_comprado);
                     b = 1;
                 }
                 atual = seguinte;
