@@ -778,67 +778,73 @@ Gestor* alterarGestor(Gestor* inicio_gestores)
     {
         if (inicio_gestores->codigo == cod)
         {
-            printf("Este sao os seus dados.\n");
-            printf("------------------------------------------------------------------------------------------------------------------------\n");
-            printf("Nome:%s     Codigo:%d       Area:%s\n", inicio_gestores->nome, inicio_gestores->codigo, inicio_gestores->area_responsavel);
-            printf("------------------------------------------------------------------------------------------------------------------------\n");
-            printf("O que deseja alterar?\n");
-            printf("1- Codigo.\n");
-            printf("2- Nome.\n");
-            printf("3- Area responsavel.\n");
-            printf("4- Senha.\n");
-            printf("0- Sair.\n");
-            printf("A sua escolha:");
-            scanf("%d", &escolha);
-            switch (escolha)
+            do
             {
-            case 1:
-                printf("Introduza um novo codigo:");
-                scanf("%d", &novo_cod);
-                if (!existeGestor(aux, novo_cod))
+                printf("Este sao os seus dados.\n");
+                printf("------------------------------------------------------------------------------------------------------------------------\n");
+                printf("Nome:%s     Codigo:%d       Area:%s\n", inicio_gestores->nome, inicio_gestores->codigo, inicio_gestores->area_responsavel);
+                printf("------------------------------------------------------------------------------------------------------------------------\n");
+                printf("O que deseja alterar?\n");
+                printf("1- Codigo.\n");
+                printf("2- Nome.\n");
+                printf("3- Area responsavel.\n");
+                printf("4- Senha.\n");
+                printf("0- Sair.\n");
+                printf("A sua escolha:");
+                scanf("%d", &escolha);
+                switch (escolha)
                 {
-                    printf("Ja existe alguem com esse codigo.\n");
+                case 1:
+                    printf("Introduza um novo codigo:");
+                    scanf("%d", &novo_cod);
+                    if (!existeGestor(aux, novo_cod))
+                    {
+                        printf("Ja existe alguem com esse codigo.\n");
+                        break;
+                    }
+                    else
+                    {
+                        inicio_gestores->codigo = novo_cod;
+                        printf("Codigo alterado com sucesso. O seu novo codigo %d\n", inicio_gestores->codigo);
+                    }
+                    break;
+                case 2:
+                    printf("Introduza um novo nome:");
+                    scanf("%s", novo_nome);
+                    strcpy(inicio_gestores->nome, novo_nome);
+                    break;
+                case 3:
+                    printf("Introduza a nova area para ser responsavel:");
+                    scanf("%s", nova_area_responsavel);
+                    strcpy(inicio_gestores->area_responsavel, nova_area_responsavel);
+                    printf("Area responsavel alterada com sucesso.\n");
+                    printf("A sua nova area e a seguinte: %s", inicio_gestores->area_responsavel);
+                    break;
+                case 4:
+                    printf("Introduza a sua nova senha:");
+                    scanf("%s", nova_senha);
+                    printf("Deseja encriptar? 1-Sim/0-Nao");
+                    scanf("%d", &encriptar);
+                    if (encriptar == 0)
+                    {
+                        printf("Senha alterada com sucesso.\n");
+                        break;
+                    }
+                    else
+                    {
+                        inicio_gestores->encriptado = 1;
+                        encryptSenha(inicio_gestores, nova_senha);
+                        strcpy(inicio_gestores->senha, nova_senha);
+                        printf("Senha encriptada e alterada com sucesso.\n");
+                        break;
+                    }
+                case 0:
+                    break;
+                default:
+                    printf("Insira uma opcao.\n");
                     break;
                 }
-                else
-                {
-                    inicio_gestores->codigo = novo_cod;
-                    printf("Codigo alterado com sucesso. O seu novo codigo %d\n", inicio_gestores->codigo);
-                }
-                break;
-            case 2:
-                printf("Introduza um novo nome:");
-                scanf("%s", novo_nome);
-                strcpy(inicio_gestores->nome, novo_nome);
-                break;
-            case 3:
-                printf("Introduza a nova area para ser responsavel:");
-                scanf("%s", nova_area_responsavel);
-                strcpy(inicio_gestores->area_responsavel, nova_area_responsavel);
-                printf("Area responsavel alterada com sucesso.\n");
-                printf("A sua nova area e a seguinte: %s", inicio_gestores->area_responsavel);
-                break;
-            case 4:
-                printf("Introduza a sua nova senha:");
-                scanf("%s", nova_senha);
-                printf("Deseja encriptar? 1-Sim/0-Nao");
-                scanf("%d", &encriptar);
-                if (encriptar == 0)
-                {
-                    printf("Senha alterada com sucesso.\n");
-                    break;
-                }
-                else
-                {
-                    inicio_gestores->encriptado = 1;
-                    encryptSenha(inicio_gestores, nova_senha);
-                    strcpy(inicio_gestores->senha, nova_senha);
-                    printf("Senha encriptada e alterada com sucesso.\n");
-                    break;
-                }
-            case 0:
-                return 0;
-            }
+            } while (escolha != 0);
         }
         inicio_gestores = inicio_gestores->seguinte_gestor;
     }
@@ -847,7 +853,7 @@ Gestor* alterarGestor(Gestor* inicio_gestores)
 // Função para alteração de dados do cliente.
 // É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel fazer alteração de nome, codigo e NIF.
 Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
-    int codigo, NIF, novo_codigo, novo_NIF;
+    int codigo, NIF, novo_codigo, novo_NIF, inserir = 1, escolha;
     char novo_nome[50];
     Cliente* aux = inicio_clientes;
     printf("Introduza o seu codigo:");
@@ -858,53 +864,57 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
     {
         if (inicio_clientes->codigo == codigo /*&& inicio_clientes->NIF == NIF*/)
         {
-            printf("Este sao os seus dados.\n");
-            int escolha;
-            printf("------------------------------------------------------------------------------------------------------------------------\n");
-            printf("Nome:%s     Codigo:%d       NIF:%d\n", inicio_clientes->nome, inicio_clientes->codigo, inicio_clientes->NIF);
-            printf("------------------------------------------------------------------------------------------------------------------------\n");
-            printf("O que deseja alterar?\n");
-            printf("1- Nome.\n");
-            printf("2- Codigo.\n");
-            printf("3- NIF.\n");
-            printf("4- Sair.\n");
-            printf("A sua escolha:");
-            scanf("%d", &escolha);
-            switch (escolha)
+            do
             {
-            case 1:
-                getchar();
-                printf("Insira o seu novo nome:");
-                scanf("%[^\n]", novo_nome);
-                strcpy(inicio_clientes->nome, novo_nome);
-                printf("Nome alterado com sucesso para %s\n", inicio_clientes->nome);
-                break;
-            case 2:
-                printf("Insira o seu novo codigo:");
-                scanf("%d", &novo_codigo);
-                if (existeClienteCod(aux, novo_codigo))
+                printf("Este sao os seus dados.\n");
+                printf("------------------------------------------------------------------------------------------------------------------------\n");
+                printf("Nome:%s     Codigo:%d       NIF:%d\n", inicio_clientes->nome, inicio_clientes->codigo, inicio_clientes->NIF);
+                printf("------------------------------------------------------------------------------------------------------------------------\n");
+                printf("O que deseja alterar?\n");
+                printf("1- Nome.\n");
+                printf("2- Codigo.\n");
+                printf("3- NIF.\n");
+                printf("0- Sair.\n");
+                printf("A sua escolha:");
+                scanf("%d", &escolha);
+                switch (escolha)
                 {
-                    inicio_clientes->codigo = novo_codigo;
-                    printf("O seu novo codigo %d\n", inicio_clientes->codigo);
-                }
-                break;
-            case 3:
-                printf("Insira o seu novo NIF(deve conter 9 numeros e comecar por 192):");
-                scanf("%d", &novo_NIF);
-                if (novo_NIF <= 192000000 || novo_NIF >= 193000000)
-                {
-                    printf("Por favor tente de novo.\n");
+                case 1:
+                    getchar();
+                    printf("Insira o seu novo nome:");
+                    scanf("%[^\n]", novo_nome);
+                    strcpy(inicio_clientes->nome, novo_nome);
+                    printf("Nome alterado com sucesso para %s.\n", inicio_clientes->nome);
+                    break;
+                case 2:
+                    printf("Insira o seu novo codigo:");
+                    scanf("%d", &novo_codigo);
+                    if (existeClienteCod(aux, novo_codigo))
+                    {
+                        inicio_clientes->codigo = novo_codigo;
+                        printf("O seu novo codigo %d\n", inicio_clientes->codigo);
+                    }
+                    break;
+                case 3:
+                    printf("Insira o seu novo NIF(deve conter 9 numeros e comecar por 192):");
+                    scanf("%d", &novo_NIF);
+                    if (novo_NIF <= 192000000 || novo_NIF >= 193000000)
+                    {
+                        printf("Por favor tente de novo.\n");
+                        break;
+                    }
+                    else
+                    {
+                        if (existeClienteNIF(aux, novo_NIF))
+                        {
+                            inicio_clientes->NIF = novo_NIF;
+                            printf("O seu novo NIF %d\n", inicio_clientes->NIF);
+                        }
+                    }
+                case 4:
                     break;
                 }
-                else
-                {
-                    if (existeClienteNIF(aux, novo_NIF))
-                    {
-                        inicio_clientes->NIF = novo_NIF;
-                        printf("O seu novo NIF %d\n", inicio_clientes->NIF);
-                    }
-                }
-            }
+            } while (escolha != 0);
         }
         inicio_clientes = inicio_clientes->seguinte_cliente;
     }
@@ -924,85 +934,92 @@ Meio* alterarMeio(Meio* inicio_meios)
     {
         if (inicio_meios->codigo == cod)
         {
-            printf("Este sao os dados do meio.\n");
-            //&novo_nodo->codigo, novo_nodo->tipo, & novo_nodo->bateria, & novo_nodo->autonomia, & novo_nodo->custo, novo_nodo->geocodigo, & novo_nodo->ativo);
-            printf("------------------------------------------------------------------------------------------------------------------------\n");
-            printf("Codigo:%d\nTipo:%s\nBateria:%.2f\nAut:%.2f\nCusto:%d\nGeo:%s\nAtivo:%d\n", inicio_meios->codigo, inicio_meios->tipo, inicio_meios->bateria, inicio_meios->autonomia, inicio_meios->custo, inicio_meios->geocodigo, inicio_meios->ativo);
-            printf("------------------------------------------------------------------------------------------------------------------------\n");
-            printf("O que deseja alterar?\n");
-            printf("1- Codigo.\n");
-            printf("2- Tipo.\n");
-            printf("3- Bateria.\n");
-            printf("4- Autonomia.\n");
-            printf("5- Custo.\n");
-            printf("6- Geocodigo.\n");
-            printf("7- Ativo.\n");
-            printf("A sua escolha:");
-            scanf("%d", &escolha);
-            switch (escolha)
+            do
             {
-            case 1:
-                printf("Insira o novo codigo:");
-                scanf("%d", &cod_alterar);
-                if (!existeMeio(aux, cod_alterar))
+                printf("Este sao os dados do meio.\n");
+                printf("------------------------------------------------------------------------------------------------------------------------\n");
+                printf("Codigo:%d\nTipo:%s\nBateria:%.2f\nAut:%.2f\nCusto:%d\nGeo:%s\nAtivo:%d\n", inicio_meios->codigo, inicio_meios->tipo, inicio_meios->bateria, inicio_meios->autonomia, inicio_meios->custo, inicio_meios->geocodigo, inicio_meios->ativo);
+                printf("------------------------------------------------------------------------------------------------------------------------\n");
+                printf("O que deseja alterar?\n");
+                printf("1- Codigo.\n");
+                printf("2- Tipo.\n");
+                printf("3- Bateria.\n");
+                printf("4- Autonomia.\n");
+                printf("5- Custo.\n");
+                printf("6- Geocodigo.\n");
+                printf("7- Ativo.\n");
+                printf("A sua escolha:");
+                scanf("%d", &escolha);
+                switch (escolha)
                 {
-                    printf("Ja existe um meio com esse codigo.\n");
-                }
-                else
-                {
-                    inicio_meios->codigo = cod_alterar;
-                    printf("Codigo alterado com sucesso. Novo codigo %d.\n", inicio_meios->codigo);
-                }
-                break;
-            case 2:
-                printf("Insira o novo tipo de meio:");
-                scanf("%s", meio_nome_alterar);
-                strcpy(inicio_meios->tipo, meio_nome_alterar);
-                printf("Nome alterado com sucesso para %s.\n", inicio_meios->tipo);
-                break;
-            case 3:
-                printf("Insira o novo nivel de bateria:");
-                scanf("%f", &bat_alterar);
-                inicio_meios->bateria = bat_alterar;
-                printf("Novo nivel de bateria %.2f\n", inicio_meios->bateria);
-                break;
-            case 4:
-                printf("Insira o novo nivel de autonomia:");
-                scanf("%f", &aut_alterar);
-                inicio_meios->autonomia = aut_alterar;
-                printf("Novo nivel de autonomia %.2f\n", inicio_meios->autonomia);
-                break;
-            case 5:
-                printf("Insira o novo custo:");
-                scanf("%d", &custo_alterar);
-                inicio_meios->custo = custo_alterar;
-                printf("Novo custo do meio %d\n", inicio_meios->custo);
-                break;
-            case 6:
-                printf("Insira um novo geocodigo:");
-                scanf("%s", geocodigo_alterar);
-                strcpy(inicio_meios->geocodigo, geocodigo_alterar);
-                printf("Novo geocodigo %s\n", inicio_meios->geocodigo);
-                break;
-            case 7:
-                printf("Este veiculo esta ativo?1-Sim/0-Nao");
-                scanf("%d", &ativo_alterar);
-                if (ativo_alterar == 1)
-                {
-                    if (inicio_meios->ativo == 1)
-                        printf("Meio ja esta ativo.\n");
+                case 1:
+                    printf("Insira o novo codigo:");
+                    scanf("%d", &cod_alterar);
+                    if (!existeMeio(aux, cod_alterar))
+                    {
+                        printf("Ja existe um meio com esse codigo.\n");
+                    }
                     else
-                        inicio_meios->ativo = 1;
-                }
-                else
-                {
-                    if (inicio_meios->ativo == 0)
-                        printf("Meio ja nao estava ativo.\n");
+                    {
+                        inicio_meios->codigo = cod_alterar;
+                        printf("Codigo alterado com sucesso. Novo codigo %d.\n", inicio_meios->codigo);
+                    }
+                    break;
+                case 2:
+                    printf("Insira o novo tipo de meio:");
+                    scanf("%s", meio_nome_alterar);
+                    strcpy(inicio_meios->tipo, meio_nome_alterar);
+                    printf("Nome alterado com sucesso para %s.\n", inicio_meios->tipo);
+                    break;
+                case 3:
+                    printf("Insira o novo nivel de bateria:");
+                    scanf("%f", &bat_alterar);
+                    inicio_meios->bateria = bat_alterar;
+                    printf("Novo nivel de bateria %.2f\n", inicio_meios->bateria);
+                    break;
+                case 4:
+                    printf("Insira o novo nivel de autonomia:");
+                    scanf("%f", &aut_alterar);
+                    inicio_meios->autonomia = aut_alterar;
+                    printf("Novo nivel de autonomia %.2f\n", inicio_meios->autonomia);
+                    break;
+                case 5:
+                    printf("Insira o novo custo:");
+                    scanf("%d", &custo_alterar);
+                    inicio_meios->custo = custo_alterar;
+                    printf("Novo custo do meio %d\n", inicio_meios->custo);
+                    break;
+                case 6:
+                    printf("Insira um novo geocodigo:");
+                    scanf("%s", geocodigo_alterar);
+                    strcpy(inicio_meios->geocodigo, geocodigo_alterar);
+                    printf("Novo geocodigo %s\n", inicio_meios->geocodigo);
+                    break;
+                case 7:
+                    printf("Este veiculo esta ativo?1-Sim/0-Nao");
+                    scanf("%d", &ativo_alterar);
+                    if (ativo_alterar == 1)
+                    {
+                        if (inicio_meios->ativo == 1)
+                            printf("Meio ja esta ativo.\n");
+                        else
+                            inicio_meios->ativo = 1;
+                    }
                     else
-                        inicio_meios->ativo = 0;
+                    {
+                        if (inicio_meios->ativo == 0)
+                            printf("Meio ja nao estava ativo.\n");
+                        else
+                            inicio_meios->ativo = 0;
+                    }
+                    break;
+                case 0:
+                    break;
+                default:
+                    printf("Introduza alguma opcao.\n");
+                    break;
                 }
-                break;
-            }
+            } while (escolha != 0);
         }
         inicio_meios = inicio_meios->seguinte_meio;
     }
@@ -1072,7 +1089,6 @@ Cliente* consultaSaldo(Cliente* inicio_clientes) {
 // É criado um novo registo na lista ligada de alugueres.
 Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio* inicio_meios)
 {
-
     int meio_Alugar, codigo_utilizador, NIF;
     printf("Insira o seu codigo:");
     scanf("%d", &codigo_utilizador);
@@ -1228,40 +1244,36 @@ Aluguer* bubbleSortAluguer(Aluguer* inicio_aluguer) {
     Aluguer* atual, * seguinte;
     int aux_codigo, b = 1;
     char aux_data[50], aux_comprador[50], aux_meio_comprado[50];
-        while (b)
+    while (b)
+    {
+        b = 0;
+        atual = inicio_aluguer;
+        while (atual->seguinte_compra != NULL)
         {
-            b = 0;
-            atual = inicio_aluguer;
-            if (inicio_aluguer == NULL)
+            seguinte = atual->seguinte_compra;
+            if (strcmp(atual->data_compra, seguinte->data_compra)>0)
             {
-                return 0;
-            }
-            while (atual->seguinte_compra != NULL)
-            {
-                seguinte = atual->seguinte_compra;
-                if (atual->data_compra > seguinte->data_compra)
-                {
-                    aux_codigo = atual->cod_comprador;
-                    strcpy(aux_comprador, atual->nome_comprador);
-                    strcpy(aux_data, atual->data_compra);
-                    strcpy(aux_meio_comprado, atual->nome_meio_comprado);
+                aux_codigo = atual->cod_comprador;
+                strcpy(aux_comprador, atual->nome_comprador);
+                strcpy(aux_data, atual->data_compra);
+                strcpy(aux_meio_comprado, atual->nome_meio_comprado);
 
-                    atual->cod_comprador = seguinte->cod_comprador;
-                    strcpy(atual->nome_comprador, seguinte->nome_comprador);
-                    strcpy(atual->data_compra, seguinte->data_compra);
-                    strcpy(atual->nome_meio_comprado, seguinte->nome_meio_comprado);
+                atual->cod_comprador = seguinte->cod_comprador;
+                strcpy(atual->nome_comprador, seguinte->nome_comprador);
+                strcpy(atual->data_compra, seguinte->data_compra);
+                strcpy(atual->nome_meio_comprado, seguinte->nome_meio_comprado);
 
-                    seguinte->cod_comprador = aux_codigo;
-                    strcpy(seguinte->nome_comprador, aux_comprador);
-                    strcpy(seguinte->data_compra, aux_data);
-                    strcpy(seguinte->nome_meio_comprado, aux_meio_comprado);
-                    b = 1;
-                }
-                atual = seguinte;
+                seguinte->cod_comprador = aux_codigo;
+                strcpy(seguinte->nome_comprador, aux_comprador);
+                strcpy(seguinte->data_compra, aux_data);
+                strcpy(seguinte->nome_meio_comprado, aux_meio_comprado);
+                b = 1;
             }
+            atual = seguinte;
         }
-        inicio_aluguer = atual;
-        return inicio_aluguer;
+    }
+    inicio_aluguer = atual;
+    return inicio_aluguer;
 }
 
 // Escreve todos os dados sobre os alugueres, em ficheiro de texto.
@@ -1280,7 +1292,7 @@ Aluguer* escreverFicheiro_aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer)
     }
     while (inicio_aluguer != NULL)
     {
-        fprintf(dados_aluguer, "%d;%s;%s;%s\n", inicio_aluguer->cod_comprador, inicio_aluguer->nome_comprador, inicio_aluguer->data_compra,inicio_aluguer->nome_meio_comprado);
+        fprintf(dados_aluguer, "%d;%s;%s;%s\n", inicio_aluguer->cod_comprador, inicio_aluguer->data_compra, inicio_aluguer->nome_comprador,inicio_aluguer->nome_meio_comprado);
         inicio_aluguer = inicio_aluguer->seguinte_compra;
     }
     fclose(dados_aluguer);
@@ -1302,7 +1314,7 @@ Aluguer* escreverFicheiro_aluguer_bin(Aluguer* inicio_aluguer, FILE* dados_alugu
     }
     while (inicio_aluguer != NULL)
     {
-        fprintf(dados_aluguer, "%d;%s;%s;%s\n", inicio_aluguer->cod_comprador, inicio_aluguer->nome_comprador, inicio_aluguer->data_compra, inicio_aluguer->nome_meio_comprado);
+        fprintf(dados_aluguer, "%d;%s;%s;%s\n", inicio_aluguer->cod_comprador, inicio_aluguer->data_compra, inicio_aluguer->nome_comprador, inicio_aluguer->nome_meio_comprado);
         inicio_aluguer = inicio_aluguer->seguinte_compra;
     }
     fclose(dados_aluguer);
