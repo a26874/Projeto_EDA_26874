@@ -68,6 +68,9 @@ int main() {
                         realizarAluguer(inicio_clientes, inicio_aluguer, inicio_meios);
                     }
                     break;
+                case 6:
+                    listarGeocodigo(inicio_meios);
+                    break;
                 case 0:
                     utilizador_login = 0;
                     break;
@@ -231,6 +234,9 @@ int main() {
                         break;
                     case 12:
                         alterarMeio(inicio_meios);
+                        break;
+                    case 13:
+                        alterarDadosCliente(inicio_meios);
                         break;
                     case 0:
                         gestor_login = 0;
