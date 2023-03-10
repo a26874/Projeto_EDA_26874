@@ -40,6 +40,11 @@ int main() {
         switch (op)
         {
         case 1:
+            if (inicio_clientes == NULL)
+            {
+                printf("Nao existem utilizadores, por favor registe-se.\n");
+                break;
+            }
             utilizador_login = 1;
             while (utilizador_login > 0)
             {
@@ -58,6 +63,11 @@ int main() {
                     alterarDadosCliente(inicio_clientes);
                     break;
                 case 5:
+                    if (inicio_meios == NULL)
+                    {
+                        printf("Nao existem meios para alugar.\n");
+                        break;
+                    }
                     listarMeios(inicio_meios);
                     if (inicio_aluguer == NULL)
                     {
@@ -79,9 +89,35 @@ int main() {
                 
             break;
         case 2:
-            if (!modoGestor(inicio_gestor))
+            if (inicio_gestor == NULL)
             {
+                printf("Insira os dados de um novo gestor:\n");
+                printf("Codigo:");
+                scanf("%d", &novo_gestor_codigo);
+                getchar();
+                printf("Nome:");
+                scanf("%[^\n]", novo_gestor_nome);
+                getchar();
+                printf("Senha:");
+                scanf("%[^\n]", novo_gestor_senha);
+                getchar();
+                printf("Area:");
+                scanf("%[^\n]", novo_gestor_area);
+                if (existeGestor(inicio_gestor, novo_gestor_codigo) == 1)
+                {
+                    inicio_gestor = inserirGestor(inicio_gestor, novo_gestor_codigo, novo_gestor_nome, novo_gestor_senha, novo_gestor_area);
+                    break;
+                }
+                else
+                {
+                    printf("Ja existe um gestor com o codigo %d", novo_gestor_codigo);
+                    break;
+                }
                 break;
+            }
+            else if (!modoGestor(inicio_gestor))
+            {
+               break;
             }
             else
             {
@@ -116,7 +152,12 @@ int main() {
                         }
                         printf("Saldo:");
                         scanf("%d", &novo_cliente_saldo);
-                        if (existeClienteCod(inicio_clientes, novo_cliente_codigo) == 1 && existeClienteNIF(inicio_clientes, novo_cliente_NIF) == 1)
+                        if (inicio_clientes == NULL)
+                        {
+                            inicio_clientes = inserirCliente(inicio_clientes, novo_cliente_codigo, novo_cliente_nome, novo_cliente_NIF, novo_cliente_saldo);
+                            break;
+                        }
+                        else if (existeClienteCod(inicio_clientes, novo_cliente_codigo) == 1 && existeClienteNIF(inicio_clientes, novo_cliente_NIF) == 1)
                         {
                             inserirCliente(inicio_clientes, novo_cliente_codigo, novo_cliente_nome, novo_cliente_NIF, novo_cliente_saldo);
                             break;
@@ -155,6 +196,11 @@ int main() {
                         getchar();
                         printf("Geocodigo:");
                         scanf("%[^\n]", novo_meio_geocodigo);
+                        if (inicio_meios == NULL)
+                        {
+                            inicio_meios = inserirMeio(inicio_meios, novo_meio_codigo, novo_meio_nome, novo_meio_bateria, novo_meio_autonomia, novo_meio_custo, novo_meio_geocodigo);
+                            break;
+                        }
                         if (existeMeio(inicio_meios, novo_meio_codigo) == 1)
                         {
                             inserirMeio(inicio_meios, novo_meio_codigo, novo_meio_nome, novo_meio_bateria, novo_meio_autonomia, novo_meio_custo, novo_meio_geocodigo);
@@ -236,7 +282,7 @@ int main() {
                         alterarMeio(inicio_meios);
                         break;
                     case 13:
-                        alterarDadosCliente(inicio_meios);
+                        alterarDadosCliente(inicio_clientes);
                         break;
                     case 0:
                         gestor_login = 0;
