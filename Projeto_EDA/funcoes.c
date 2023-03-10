@@ -186,10 +186,15 @@ Meio* bubbleSortMeios(Meio* inicio_meios)
     int b = 1, aux_codigo, aux_custo, aux_ativo;
     float aux_bat, aux_aut;
     char aux_nome[50], aux_geo[50];
+ 
     while (b)
     {
         b = 0;
         atual = inicio_meios;
+        if (atual == NULL)
+        {
+            return 0;
+        }
         while (atual->seguinte_meio != NULL)
         {
             seguinte = atual->seguinte_meio;
@@ -359,6 +364,10 @@ Cliente* bubbleSortClientes(Cliente* inicio_clientes) {
     {
         b = 0;
         atual = inicio_clientes;
+        if (atual == NULL)
+        {
+            return 0;
+        }
         while (atual->seguinte_cliente != NULL)
         {
             seguinte = atual->seguinte_cliente;
@@ -495,6 +504,10 @@ Gestor* bubbleSortGestores(Gestor* inicio_gestor) {
     {
         b = 0;
         atual = inicio_gestor;
+        if (atual == NULL)
+        {
+            return 0;
+        }
         while (atual->seguinte_gestor != NULL)
         {
             seguinte = atual->seguinte_gestor;
@@ -590,6 +603,12 @@ Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float a
     int inserir = 0;
     while (inserir !=1)
     {
+        if (inicio_meios == NULL)
+        {
+            Meio* novo_meio = malloc(sizeof(Meio));
+            novo_meio->seguinte_meio = NULL;
+            inicio_meios = novo_meio;
+        }
         if (inicio_meios->seguinte_meio == NULL)
         {
             Meio* novo_meio = malloc(sizeof(Meio));
@@ -599,11 +618,12 @@ Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float a
             novo_meio->autonomia = aut;
             novo_meio->custo = custo;
             strcpy(novo_meio->geocodigo, geo);
-            inicio_meios->ativo = 0;
+            novo_meio->ativo= 0;
             inicio_meios->seguinte_meio = novo_meio;
             novo_meio->seguinte_meio = NULL;
             inicio_meios = novo_meio;
             inserir = 1;
+            return inicio_meios;
         }
         inicio_meios = inicio_meios->seguinte_meio;
     }
@@ -617,7 +637,12 @@ Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NI
     int inserir = 0;
     while (inserir != 1)
     {
-        inicio_clientes = inicio_clientes->seguinte_cliente;
+        if (inicio_clientes == NULL)
+        {
+            Cliente* novo_cliente = malloc(sizeof(Cliente));
+            novo_cliente->seguinte_cliente = NULL;
+            inicio_clientes = novo_cliente;
+        }
         if (inicio_clientes->seguinte_cliente == NULL)
         {
             Cliente* novo_cliente = malloc(sizeof(Cliente));
@@ -628,8 +653,9 @@ Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NI
             inicio_clientes->seguinte_cliente = novo_cliente;
             novo_cliente->seguinte_cliente = NULL;
             inicio_clientes = novo_cliente;
-            inserir = 1;
+            return inicio_clientes;
         }
+        inicio_clientes = inicio_clientes->seguinte_cliente;
     }
     return inicio_clientes;
 }
@@ -641,6 +667,12 @@ Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[
     int inserir = 0, encriptado;
     while (inserir != 1)
     {
+        if (inicio_gestor == NULL)
+        {
+            Gestor* novo_gestor = malloc(sizeof(Gestor));
+            novo_gestor->seguinte_gestor = NULL;
+            inicio_gestor = novo_gestor;
+        }
         if (inicio_gestor->seguinte_gestor == NULL)
         {
             Gestor* novo_gestor = malloc(sizeof(Gestor));
@@ -663,7 +695,7 @@ Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[
             inicio_gestor->seguinte_gestor = novo_gestor;
             novo_gestor->seguinte_gestor = NULL;
             inicio_gestor = novo_gestor;
-            inserir = 1;
+            return inicio_gestor;
         }
         inicio_gestor = inicio_gestor->seguinte_gestor;
     }
@@ -974,12 +1006,22 @@ Meio* alterarMeio(Meio* inicio_meios)
                 case 3:
                     printf("Insira o novo nivel de bateria:");
                     scanf("%f", &bat_alterar);
+                    if (bat_alterar > 100.0001 || bat_alterar<0)
+                    {
+                        printf("Insira um nivel de bateria, entre 0 e 100.\n");
+                        break;
+                    }
                     inicio_meios->bateria = bat_alterar;
                     printf("Novo nivel de bateria %.2f\n", inicio_meios->bateria);
                     break;
                 case 4:
                     printf("Insira o novo nivel de autonomia:");
                     scanf("%f", &aut_alterar);
+                    if (aut_alterar > 100.0001 || aut_alterar < 0)
+                    {
+                        printf("Insira um nivel de bateria, entre 0 e 100.\n");
+                        break;
+                    }
                     inicio_meios->autonomia = aut_alterar;
                     printf("Novo nivel de autonomia %.2f\n", inicio_meios->autonomia);
                     break;
@@ -1092,7 +1134,7 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
     int meio_Alugar, codigo_utilizador, NIF;
     printf("Insira o seu codigo:");
     scanf("%d", &codigo_utilizador);
-    if (existeClienteCod(inicio_clientes, codigo_utilizador)==0);
+    if (existeClienteCod(inicio_clientes, codigo_utilizador)==0)
     {
         while (inicio_clientes->codigo != codigo_utilizador)
             inicio_clientes = inicio_clientes->seguinte_cliente;
@@ -1148,16 +1190,6 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
                             Aluguer* novo_nodo = malloc(sizeof(Aluguer));
                             novo_nodo->seguinte_compra = NULL;
                             inicio_aluguer = novo_nodo;
-                            //novo_nodo->cod_comprador = inicio_clientes->codigo;
-                            //strcpy(novo_nodo->nome_comprador, inicio_clientes->nome);
-                            //strcpy(novo_nodo->data_compra, aux);
-                            //strcpy(novo_nodo->nome_meio_comprado, inicio_meios->tipo);
-                            //inicio_meios->ativo = 1;
-                            //inicio_aluguer = novo_nodo;
-                            //inicio_aluguer->seguinte_compra = NULL;
-                            //printf("Compra efetuada com sucesso.\n");
-                            //inserir = 1;
-                            //return inicio_aluguer;
                         }
                         if (inicio_aluguer->seguinte_compra == NULL)
                         {
@@ -1179,6 +1211,11 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
                 }
             }
         }
+    }
+    else
+    {
+        printf("Nao existe esse codigo de cliente.\n");
+        return 0;
     }
 }
 
@@ -1248,6 +1285,10 @@ Aluguer* bubbleSortAluguer(Aluguer* inicio_aluguer) {
     {
         b = 0;
         atual = inicio_aluguer;
+        if (atual == NULL)
+        {
+            return 0;
+        }
         while (atual->seguinte_compra != NULL)
         {
             seguinte = atual->seguinte_compra;
