@@ -68,7 +68,10 @@ int main() {
                         printf("Nao existem meios para alugar.\n");
                         break;
                     }
-                    listarMeios(inicio_meios);
+                    else
+                    {
+                        listarMeios(inicio_meios);
+                    }
                     if (inicio_aluguer == NULL)
                     {
                         inicio_aluguer = realizarAluguer(inicio_clientes, inicio_aluguer, inicio_meios);
