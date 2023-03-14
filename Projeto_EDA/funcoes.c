@@ -66,6 +66,7 @@ int menu_utilizador()
     printf("4- Alteracao dos seus dados.\n");
     printf("5- Alugar algum meio.\n");
     printf("6- Listar por geocodigo.\n");
+    printf("0- Sair.\n");
     printf("A sua escolha:");
     scanf("%d", &escolha);
     system("cls");
@@ -634,8 +635,17 @@ Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float a
         if (inicio_meios == NULL)
         {
             Meio* novo_meio = malloc(sizeof(Meio));
+            novo_meio->codigo = cod;
+            strcpy(novo_meio->tipo, nome);
+            novo_meio->bateria = bat;
+            novo_meio->autonomia = aut;
+            novo_meio->custo = custo;
+            strcpy(novo_meio->geocodigo, geo);
+            novo_meio->ativo = 0;
             novo_meio->seguinte_meio = NULL;
             inicio_meios = novo_meio;
+            printf("Meio com codigo %d inserido com sucesso.\n", novo_meio->codigo);
+            return inicio_meios;
         }
         if (inicio_meios->seguinte_meio == NULL)
         {
@@ -651,6 +661,7 @@ Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float a
             novo_meio->seguinte_meio = NULL;
             inicio_meios = novo_meio;
             inserir = 1;
+            printf("Meio com codigo %d inserido com sucesso.\n", novo_meio->codigo);
             return inicio_meios;
         }
         inicio_meios = inicio_meios->seguinte_meio;
@@ -668,8 +679,13 @@ Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NI
         if (inicio_clientes == NULL)
         {
             Cliente* novo_cliente = malloc(sizeof(Cliente));
+            novo_cliente->codigo = cod;
+            strcpy(novo_cliente->nome, nome);
+            novo_cliente->NIF = NIF;
+            novo_cliente->saldo = saldo;
             novo_cliente->seguinte_cliente = NULL;
             inicio_clientes = novo_cliente;
+            return inicio_clientes;
         }
         if (inicio_clientes->seguinte_cliente == NULL)
         {
@@ -681,6 +697,7 @@ Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NI
             inicio_clientes->seguinte_cliente = novo_cliente;
             novo_cliente->seguinte_cliente = NULL;
             inicio_clientes = novo_cliente;
+            printf("Cliente com codigo %d adicionado com sucesso.\n", novo_cliente->codigo);
             return inicio_clientes;
         }
         inicio_clientes = inicio_clientes->seguinte_cliente;
@@ -698,8 +715,26 @@ Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[
         if (inicio_gestor == NULL)
         {
             Gestor* novo_gestor = malloc(sizeof(Gestor));
+            novo_gestor->codigo = cod;
+            strcpy(novo_gestor->nome, nome);
+            strcpy(novo_gestor->senha, senha);
+            printf("Deseja encriptar a sua senha?\n1-Sim/2-Nao\n");
+            printf("A sua escolha:");
+            scanf("%d", &encriptado);
+            if (encriptado == 1)
+            {
+                novo_gestor->encriptado = 1;
+                encryptSenha(novo_gestor, novo_gestor->senha);
+            }
+            else
+            {
+                novo_gestor->encriptado = 0;
+            }
+            strcpy(novo_gestor->area_responsavel, area);
             novo_gestor->seguinte_gestor = NULL;
             inicio_gestor = novo_gestor;
+            printf("Gestor com codigo %d inserido com sucesso.\n", novo_gestor->codigo);
+            return inicio_gestor;
         }
         if (inicio_gestor->seguinte_gestor == NULL)
         {
@@ -724,6 +759,7 @@ Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[
             novo_gestor->seguinte_gestor = NULL;
             inicio_gestor = novo_gestor;
             inserir = 1;
+            printf("Gestor com codigo %d inserido com sucesso.\n", novo_gestor->codigo);
             return inicio_gestor;
         }
         inicio_gestor = inicio_gestor->seguinte_gestor;
@@ -758,23 +794,29 @@ int decryptSenha(Gestor* inicio_gestor, char senha[50])
 // com o meio removido.
 Meio* removerMeio(Meio* inicio_meios, int cod)
 {
-    Meio* atual=inicio_meios, * anterior = inicio_meios, * aux;
-    atual = inicio_meios;
-    while ((atual != NULL) && (atual->codigo != cod))
+    Meio* anterior = inicio_meios, * atual = inicio_meios, * aux;
+
+    if (atual == NULL) return(NULL); // Lista vazia.
+    else if (atual->codigo == cod) // remoção do 1º registo
     {
-        anterior = atual;
-        atual = atual->seguinte_meio;
-    }
-    if (atual == NULL)
-    {
-        return inicio_meios;
+        aux = atual->seguinte_meio;
+        free(atual);
+        return(aux);
     }
     else
     {
-        anterior->seguinte_meio = atual->seguinte_meio;
-        printf("Meio %s removido.\n", atual->tipo);
-        free(atual);
-        return(inicio_meios);
+        while ((atual != NULL) && (atual->codigo != cod)) // Iteração até ser igual.
+        {
+            anterior = atual;
+            atual = atual->seguinte_meio;
+        }
+        if (atual == NULL) return(inicio_meios);
+        else // Remoção do meio com cod introduzido.
+        {
+            anterior->seguinte_meio = atual->seguinte_meio;
+            free(atual);
+            return(inicio_meios);
+        }
     }
 }
 
@@ -782,23 +824,29 @@ Meio* removerMeio(Meio* inicio_meios, int cod)
 // com o meio removido.
 Cliente* removerCliente(Cliente* inicio_clientes, int cod)
 {
-    Cliente* atual = inicio_clientes, * anterior = inicio_clientes, * aux;
-    atual = inicio_clientes;
-    while ((atual != NULL) && (atual->codigo != cod))
+    Cliente* anterior = inicio_clientes, * atual = inicio_clientes, * aux;
+
+    if (atual == NULL) return(NULL); // Lista vazia.
+    else if (atual->codigo == cod) // remoção do 1º registo
     {
-        anterior = atual;
-        atual = atual->seguinte_cliente;
-    }
-    if (atual == NULL)
-    {
-        return inicio_clientes;
+        aux = atual->seguinte_cliente;
+        free(atual);
+        return(aux);
     }
     else
     {
-        anterior->seguinte_cliente = atual->seguinte_cliente;
-        printf("Cliente %s removido.\n", atual->nome);
-        free(atual);
-        return(inicio_clientes);
+        while ((atual != NULL) && (atual->codigo != cod)) // Iteração até ser igual.
+        {
+            anterior = atual;
+            atual = atual->seguinte_cliente;
+        }
+        if (atual == NULL) return(inicio_clientes);
+        else // Remoção do cliente com cod introduzido.
+        {
+            anterior->seguinte_cliente = atual->seguinte_cliente;
+            free(atual);
+            return(inicio_clientes);
+        }
     }
 }
 
@@ -806,23 +854,29 @@ Cliente* removerCliente(Cliente* inicio_clientes, int cod)
 // com o meio removido.
 Gestor* removerGestor(Gestor* inicio_gestores, int cod)
 {
-    Gestor* atual = inicio_gestores, * anterior = inicio_gestores, * aux;
-    atual = inicio_gestores;
-    while ((atual != NULL) && (atual->codigo != cod))
+    Gestor* anterior = inicio_gestores, * atual = inicio_gestores, * aux;
+
+    if (atual == NULL) return(NULL); // Lista vazia.
+    else if (atual->codigo == cod) // remoção do 1º registo
     {
-        anterior = atual;
-        atual = atual->seguinte_gestor;
-    }
-    if (atual == NULL)
-    {
-        return inicio_gestores;
+        aux = atual->seguinte_gestor;
+        free(atual);
+        return(aux);
     }
     else
     {
-        anterior->seguinte_gestor = atual->seguinte_gestor;
-        printf("Gestor %s removido.\n", atual->nome);
-        free(atual);
-        return(inicio_gestores);
+        while ((atual != NULL) && (atual->codigo != cod)) // Iteração até ser igual.
+        {
+            anterior = atual;
+            atual = atual->seguinte_gestor;
+        }
+        if (atual == NULL) return(inicio_gestores);
+        else // Remoção do gestor com cod introduzido.
+        {
+            anterior->seguinte_gestor = atual->seguinte_gestor;
+            free(atual);
+            return(inicio_gestores);
+        }
     }
 }
 #pragma endregion
@@ -892,7 +946,7 @@ Gestor* alterarGestor(Gestor* inicio_gestores)
                     scanf("%s", nova_area_responsavel);
                     strcpy(inicio_gestores->area_responsavel, nova_area_responsavel);
                     printf("Area responsavel alterada com sucesso.\n");
-                    printf("A sua nova area e a seguinte: %s", inicio_gestores->area_responsavel);
+                    printf("A sua nova area e a seguinte: %s\n", inicio_gestores->area_responsavel);
                     break;
                 case 4:
                     printf("Introduza a sua nova senha:");
@@ -952,7 +1006,7 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
     }
     while (inicio_clientes != NULL)
     {
-        if (inicio_clientes->codigo == codigo /*&& inicio_clientes->NIF == NIF*/)
+        if (inicio_clientes->codigo == codigo && inicio_clientes->NIF == NIF)
         {
             do
             {
@@ -1193,8 +1247,8 @@ Cliente* consultaSaldo(Cliente* inicio_clientes) {
     int codigo, NIF;
     printf("Introduza o seu codigo:");
     scanf("%d", &codigo);
-    //printf("Introduza o seu NIF:");
-    //scanf("%d", &NIF);
+    printf("Introduza o seu NIF:");
+    scanf("%d", &NIF);
     if (inicio_clientes == NULL)
     {
         printf("Nao existe nenhum cliente.\n");
@@ -1202,7 +1256,7 @@ Cliente* consultaSaldo(Cliente* inicio_clientes) {
     }
     while (inicio_clientes != NULL)
     {
-        if (inicio_clientes->codigo == codigo /*&& inicio_clientes->NIF == NIF*/)
+        if (inicio_clientes->codigo == codigo && inicio_clientes->NIF == NIF)
         {
             printf("Voce tem %d de saldo.\n", inicio_clientes->saldo);
             return 1;
@@ -1323,11 +1377,13 @@ void listarGeocodigo(Meio* inicio_meios)
     Meio* aux_print = inicio_meios;
     printf("Introduza o geocodigo que pretende verificar:");
     scanf("%s", verificar_geocodigo);
+    getchar();
+
     if (inicio_meios == NULL)
         return 0;
-    while (aux_print != NULL)
+    while (aux_print != NULL && existe ==0)
     {
-        if (strcmp(verificar_geocodigo, inicio_meios->geocodigo) == 0)
+        if (strcmp(verificar_geocodigo, aux_print->geocodigo) == 0)
         {
             existe = 1;
         }
@@ -1346,7 +1402,6 @@ void listarGeocodigo(Meio* inicio_meios)
         if (strcmp(verificar_geocodigo, inicio_meios->geocodigo) == 0)
         {
             printf("Codigo:%d      Tipo:%s      Bat:%f      Aut:%f      Custo:%d\n", inicio_meios->codigo, inicio_meios->tipo, inicio_meios->bateria, inicio_meios->autonomia, inicio_meios->custo);
-            verificado = 1;
         }
         inicio_meios = inicio_meios->seguinte_meio;
     }
