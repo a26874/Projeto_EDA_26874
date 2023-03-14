@@ -81,7 +81,7 @@ int menu_utilizador()
 // -------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS-------------------------------------------------
 
 #pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS
-
+// \file
 // Ler ficheiro de texto, contendo informação sobre os meios.
 // Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
 Meio* lerFicheiro_meios(Meio* inicio_meios, FILE* dados_meios)
@@ -1231,14 +1231,13 @@ Cliente* carregarSaldo(Cliente* inicio_clientes) {
             printf("%d carregado com sucesso. Tem agora %d de saldo.\n", saldo_carregar, inicio_clientes->saldo);
             return 1;
         }
-        else
-        {
-            printf("Codigo ou NIF incorretos.\n");
-            return 0;
-        }
         inicio_clientes = inicio_clientes->seguinte_cliente;
     }
-    return inicio_clientes;
+    if (inicio_clientes == NULL)
+    {
+        printf("Nao existe o cliente com o cod %d.\n", codigo);
+        return 0;
+    }
 }
 
 // Função para consulta de saldo, de um certo utilizador.
@@ -1261,12 +1260,12 @@ Cliente* consultaSaldo(Cliente* inicio_clientes) {
             printf("Voce tem %d de saldo.\n", inicio_clientes->saldo);
             return 1;
         }
-        else
-        {
-            printf("Nao existe o cliente com o cod %d.\n", codigo);
-            return 0;
-        }
         inicio_clientes = inicio_clientes->seguinte_cliente;
+    }
+    if (inicio_clientes == NULL)
+    {
+        printf("Nao existe o cliente com o cod %d.\n", codigo);
+        return 0;
     }
 }
 
