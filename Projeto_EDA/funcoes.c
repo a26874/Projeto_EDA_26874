@@ -897,7 +897,8 @@ Gestor* alterarGestor(Gestor* inicio_gestores)
                 case 4:
                     printf("Introduza a sua nova senha:");
                     scanf("%s", nova_senha);
-                    printf("Deseja encriptar? 1-Sim/0-Nao");
+                    printf("Deseja encriptar? 1-Sim/0-Nao\n");
+                    printf("A sua escolha:");
                     scanf("%d", &encriptar);
                     if (encriptar == 0)
                     {
