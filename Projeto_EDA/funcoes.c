@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <Windows.h>
 #include "funcoes.h"
 
 // ---------------------------------------------------------------MENU---------------------------------------------------------------
@@ -109,6 +110,7 @@ Meio* lerFicheiro_meios(Meio* inicio_meios, FILE* dados_meios)
 // Apresenta na consola toda a informação existente sobre os clientes.
 void listarMeios(Meio* inicio_meios)
 {
+    system("cls");
     if (inicio_meios == NULL)
     {
         printf("Nao existem meios.\n");
@@ -132,11 +134,6 @@ void listarMeios(Meio* inicio_meios)
 // Escreve todos os dados inseridos sobre os meios, em ficheiro de texto.
 Meio* escreverFicheiro_meios(Meio* inicio_meios, FILE* dados_meios)
 {
-    if (inicio_meios == NULL)
-    {
-        printf("O ficheiro nao foi lido.\n");
-        return 0;
-    }
     dados_meios = fopen("meios.txt", "wt");
     if (dados_meios == NULL)
     {
@@ -155,11 +152,6 @@ Meio* escreverFicheiro_meios(Meio* inicio_meios, FILE* dados_meios)
 // Escreve todos os dados inseridos sobre os meios, em ficheiro binário.
 Meio* escreverFicheiro_meios_bin(Meio* inicio_meios, FILE* dados_meios)
 {
-    if (inicio_meios == NULL)
-    {
-        printf("O ficheiro nao foi lido.\n");
-        return 0;
-    }
     dados_meios = fopen("meios.bin", "wb");
     if (dados_meios == NULL)
     {
@@ -280,6 +272,7 @@ Cliente* lerFicheiro_clientes(Cliente* inicio_clientes, FILE* dados_clientes)
 // Apresenta na consola toda a informação existente sobre os clientes.
 void listarClientes(Cliente* inicio_clientes)
 {
+    system("cls");
     if (inicio_clientes == NULL)
     {
         printf("Nao existem clientes.\n");
@@ -287,7 +280,7 @@ void listarClientes(Cliente* inicio_clientes)
     }
     else
     {
-        printf("\nDados de Clientes:\n------------------------------------------------------------------------------------------------------------------------\n");
+        printf("Dados de Clientes:\n------------------------------------------------------------------------------------------------------------------------\n");
         // Enquanto o pointer inicio_clientes não for NULL (que esse mesmo está sempre a apontar para um valor de memória diferente na lista ligada)
         // É apresentada a informação dos clientes.
         while (inicio_clientes != NULL)
@@ -302,11 +295,6 @@ void listarClientes(Cliente* inicio_clientes)
 // Escreve todos os dados inseridos sobre os clientes, em ficheiro de texto.
 Cliente* escreverFicheiro_clientes(Cliente* inicio_clientes, FILE* dados_clientes)
 {
-    if (inicio_clientes == NULL)
-    {
-        printf("O ficheiro nao foi lido.\n");
-        return 0;
-    }
     dados_clientes = fopen("clientes.txt", "wt");
     if (dados_clientes == NULL)
     {
@@ -318,18 +306,12 @@ Cliente* escreverFicheiro_clientes(Cliente* inicio_clientes, FILE* dados_cliente
         fprintf(dados_clientes, "%d;%s;%d;%d\n", inicio_clientes->codigo, inicio_clientes->nome, inicio_clientes->NIF, inicio_clientes->saldo);
         inicio_clientes = inicio_clientes->seguinte_cliente;
     }
-
     fclose(dados_clientes);
 }
 
 // Escreve todos os dados inseridos sobre os clientes, em ficheiro binário.
 Cliente* escreverFicheiro_clientes_bin(Cliente* inicio_clientes, FILE* dados_clientes)
 {
-    if (inicio_clientes == NULL)
-    {
-        printf("O ficheiro nao foi lido.\n");
-        return 0;
-    }
     dados_clientes = fopen("clientes.bin", "wb");
     if (dados_clientes == NULL)
     {
@@ -445,6 +427,7 @@ Gestor* lerFicheiro_gestores(Gestor* inicio_gestor, FILE* dados_gestor)
 // Apresenta na consola toda a informação existente sobre os gestores.
 void listarGestores(Gestor* inicio_gestor)
 {
+    system("cls");
     if (inicio_gestor == NULL)
     {
         printf("Nao existem gestores, por favor registe-se.\n");
@@ -452,7 +435,7 @@ void listarGestores(Gestor* inicio_gestor)
     }
     else
     {
-        printf("\nDados de Gestores:\n------------------------------------------------------------------------------------------------------------------------\n");
+        printf("Dados de Gestores:\n------------------------------------------------------------------------------------------------------------------------\n");
         while (inicio_gestor != NULL)
         {
             printf("Codigo:%d        Nome:%s    Area:%s\n", inicio_gestor->codigo, inicio_gestor->nome, inicio_gestor->area_responsavel);
@@ -466,11 +449,6 @@ void listarGestores(Gestor* inicio_gestor)
 // Escreve todos os dados inseridos sobre os gestores, em ficheiro de texto.
 Gestor* escreverFicheiro_gestores(Gestor* inicio_gestores, FILE* dados_gestores)
 {
-    if (inicio_gestores == NULL)
-    {
-        printf("O ficheiro nao foi lido.\n");
-        return 0;
-    }
     dados_gestores = fopen("gestores.txt", "wt");
     if (dados_gestores == NULL)
     {
@@ -489,11 +467,6 @@ Gestor* escreverFicheiro_gestores(Gestor* inicio_gestores, FILE* dados_gestores)
 // Escreve todos os dados inseridos sobre os gestores, em ficheiro binário.
 Gestor* escreverFicheiro_gestores_bin(Gestor* inicio_gestores, FILE* dados_gestores)
 {
-    if (inicio_gestores == NULL)
-    {
-        printf("O ficheiro nao foi lido.\n");
-        return 0;
-    }
     dados_gestores = fopen("gestores.bin", "wb");
     if (dados_gestores == NULL)
     {
@@ -645,6 +618,8 @@ Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float a
             novo_meio->seguinte_meio = NULL;
             inicio_meios = novo_meio;
             printf("Meio com codigo %d inserido com sucesso.\n", novo_meio->codigo);
+            Sleep(2000);
+            system("cls");
             return inicio_meios;
         }
         if (inicio_meios->seguinte_meio == NULL)
@@ -662,6 +637,8 @@ Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float a
             inicio_meios = novo_meio;
             inserir = 1;
             printf("Meio com codigo %d inserido com sucesso.\n", novo_meio->codigo);
+            Sleep(2000);
+            system("cls");
             return inicio_meios;
         }
         inicio_meios = inicio_meios->seguinte_meio;
@@ -685,6 +662,9 @@ Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NI
             novo_cliente->saldo = saldo;
             novo_cliente->seguinte_cliente = NULL;
             inicio_clientes = novo_cliente;
+            printf("Cliente com codigo %d adicionado com sucesso.\n", novo_cliente->codigo);
+            Sleep(2000);
+            system("cls");
             return inicio_clientes;
         }
         if (inicio_clientes->seguinte_cliente == NULL)
@@ -698,6 +678,8 @@ Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NI
             novo_cliente->seguinte_cliente = NULL;
             inicio_clientes = novo_cliente;
             printf("Cliente com codigo %d adicionado com sucesso.\n", novo_cliente->codigo);
+            Sleep(2000);
+            system("cls");
             return inicio_clientes;
         }
         inicio_clientes = inicio_clientes->seguinte_cliente;
@@ -734,6 +716,8 @@ Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[
             novo_gestor->seguinte_gestor = NULL;
             inicio_gestor = novo_gestor;
             printf("Gestor com codigo %d inserido com sucesso.\n", novo_gestor->codigo);
+            Sleep(2000);
+            system("cls");
             return inicio_gestor;
         }
         if (inicio_gestor->seguinte_gestor == NULL)
@@ -760,6 +744,8 @@ Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[
             inicio_gestor = novo_gestor;
             inserir = 1;
             printf("Gestor com codigo %d inserido com sucesso.\n", novo_gestor->codigo);
+            Sleep(2000);
+            system("cls");
             return inicio_gestor;
         }
         inicio_gestor = inicio_gestor->seguinte_gestor;
@@ -801,6 +787,9 @@ Meio* removerMeio(Meio* inicio_meios, int cod)
     {
         aux = atual->seguinte_meio;
         free(atual);
+        printf("Meio com cod %d removido com sucesso.\n", cod);
+        Sleep(2000);
+        system("cls");
         return(aux);
     }
     else
@@ -815,6 +804,9 @@ Meio* removerMeio(Meio* inicio_meios, int cod)
         {
             anterior->seguinte_meio = atual->seguinte_meio;
             free(atual);
+            printf("Meio com cod %d removido com sucesso.\n", cod);
+            Sleep(2000);
+            system("cls");
             return(inicio_meios);
         }
     }
@@ -831,6 +823,9 @@ Cliente* removerCliente(Cliente* inicio_clientes, int cod)
     {
         aux = atual->seguinte_cliente;
         free(atual);
+        printf("Cliente com cod %d removido com sucesso.\n", cod);
+        Sleep(2000);
+        system("cls");
         return(aux);
     }
     else
@@ -845,6 +840,9 @@ Cliente* removerCliente(Cliente* inicio_clientes, int cod)
         {
             anterior->seguinte_cliente = atual->seguinte_cliente;
             free(atual);
+            printf("Cliente com cod %d removido com sucesso.\n", cod);
+            Sleep(2000);
+            system("cls");
             return(inicio_clientes);
         }
     }
@@ -861,6 +859,9 @@ Gestor* removerGestor(Gestor* inicio_gestores, int cod)
     {
         aux = atual->seguinte_gestor;
         free(atual);
+        printf("Gestor com cod %d removido com sucesso.\n", cod);
+        Sleep(2000);
+        system("cls");
         return(aux);
     }
     else
@@ -870,11 +871,14 @@ Gestor* removerGestor(Gestor* inicio_gestores, int cod)
             anterior = atual;
             atual = atual->seguinte_gestor;
         }
-        if (atual == NULL) return(inicio_gestores);
+        if (atual == NULL) return(inicio_gestores); // Lista ligada toda percorrida, nao foi encontrado nenhum gestor com o codigo inserido.
         else // Remoção do gestor com cod introduzido.
         {
             anterior->seguinte_gestor = atual->seguinte_gestor;
             free(atual);
+            printf("Gestor com cod %d removido com sucesso.\n", cod);
+            Sleep(2000);
+            system("cls");
             return(inicio_gestores);
         }
     }
@@ -893,15 +897,20 @@ Gestor* alterarGestor(Gestor* inicio_gestores)
     if (inicio_gestores == NULL)
     {
         printf("Nao existem gestores, por favor faca o registo de um.\n");
+        Sleep(2000);
+        system("cls");
         return 0;
     }
-    printf("Introduza o seu codigo:");
+    printf("Introduza o seu codigo de gestor:");
     scanf("%d", &cod);
     if (existeGestor(aux, cod) == 1)
     {
         printf("O codigo %d nao existe.\n", cod);
+        Sleep(2000);
+        system("cls");
         return 0;
     }
+    system("cls");
     while (inicio_gestores != NULL)
     {
         if (inicio_gestores->codigo == cod)
@@ -928,25 +937,32 @@ Gestor* alterarGestor(Gestor* inicio_gestores)
                     if (!existeGestor(aux, novo_cod))
                     {
                         printf("Ja existe alguem com esse codigo.\n");
-                        break;
+                        Sleep(2000);
+                        system("cls");
                     }
                     else
                     {
                         inicio_gestores->codigo = novo_cod;
                         printf("Codigo alterado com sucesso. O seu novo codigo %d\n", inicio_gestores->codigo);
+                        Sleep(2000);
+                        system("cls");
                     }
                     break;
                 case 2:
                     printf("Introduza um novo nome:");
                     scanf("%s", novo_nome);
                     strcpy(inicio_gestores->nome, novo_nome);
+                    Sleep(2000);
+                    system("cls");
                     break;
                 case 3:
                     printf("Introduza a nova area para ser responsavel:");
                     scanf("%s", nova_area_responsavel);
                     strcpy(inicio_gestores->area_responsavel, nova_area_responsavel);
-                    printf("Area responsavel alterada com sucesso.\n");
+                    printf("A sua area responsavel foi alterada com sucesso.\n");
                     printf("A sua nova area e a seguinte: %s\n", inicio_gestores->area_responsavel);
+                    Sleep(2000);
+                    system("cls");
                     break;
                 case 4:
                     printf("Introduza a sua nova senha:");
@@ -957,6 +973,8 @@ Gestor* alterarGestor(Gestor* inicio_gestores)
                     if (encriptar == 0)
                     {
                         printf("Senha alterada com sucesso.\n");
+                        Sleep(2000);
+                        system("cls");
                         break;
                     }
                     else
@@ -965,6 +983,8 @@ Gestor* alterarGestor(Gestor* inicio_gestores)
                         encryptSenha(inicio_gestores, nova_senha);
                         strcpy(inicio_gestores->senha, nova_senha);
                         printf("Senha encriptada e alterada com sucesso.\n");
+                        Sleep(2000);
+                        system("cls");
                         break;
                     }
                 case 0:
@@ -988,6 +1008,8 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
     if (inicio_clientes == NULL)
     {
         printf("Nao existem clientes.\n");
+        Sleep(2000);
+        system("cls");
         return 0;
     }
     printf("Introduza o seu codigo:");
@@ -996,12 +1018,16 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
     scanf("%d", &NIF);
     if (existeClienteCod(aux, codigo) == 1)
     {
-        printf("Nao existe ninguem registado com o cod %d.\n", codigo);
+        printf("Nao existe nenhum cliente registado com o cod %d.\n", codigo);
+        Sleep(2000);
+        system("cls");
         return 0;
     }
     else if (existeClienteNIF(aux, NIF) == 1)
     {
         printf("O codigo %d, nao esta registado com o NIF %d.\n",codigo, NIF);
+        Sleep(2000);
+        system("cls");
         return 0;
     }
     while (inicio_clientes != NULL)
@@ -1029,6 +1055,8 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
                     scanf("%[^\n]", novo_nome);
                     strcpy(inicio_clientes->nome, novo_nome);
                     printf("Nome alterado com sucesso para %s.\n", inicio_clientes->nome);
+                    Sleep(2000);
+                    system("cls");
                     break;
                 case 2:
                     printf("Insira o seu novo codigo:");
@@ -1037,10 +1065,14 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
                     {
                         inicio_clientes->codigo = novo_codigo;
                         printf("O seu novo codigo %d\n", inicio_clientes->codigo);
+                        Sleep(2000);
+                        system("cls");
                     }
                     else
                     {
                         printf("O codigo %d ja existe.\n",novo_codigo);
+                        Sleep(2000);
+                        system("cls");
                         break;
                     }
                     break;
@@ -1050,6 +1082,8 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
                     if (novo_NIF <= 192000000 || novo_NIF >= 193000000)
                     {
                         printf("Por favor tente de novo.\n");
+                        Sleep(2000);
+                        system("cls");
                         break;
                     }
                     else
@@ -1058,13 +1092,18 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
                         {
                             inicio_clientes->NIF = novo_NIF;
                             printf("O seu novo NIF %d\n", inicio_clientes->NIF);
+                            Sleep(2000);
+                            system("cls");
                         }
                         else
                         {
                             printf("Ja existe alguem com o NIF inserido %d.\n", novo_NIF);
+                            Sleep(2000);
+                            system("cls");
                         }
                     }
-                case 4:
+                    break;
+                case 0:
                     break;
                 }
             } while (escolha != 0);
@@ -1084,22 +1123,27 @@ Meio* alterarMeio(Meio* inicio_meios)
     if (inicio_meios == NULL)
     {
         printf("Nao existem meios.\n");
+        Sleep(2000);
+        system("cls");
         return 0;
     }
     printf("Introduza o codigo do meio que pretende alterar:");
     scanf("%d", &cod);
     if (existeMeio(inicio_meios, cod))
     {
-        printf("Esse meio nao existe.\n");
+        printf("O meio com o codigo %d nao existe.\n", cod);
+        Sleep(2000);
+        system("cls");
         return 0;
     }
+    system("cls");
     while (inicio_meios != NULL)
     {
         if (inicio_meios->codigo == cod)
         {
             do
             {
-                printf("Este sao os dados do meio cod %d.\n", cod);
+                printf("Este sao os dados do meio cod %d.\n", inicio_meios->codigo);
                 printf("------------------------------------------------------------------------------------------------------------------------\n");
                 printf("Codigo:%d\nTipo:%s\nBateria:%.2f\nAut:%.2f\nCusto:%d\nGeo:%s\nAtivo:%d\n", inicio_meios->codigo, inicio_meios->tipo, inicio_meios->bateria, inicio_meios->autonomia, inicio_meios->custo, inicio_meios->geocodigo, inicio_meios->ativo);
                 printf("------------------------------------------------------------------------------------------------------------------------\n");
@@ -1121,11 +1165,15 @@ Meio* alterarMeio(Meio* inicio_meios)
                     if (!existeMeio(aux, cod_alterar))
                     {
                         printf("Ja existe um meio com esse codigo.\n");
+                        Sleep(2000);
+                        system("cls");
                     }
                     else
                     {
                         inicio_meios->codigo = cod_alterar;
                         printf("Codigo alterado com sucesso. Novo codigo %d.\n", inicio_meios->codigo);
+                        Sleep(2000);
+                        system("cls");
                     }
                     break;
                 case 2:
@@ -1133,6 +1181,8 @@ Meio* alterarMeio(Meio* inicio_meios)
                     scanf("%s", meio_nome_alterar);
                     strcpy(inicio_meios->tipo, meio_nome_alterar);
                     printf("Nome alterado com sucesso para %s.\n", inicio_meios->tipo);
+                    Sleep(2000);
+                    system("cls");
                     break;
                 case 3:
                     printf("Insira o novo nivel de bateria:");
@@ -1140,50 +1190,77 @@ Meio* alterarMeio(Meio* inicio_meios)
                     if (bat_alterar > 100.0001 || bat_alterar<0)
                     {
                         printf("Insira um nivel de bateria, entre 0 e 100.\n");
+                        Sleep(2000);
+                        system("cls");
                         break;
                     }
                     inicio_meios->bateria = bat_alterar;
                     printf("Novo nivel de bateria %.2f\n", inicio_meios->bateria);
+                    Sleep(2000);
+                    system("cls");
                     break;
                 case 4:
                     printf("Insira o novo nivel de autonomia:");
                     scanf("%f", &aut_alterar);
                     if (aut_alterar > 100.0001 || aut_alterar < 0)
                     {
-                        printf("Insira um nivel de bateria, entre 0 e 100.\n");
+                        printf("Insira um nivel de autonomia, entre 0 e 100.\n");
+                        Sleep(2000);
+                        system("cls");
                         break;
                     }
                     inicio_meios->autonomia = aut_alterar;
                     printf("Novo nivel de autonomia %.2f\n", inicio_meios->autonomia);
+                    Sleep(2000);
+                    system("cls");
                     break;
                 case 5:
                     printf("Insira o novo custo:");
                     scanf("%d", &custo_alterar);
                     inicio_meios->custo = custo_alterar;
                     printf("Novo custo do meio %d\n", inicio_meios->custo);
+                    Sleep(2000);
+                    system("cls");
                     break;
                 case 6:
                     printf("Insira um novo geocodigo:");
                     scanf("%s", geocodigo_alterar);
                     strcpy(inicio_meios->geocodigo, geocodigo_alterar);
                     printf("Novo geocodigo %s\n", inicio_meios->geocodigo);
+                    Sleep(2000);
+                    system("cls");
                     break;
                 case 7:
-                    printf("Este veiculo esta ativo?1-Sim/0-Nao");
+                    printf("Este veiculo esta ativo?1-Sim/0-Nao\n");
+                    printf("A sua escolha:");
                     scanf("%d", &ativo_alterar);
                     if (ativo_alterar == 1)
                     {
                         if (inicio_meios->ativo == 1)
+                        {
                             printf("Meio ja esta ativo.\n");
+                            Sleep(2000);
+                            system("cls");
+                        } 
                         else
+                        {
                             inicio_meios->ativo = 1;
+                            system("cls");
+                        }
                     }
                     else
                     {
                         if (inicio_meios->ativo == 0)
+                        {
                             printf("Meio ja nao estava ativo.\n");
+                            Sleep(2000);
+                            system("cls");
+                        }
                         else
+                        {
                             inicio_meios->ativo = 0;
+
+                        }
                     }
                     break;
                 case 0:
@@ -1229,6 +1306,8 @@ Cliente* carregarSaldo(Cliente* inicio_clientes) {
                 printf("Nao pode carregar saldo negativo.\n");
             inicio_clientes->saldo = saldo_carregar + inicio_clientes->saldo;
             printf("%d carregado com sucesso. Tem agora %d de saldo.\n", saldo_carregar, inicio_clientes->saldo);
+            Sleep(2000);
+            system("cls");
             return 1;
         }
         inicio_clientes = inicio_clientes->seguinte_cliente;
@@ -1258,6 +1337,8 @@ Cliente* consultaSaldo(Cliente* inicio_clientes) {
         if (inicio_clientes->codigo == codigo && inicio_clientes->NIF == NIF)
         {
             printf("Voce tem %d de saldo.\n", inicio_clientes->saldo);
+            Sleep(2000);
+            system("cls");
             return 1;
         }
         inicio_clientes = inicio_clientes->seguinte_cliente;
@@ -1306,11 +1387,15 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
                 if (inicio_clientes->saldo < inicio_meios->custo)
                 {
                     printf("Nao tem saldo suficiente para efetuar a compra.\n");
+                    Sleep(2000);
+                    system("cls");
                     return 0;
                 }
                 else if (inicio_meios->ativo == 1)
                 {
                     printf("Nao pode alugar esse meio, pois ja esta alugado.\n");
+                    Sleep(2000);
+                    system("cls");
                 }
                 else
                 {
@@ -1323,7 +1408,7 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
                         if (aux_data_compra[i] == '\n')
                             aux_data_compra[i] = '\0';
                     }
-                    printf("%s\n", ctime(&dataCompra));
+                    printf("Data da compra: %s\n", ctime(&dataCompra));
                     int inserir = 0;
                     inicio_clientes->saldo = inicio_clientes->saldo - inicio_meios->custo;
                     printf("O seu novo saldo %d\n", inicio_clientes->saldo);
@@ -1347,6 +1432,8 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
                             novo_nodo->seguinte_compra = NULL;
                             inicio_aluguer = novo_nodo;
                             printf("Compra efetuada com sucesso.\n");
+                            Sleep(2000);
+                            system("cls");
                             inserir = 1;
                             return inicio_aluguer;
                         }
@@ -1358,12 +1445,16 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
         else
         {
             printf("O meio introduzido, nao existe.\n");
+            Sleep(2000);
+            system("cls");
             return 0;
         }
     }
     else
     {
         printf("Nao existe esse codigo de cliente.\n");
+        Sleep(2000);
+        system("cls");
         return 0;
     }
 }
@@ -1371,6 +1462,7 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
 // Função para listar na consola, todos os meios existentes com um certo geocodigo.
 void listarGeocodigo(Meio* inicio_meios)
 {
+    system("cls");
     int verificado = 0, existe = 0;
     char verificar_geocodigo[50];
     Meio* aux_print = inicio_meios;
@@ -1390,11 +1482,13 @@ void listarGeocodigo(Meio* inicio_meios)
     }
     if (existe)
     {
-        printf("Estes sao os meios com o geocodigo %s\n", verificar_geocodigo);
+        printf("Estes sao os meios com o geocodigo %s\n------------------------------------------------------------------------------------------------------------------------\n", verificar_geocodigo);
     }
     else
     {
         printf("Nao existe o geocodigo inserido.\n");
+        Sleep(2000);
+        system("cls");
     }
     while (inicio_meios != NULL)
     {
@@ -1404,6 +1498,7 @@ void listarGeocodigo(Meio* inicio_meios)
         }
         inicio_meios = inicio_meios->seguinte_meio;
     }
+    printf("------------------------------------------------------------------------------------------------------------------------\n");
 }
 #pragma endregion
 // -----------------------------------------------------------------FIM_OP_UTILIZADOR-------------------------------------------------------------------
@@ -1430,12 +1525,15 @@ Aluguer* lerFicheiro_Aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer)
 // Função para listar na consola, o historico dos alugueres já feitos.
 void listarAluguer(Aluguer* inicio_aluguer)
 {
+    system("cls");
     if (inicio_aluguer == NULL)
     {
         printf("Nao existem alugueres.\n");
+        Sleep(2000);
+        system("cls");
         return 0;
     }
-    printf("\nDados de Alugueres:\n------------------------------------------------------------------------------------------------------------------------\n");
+    printf("Dados de Alugueres:\n------------------------------------------------------------------------------------------------------------------------\n");
     while (inicio_aluguer != NULL)
     {
         printf("Codigo:%d   Data de compra:%s       Nome:%s Meio:%s\n", inicio_aluguer->cod_comprador, inicio_aluguer->data_compra, inicio_aluguer->nome_comprador, inicio_aluguer->nome_meio_comprado);
