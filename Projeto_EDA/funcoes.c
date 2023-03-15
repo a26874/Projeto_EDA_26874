@@ -1479,7 +1479,7 @@ void listarGeocodigo(Meio* inicio_meios)
     }
     if (existe)
     {
-        printf("Estes sao os meios com o geocodigo %s\n------------------------------------------------------------------------------------------------------------------------\n", verificar_geocodigo);
+        printf("Estes sao os meios com o geocodigo %s\n-----------------------------------------------------------------------------------------------------------------------\n", verificar_geocodigo);
     }
     else
     {
