@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <Windows.h>
 #include "funcoes.h"
 
 
@@ -151,6 +152,8 @@ int main() {
                         if (novo_cliente_NIF <= 192000000 || novo_cliente_NIF >= 193000000)
                         {
                             printf("Tente de novo.\n");
+                            Sleep(2000);
+                            system("cls");
                             break;
                         }
                         printf("Saldo:");
@@ -167,8 +170,9 @@ int main() {
                         }
                         else
                         {
-                            printf("Ja existe alguem com o codigo %d.\n", novo_cliente_codigo);
-                            printf("Ja existe alguem com o NIF %d.\n", novo_cliente_NIF);
+                            printf("Ja existe algum cliente com os dados inseridos.\n");
+                            Sleep(2000);
+                            system("cls");
                             break;
                         }
                     case 5:
@@ -184,6 +188,8 @@ int main() {
                         if (novo_meio_bateria <= 0.00 || novo_meio_bateria > 100.0001)
                         {
                             printf("Tente de novo.\n");
+                            Sleep(2000);
+                            system("cls");
                             break;
                         }
                         printf("Autonomia(0.00 - 100.00):");
@@ -192,6 +198,8 @@ int main() {
                         if (novo_meio_autonomia <= 0.00 || novo_meio_autonomia >= 100.0001)
                         {
                             printf("Tente de novo.\n");
+                            Sleep(2000);
+                            system("cls");
                             break;
                         }
                         printf("Custo:");
@@ -212,6 +220,8 @@ int main() {
                         else
                         {
                             printf("Ja existe um meio com o cod %d.\n", novo_meio_codigo);
+                            Sleep(2000);
+                            system("cls");
                             break;
                         }
                         break;
@@ -235,7 +245,9 @@ int main() {
                         }
                         else
                         {
-                            printf("Ja existe um gestor com o codigo %d", novo_gestor_codigo);
+                            printf("Ja existe um gestor com o codigo %d.\n", novo_gestor_codigo);
+                            Sleep(2000);
+                            system("cls");
                             break;
                         }
                         break;
@@ -244,11 +256,14 @@ int main() {
                         scanf("%d", &codigo_meio_remover);
                         if (existeMeio(inicio_meios, codigo_meio_remover) == 0)
                         {
-                            removerMeio(inicio_meios, codigo_meio_remover);
+                            inicio_meios = removerMeio(inicio_meios, codigo_meio_remover);
                             break;
                         }
                         else
                         {
+                            printf("O meio com cod %d nao existe.\n", codigo_meio_remover);
+                            Sleep(2000);
+                            system("cls");
                             break;
                         }
                     case 8:
@@ -256,11 +271,14 @@ int main() {
                         scanf("%d", &codigo_cliente_remover);
                         if (existeClienteCod(inicio_clientes, codigo_cliente_remover) == 0)
                         {
-                            removerCliente(inicio_clientes, codigo_cliente_remover);
+                            inicio_clientes = removerCliente(inicio_clientes, codigo_cliente_remover);
                             break;
                         }
                         else
                         {
+                            printf("O cliente com cod %d nao existe.\n", codigo_cliente_remover);
+                            Sleep(2000);
+                            system("cls");
                             break;
                         }
                     case 9:
@@ -268,11 +286,18 @@ int main() {
                         scanf("%d", &codigo_gestor_remover);
                         if (existeGestor(inicio_gestor, codigo_gestor_remover) == 0)
                         {
-                            removerGestor(inicio_gestor, codigo_gestor_remover);
+                            inicio_gestor = removerGestor(inicio_gestor, codigo_gestor_remover);
+                            gestor_login = 0;
+                            printf("Terminando sessao.\n");
+                            Sleep(2000);
+                            system("cls");
                             break;
                         }
                         else
                         {
+                            printf("O gestor com cod %d nao existe.\n", codigo_gestor_remover);
+                            Sleep(2000);
+                            system("cls");
                             break;
                         }
                     case 10:
@@ -289,6 +314,10 @@ int main() {
                         break;
                     case 0:
                         gestor_login = 0;
+                        break;
+                    default:
+                        getchar();
+                        printf("\nInsira uma das opcoes mostradas.\n");
                         break;
                     }
                 }
