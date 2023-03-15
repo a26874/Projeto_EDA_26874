@@ -860,8 +860,7 @@ Gestor* removerGestor(Gestor* inicio_gestores, int cod)
         aux = atual->seguinte_gestor;
         free(atual);
         printf("Gestor com cod %d removido com sucesso.\n", cod);
-        Sleep(2000);
-        system("cls");
+
         return(aux);
     }
     else
@@ -877,8 +876,6 @@ Gestor* removerGestor(Gestor* inicio_gestores, int cod)
             anterior->seguinte_gestor = atual->seguinte_gestor;
             free(atual);
             printf("Gestor com cod %d removido com sucesso.\n", cod);
-            Sleep(2000);
-            system("cls");
             return(inicio_gestores);
         }
     }
