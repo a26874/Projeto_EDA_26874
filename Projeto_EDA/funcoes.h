@@ -46,6 +46,14 @@ typedef struct registo_aluguer
 	struct registo_aluguer* seguinte_compra;
 }Aluguer;
 
+typedef struct registo_transacoes
+{
+	int codigo_utilizador;
+	char nome_transacao[50];
+	int montante_carregado;
+	char data_transacao[50];
+	struct registo_transacoes* seguinte_transacao;
+}Transacao;
 
 int menu();
 
@@ -71,7 +79,7 @@ Meio* existeMeio(Meio* inicio_meios, int cod);
 
 Meio* bubbleSortMeios(Meio* inicio_meios);
 
-
+float mediaAutonomia(Meio* inicio_meios);
 
 // -------------------------------------------------FUN합ES_F-LEITURA/ESCRITA/REPRESENTA플O DE MEIOS-------------------------------------------------
 
@@ -89,9 +97,9 @@ Cliente* escreverFicheiro_clientes(Cliente* inicio_clientes, FILE* dados_cliente
 
 Cliente* escreverFicheiro_clientes_bin(Cliente* inicio_clientes, FILE* dados_clientes);
 
-Cliente *carregarSaldo(Cliente* inicio_clientes);
+Cliente* carregarSaldo(Cliente* inicio_clientes, Transacao* inicio_transacao);
 
-Cliente *consultaSaldo(Cliente * inicio_clientes);
+Cliente* consultaSaldo(Cliente* inicio_clientes);
 
 Cliente* alterarDadosCliente(Cliente* inicio_clientes);
 
@@ -164,3 +172,14 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
 
 // -------------------------------------------------------------------FUN합ES_F-ALUGUER--------------------------------------------------------------------
 
+// -------------------------------------------------------------------FUN합ES_I-TRANSACOES--------------------------------------------------------------------
+
+Transacao* lerFicheiro_transacao(Transacao* inicio_transacao, FILE* dados_transacao);
+
+Transacao* escreverFicheiro_transacao(Transacao* inicio_transacao, FILE* dados_transacao);
+
+Transacao* escreverFicheiro_transacao_bin(Transacao* inicio_transacao, FILE* dados_transacao);
+
+void listarTransacao(Transacao* inicio_transacao);
+
+// -------------------------------------------------------------------FUN합ES_F-TRANSACOES--------------------------------------------------------------------

@@ -13,7 +13,8 @@ int main() {
     Cliente* inicio_clientes = NULL;
     Gestor* inicio_gestor = NULL;
     Aluguer* inicio_aluguer = NULL;
-    FILE* dados_meios, * dados_clientes, * dados_gestor, * dados_aluguer;
+    Transacao* inicio_transacao = NULL;
+    FILE* dados_meios, * dados_clientes, * dados_gestor, * dados_aluguer, * dados_transacao;
     int op, bool, op_utilizador, utilizador_login = 0, gestor_login = 0, op_gestor;
     int novo_cliente_codigo, novo_cliente_NIF, novo_cliente_saldo, novo_meio_codigo, novo_meio_custo, novo_gestor_codigo, codigo_meio_remover
         , codigo_cliente_remover, codigo_gestor_remover, codigo_login_utilizador;
@@ -30,6 +31,8 @@ int main() {
     inicio_gestor = lerFicheiro_gestores(inicio_gestor, dados_gestor);
     dados_aluguer = fopen("historico_compras.txt", "rt");
     inicio_aluguer = lerFicheiro_Aluguer(inicio_aluguer, dados_aluguer);
+    dados_transacao = fopen("historico_transacoes.txt", "rt");
+    inicio_transacao = lerFicheiro_transacao(inicio_transacao, dados_transacao);
     bubbleSortMeios(inicio_meios);
     bubbleSortClientes(inicio_clientes);
     bubbleSortGestores(inicio_gestor);
@@ -55,7 +58,14 @@ int main() {
                     listarMeios(inicio_meios);
                     break;
                 case 2:
-                    carregarSaldo(inicio_clientes);
+                    if (inicio_transacao == NULL)
+                    {
+                        inicio_transacao = carregarSaldo(inicio_clientes, inicio_transacao);
+                    }
+                    else
+                    {
+                        carregarSaldo(inicio_clientes, inicio_transacao);
+                    }
                     break;
                 case 3:
                     consultaSaldo(inicio_clientes);
@@ -90,7 +100,7 @@ int main() {
                     break;
                 }
             }
-                
+
             break;
         case 2:
             if (inicio_gestor == NULL)
@@ -121,7 +131,7 @@ int main() {
             }
             else if (!modoGestor(inicio_gestor))
             {
-               break;
+                break;
             }
             else
             {
@@ -312,6 +322,12 @@ int main() {
                     case 13:
                         alterarDadosCliente(inicio_clientes);
                         break;
+                    case 14:
+                        mediaAutonomia(inicio_meios);
+                        break;
+                    case 15:
+                        listarTransacao(inicio_transacao);
+                        break;
                     case 0:
                         gestor_login = 0;
                         break;
@@ -337,6 +353,9 @@ int main() {
             dados_aluguer = fopen("historico_compras.txt", "rt");
             escreverFicheiro_aluguer(inicio_aluguer, dados_aluguer);
             escreverFicheiro_aluguer_bin(inicio_aluguer, dados_aluguer);
+            dados_transacao = fopen("historico_transacoes.txt", "rt");
+            escreverFicheiro_transacao(inicio_transacao, dados_transacao);
+            escreverFicheiro_transacao_bin(inicio_transacao, dados_transacao);
             printf("O programa ira ser encerrado.\n");
             return 0;
         default:
