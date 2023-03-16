@@ -83,7 +83,7 @@ int menu_utilizador()
 
 // -------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS-------------------------------------------------
 
-//#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS
+#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS
 // Ler ficheiro de texto, contendo informação sobre os meios.
 // Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
 Meio* lerFicheiro_meios(Meio* inicio_meios, FILE* dados_meios)
@@ -260,14 +260,14 @@ float mediaAutonomia(Meio* inicio_meios)
     printf("A media de autonomia de todos os meios e de: %.2f\n", resultado);
 }
 
-//#pragma endregion 
+#pragma endregion 
 
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS--------------------------------------------------------
 
 
 // --------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES--------------------------------------------------
 
-//#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES
+#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES
 
 // Ler ficheiro de texto, contendo informação sobre os clientes.
 // Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
@@ -421,14 +421,14 @@ Cliente* bubbleSortClientes(Cliente* inicio_clientes) {
     inicio_clientes = atual;
     return inicio_clientes;
 }
-//#pragma endregion
+#pragma endregion
 
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES----------------------------------------------------
 
 
 // ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES----------------------------------------------------
 
-//#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES
+#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES
 
 // Ler ficheiro de texto, contendo informação sobre os gestores.
 // Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
@@ -582,7 +582,7 @@ void listarTransacao(Transacao* inicio_transacao)
     }
     printf("------------------------------------------------------------------------------------------------------------------------\n");
 }
-//#pragma endregion
+#pragma endregion
 
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES----------------------------------------------------
 
@@ -1600,7 +1600,8 @@ void listarGeocodigo(Meio* inicio_meios)
 
 
 // ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE ALUGUER----------------------------------------------------
-//#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE ALUGUER
+
+#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE ALUGUER
 // Ler ficheiro de texto, contendo informação sobre os alugueres.
 // Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
 Aluguer* lerFicheiro_Aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer)
@@ -1722,12 +1723,13 @@ Aluguer* escreverFicheiro_aluguer_bin(Aluguer* inicio_aluguer, FILE* dados_alugu
     }
     fclose(dados_aluguer);
 }
-//#pragma endregion
+#pragma endregion
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE ALUGUER----------------------------------------------------
 
 
 // ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE TRANSACOES----------------------------------------------------
 
+#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE TRANSACOES
 Transacao* lerFicheiro_transacao(Transacao* inicio_transacao, FILE* dados_transacao)
 {
     char linha[MAX_LINE_LEN];
@@ -1784,4 +1786,5 @@ Transacao* escreverFicheiro_transacao_bin(Transacao* inicio_transacao, FILE* dad
     fclose(dados_transacao);
 }
 
+#pragma endregion
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE TRANSACOES----------------------------------------------------
