@@ -45,6 +45,8 @@ int menu_gestor()
     printf("11- Alterar dados gestor.\n");
     printf("12- Alterar dados meios.\n");
     printf("13- Alterar dados cliente.\n");
+    printf("14- Media autonomia.\n");
+    printf("15- Listar transacoes.\n");
     printf("0- Sair.\n");
     printf("A sua escolha:");
     scanf("%d", &escolha);
@@ -81,8 +83,7 @@ int menu_utilizador()
 
 // -------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS-------------------------------------------------
 
-#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS
-// \file
+//#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS
 // Ler ficheiro de texto, contendo informação sobre os meios.
 // Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
 Meio* lerFicheiro_meios(Meio* inicio_meios, FILE* dados_meios)
@@ -97,7 +98,7 @@ Meio* lerFicheiro_meios(Meio* inicio_meios, FILE* dados_meios)
         // Enquanto é possivel obter texto do ficheiro dados_meios, irá ser criado um novo espaço na memória para a struct meios
         // A cada iteração é atribuido todo o conteudo obtido ao inicio_meios, criando assim uma lista ligada.
         Meio* novo_nodo = malloc(sizeof(Meio));
-        sscanf(linha,"%d;%[^;];%f;%f;%d;%[^;];%d\n", &novo_nodo->codigo, novo_nodo->tipo, &novo_nodo->bateria, &novo_nodo->autonomia,&novo_nodo->custo, novo_nodo->geocodigo, &novo_nodo->ativo);
+        sscanf(linha, "%d;%[^;];%f;%f;%d;%[^;];%d\n", &novo_nodo->codigo, novo_nodo->tipo, &novo_nodo->bateria, &novo_nodo->autonomia, &novo_nodo->custo, novo_nodo->geocodigo, &novo_nodo->ativo);
         // O seguinte valor de memória é igual a inicio_meios que foi inicializado a NULL, para de seguida ser possivel atribuir outro elemento da lista ligada.
         novo_nodo->seguinte_meio = inicio_meios;
         // Inicio_meios vai obter toda a informação que foi lida por novo_nodo
@@ -191,7 +192,7 @@ Meio* bubbleSortMeios(Meio* inicio_meios)
     int b = 1, aux_codigo, aux_custo, aux_ativo;
     float aux_bat, aux_aut;
     char aux_nome[50], aux_geo[50];
- 
+
     while (b)
     {
         b = 0;
@@ -238,14 +239,35 @@ Meio* bubbleSortMeios(Meio* inicio_meios)
     return inicio_meios;
 }
 
-#pragma endregion 
+float mediaAutonomia(Meio* inicio_meios)
+{
+    int tamanho = 0;
+    float resultado = 0;
+    if (inicio_meios == NULL)
+    {
+        printf("Lista ligada vazia.\n");
+        Sleep(2000);
+        system("cls");
+        return 0;
+    }
+    while (inicio_meios != NULL)
+    {
+        resultado += inicio_meios->autonomia;
+        inicio_meios = inicio_meios->seguinte_meio;
+        tamanho++;
+    }
+    resultado = resultado / tamanho;
+    printf("A media de autonomia de todos os meios e de: %.2f\n", resultado);
+}
+
+//#pragma endregion 
 
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS--------------------------------------------------------
 
 
 // --------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES--------------------------------------------------
 
-#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES
+//#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES
 
 // Ler ficheiro de texto, contendo informação sobre os clientes.
 // Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
@@ -383,7 +405,7 @@ Cliente* bubbleSortClientes(Cliente* inicio_clientes) {
 
                 atual->codigo = seguinte->codigo;
                 strcpy(atual->nome, seguinte->nome);
-                atual->NIF= seguinte->NIF;
+                atual->NIF = seguinte->NIF;
                 atual->saldo = seguinte->saldo;
 
                 seguinte->codigo = aux_codigo;
@@ -399,14 +421,14 @@ Cliente* bubbleSortClientes(Cliente* inicio_clientes) {
     inicio_clientes = atual;
     return inicio_clientes;
 }
-#pragma endregion
+//#pragma endregion
 
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES----------------------------------------------------
 
 
 // ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES----------------------------------------------------
 
-#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES
+//#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES
 
 // Ler ficheiro de texto, contendo informação sobre os gestores.
 // Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
@@ -416,7 +438,7 @@ Gestor* lerFicheiro_gestores(Gestor* inicio_gestor, FILE* dados_gestor)
     while (fgets(linha, MAX_LINE_LEN, dados_gestor))
     {
         Gestor* novo_nodo = malloc(sizeof(struct registo_gestor));
-        sscanf(linha, "%d;%[^;];%[^;];%d;%s\n", &novo_nodo->codigo, novo_nodo->nome, novo_nodo->senha,&novo_nodo->encriptado, novo_nodo->area_responsavel);
+        sscanf(linha, "%d;%[^;];%[^;];%d;%s\n", &novo_nodo->codigo, novo_nodo->nome, novo_nodo->senha, &novo_nodo->encriptado, novo_nodo->area_responsavel);
         novo_nodo->seguinte_gestor = inicio_gestor;
         inicio_gestor = novo_nodo;
     }
@@ -457,7 +479,7 @@ Gestor* escreverFicheiro_gestores(Gestor* inicio_gestores, FILE* dados_gestores)
     }
     while (inicio_gestores != NULL)
     {
-        fprintf(dados_gestores, "%d;%s;%s;%d;%s\n", inicio_gestores->codigo, inicio_gestores->nome,inicio_gestores->senha, inicio_gestores->encriptado, inicio_gestores->area_responsavel);
+        fprintf(dados_gestores, "%d;%s;%s;%d;%s\n", inicio_gestores->codigo, inicio_gestores->nome, inicio_gestores->senha, inicio_gestores->encriptado, inicio_gestores->area_responsavel);
         inicio_gestores = inicio_gestores->seguinte_gestor;
     }
 
@@ -475,7 +497,7 @@ Gestor* escreverFicheiro_gestores_bin(Gestor* inicio_gestores, FILE* dados_gesto
     }
     while (inicio_gestores != NULL)
     {
-        fprintf(dados_gestores, "%d;%s;%s;%d;%s\n", inicio_gestores->codigo, inicio_gestores->nome,inicio_gestores->senha,inicio_gestores->encriptado, inicio_gestores->area_responsavel);
+        fprintf(dados_gestores, "%d;%s;%s;%d;%s\n", inicio_gestores->codigo, inicio_gestores->nome, inicio_gestores->senha, inicio_gestores->encriptado, inicio_gestores->area_responsavel);
         inicio_gestores = inicio_gestores->seguinte_gestor;
     }
     fclose(dados_gestores);
@@ -542,7 +564,25 @@ Gestor* bubbleSortGestores(Gestor* inicio_gestor) {
     return inicio_gestor;
 }
 
-#pragma endregion
+void listarTransacao(Transacao* inicio_transacao)
+{
+    system("cls");
+    if (inicio_transacao == NULL)
+    {
+        printf("Nao existem registos de transacoes.\n");
+        Sleep(2000);
+        system("cls");
+        return 0;
+    }
+    printf("Dados de transacoes:\n------------------------------------------------------------------------------------------------------------------------\n");
+    while (inicio_transacao != NULL)
+    {
+        printf("Codigo:%d   Nome:%s     Mont.Carregado:%dEur   Data:%s \n", inicio_transacao->codigo_utilizador, inicio_transacao->nome_transacao, inicio_transacao->montante_carregado, inicio_transacao->data_transacao);
+        inicio_transacao = inicio_transacao->seguinte_transacao;
+    }
+    printf("------------------------------------------------------------------------------------------------------------------------\n");
+}
+//#pragma endregion
 
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES----------------------------------------------------
 
@@ -603,7 +643,7 @@ Gestor* modoGestor(Gestor* inicio_gestores) {
 Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float aut, int custo, char geo[50])
 {
     int inserir = 0;
-    while (inserir !=1)
+    while (inserir != 1)
     {
         if (inicio_meios == NULL)
         {
@@ -631,7 +671,7 @@ Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float a
             novo_meio->autonomia = aut;
             novo_meio->custo = custo;
             strcpy(novo_meio->geocodigo, geo);
-            novo_meio->ativo= 0;
+            novo_meio->ativo = 0;
             inicio_meios->seguinte_meio = novo_meio;
             novo_meio->seguinte_meio = NULL;
             inicio_meios = novo_meio;
@@ -1021,7 +1061,7 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
     }
     else if (existeClienteNIF(aux, NIF) == 1)
     {
-        printf("O codigo %d, nao esta registado com o NIF %d.\n",codigo, NIF);
+        printf("O codigo %d, nao esta registado com o NIF %d.\n", codigo, NIF);
         Sleep(2000);
         system("cls");
         return 0;
@@ -1066,7 +1106,7 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
                     }
                     else
                     {
-                        printf("O codigo %d ja existe.\n",novo_codigo);
+                        printf("O codigo %d ja existe.\n", novo_codigo);
                         Sleep(2000);
                         system("cls");
                         break;
@@ -1183,7 +1223,7 @@ Meio* alterarMeio(Meio* inicio_meios)
                 case 3:
                     printf("Insira o novo nivel de bateria:");
                     scanf("%f", &bat_alterar);
-                    if (bat_alterar > 100.0001 || bat_alterar<0)
+                    if (bat_alterar > 100.0001 || bat_alterar < 0)
                     {
                         printf("Insira um nivel de bateria, entre 0 e 100.\n");
                         Sleep(2000);
@@ -1237,7 +1277,7 @@ Meio* alterarMeio(Meio* inicio_meios)
                             printf("Meio ja esta ativo.\n");
                             Sleep(2000);
                             system("cls");
-                        } 
+                        }
                         else
                         {
                             inicio_meios->ativo = 1;
@@ -1278,8 +1318,8 @@ Meio* alterarMeio(Meio* inicio_meios)
 #pragma region OP_Utilizador
 // Função para carregamento de saldo, de um certo utilizador.
 // É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel carregar o saldo desse mesmo utilizador.
-Cliente* carregarSaldo(Cliente* inicio_clientes) {
-    int codigo, NIF;
+Cliente* carregarSaldo(Cliente* inicio_clientes, Transacao* inicio_transacao) {
+    int codigo, NIF, inserir = 1;
     printf("Introduza o seu codigo:");
     scanf("%d", &codigo);
     printf("Introduza o seu NIF:");
@@ -1287,6 +1327,8 @@ Cliente* carregarSaldo(Cliente* inicio_clientes) {
     if (inicio_clientes == NULL)
     {
         printf("Nao existe nenhum cliente.\n");
+        Sleep(2000);
+        system("cls");
         return 0;
     }
     while (inicio_clientes != NULL)
@@ -1299,12 +1341,67 @@ Cliente* carregarSaldo(Cliente* inicio_clientes) {
             printf("Digite:");
             scanf("%d", &saldo_carregar);
             if (saldo_carregar < 0)
+            {
                 printf("Nao pode carregar saldo negativo.\n");
+                Sleep(2000);
+                system("cls");
+                return 0;
+            }
             inicio_clientes->saldo = saldo_carregar + inicio_clientes->saldo;
             printf("%d carregado com sucesso. Tem agora %d de saldo.\n", saldo_carregar, inicio_clientes->saldo);
-            Sleep(2000);
-            system("cls");
-            return 1;
+            if (inicio_transacao == NULL)
+            {
+                Transacao* nova_transacao = malloc(sizeof(Transacao));
+                nova_transacao->codigo_utilizador = inicio_clientes->codigo;
+                nova_transacao->montante_carregado = saldo_carregar;
+                strcpy(nova_transacao->nome_transacao, inicio_clientes->nome);
+                time_t dataTransacao;
+                time(&dataTransacao);
+                char aux_data_transacao[50];
+                strcpy(aux_data_transacao, ctime(&dataTransacao));
+                for (int i = 0; i < strlen(aux_data_transacao); i++)
+                {
+                    if (aux_data_transacao[i] == '\n')
+                        aux_data_transacao[i] = '\0';
+                }
+                strcpy(nova_transacao->data_transacao, aux_data_transacao);
+                nova_transacao->seguinte_transacao = NULL;
+                inicio_transacao = nova_transacao;
+                return inicio_transacao;
+            }
+            while (inserir == 1)
+            {
+                if (inicio_transacao->seguinte_transacao == NULL)
+                {
+                    Transacao* nova_transacao = malloc(sizeof(Transacao));
+                    nova_transacao->codigo_utilizador = inicio_clientes->codigo;
+                    nova_transacao->montante_carregado = saldo_carregar;
+                    strcpy(nova_transacao->nome_transacao, inicio_clientes->nome);
+                    time_t dataTransacao;
+                    time(&dataTransacao);
+                    char aux_data_transacao[50];
+                    strcpy(aux_data_transacao, ctime(&dataTransacao));
+                    for (int i = 0; i < strlen(aux_data_transacao); i++)
+                    {
+                        if (aux_data_transacao[i] == '\n')
+                            aux_data_transacao[i] = '\0';
+                    }
+                    strcpy(nova_transacao->data_transacao, aux_data_transacao);
+                    inicio_transacao->seguinte_transacao = nova_transacao;
+                    nova_transacao->seguinte_transacao = NULL;
+                    inicio_transacao = nova_transacao;
+                    inserir = 0;
+                }
+                inicio_transacao = inicio_transacao->seguinte_transacao;
+                if (inserir == 0)
+                {
+                    Sleep(2000);
+                    system("cls");
+                    return 1;
+                }
+            }
+           
+
         }
         inicio_clientes = inicio_clientes->seguinte_cliente;
     }
@@ -1313,6 +1410,8 @@ Cliente* carregarSaldo(Cliente* inicio_clientes) {
         printf("Nao existe o cliente com o cod %d.\n", codigo);
         return 0;
     }
+    Sleep(2000);
+    system("cls");
 }
 
 // Função para consulta de saldo, de um certo utilizador.
@@ -1355,7 +1454,7 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
     int meio_Alugar, codigo_utilizador, NIF;
     printf("Insira o seu codigo:");
     scanf("%d", &codigo_utilizador);
-    if (existeClienteCod(inicio_clientes, codigo_utilizador)==0)
+    if (existeClienteCod(inicio_clientes, codigo_utilizador) == 0)
     {
         while (inicio_clientes->codigo != codigo_utilizador)
             inicio_clientes = inicio_clientes->seguinte_cliente;
@@ -1468,7 +1567,7 @@ void listarGeocodigo(Meio* inicio_meios)
 
     if (inicio_meios == NULL)
         return 0;
-    while (aux_print != NULL && existe ==0)
+    while (aux_print != NULL && existe == 0)
     {
         if (strcmp(verificar_geocodigo, aux_print->geocodigo) == 0)
         {
@@ -1478,7 +1577,7 @@ void listarGeocodigo(Meio* inicio_meios)
     }
     if (existe)
     {
-        printf("Estes sao os meios com o geocodigo %s\n-----------------------------------------------------------------------------------------------------------------------\n", verificar_geocodigo);
+        printf("Estes sao os meios com o geocodigo %s\n------------------------------------------------------------------------------------------------------------------------\n", verificar_geocodigo);
     }
     else
     {
@@ -1501,7 +1600,7 @@ void listarGeocodigo(Meio* inicio_meios)
 
 
 // ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE ALUGUER----------------------------------------------------
-#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE ALUGUER
+//#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE ALUGUER
 // Ler ficheiro de texto, contendo informação sobre os alugueres.
 // Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
 Aluguer* lerFicheiro_Aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer)
@@ -1555,7 +1654,7 @@ Aluguer* bubbleSortAluguer(Aluguer* inicio_aluguer) {
         while (atual->seguinte_compra != NULL)
         {
             seguinte = atual->seguinte_compra;
-            if (strcmp(atual->data_compra, seguinte->data_compra)>0)
+            if (strcmp(atual->data_compra, seguinte->data_compra) > 0)
             {
                 aux_codigo = atual->cod_comprador;
                 strcpy(aux_comprador, atual->nome_comprador);
@@ -1596,7 +1695,7 @@ Aluguer* escreverFicheiro_aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer)
     }
     while (inicio_aluguer != NULL)
     {
-        fprintf(dados_aluguer, "%d;%s;%s;%s\n", inicio_aluguer->cod_comprador, inicio_aluguer->data_compra, inicio_aluguer->nome_comprador,inicio_aluguer->nome_meio_comprado);
+        fprintf(dados_aluguer, "%d;%s;%s;%s\n", inicio_aluguer->cod_comprador, inicio_aluguer->data_compra, inicio_aluguer->nome_comprador, inicio_aluguer->nome_meio_comprado);
         inicio_aluguer = inicio_aluguer->seguinte_compra;
     }
     fclose(dados_aluguer);
@@ -1623,5 +1722,66 @@ Aluguer* escreverFicheiro_aluguer_bin(Aluguer* inicio_aluguer, FILE* dados_alugu
     }
     fclose(dados_aluguer);
 }
-#pragma endregion
+//#pragma endregion
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE ALUGUER----------------------------------------------------
+
+
+// ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE TRANSACOES----------------------------------------------------
+
+Transacao* lerFicheiro_transacao(Transacao* inicio_transacao, FILE* dados_transacao)
+{
+    char linha[MAX_LINE_LEN];
+    while (fgets(linha, MAX_LINE_LEN, dados_transacao))
+    {
+        Transacao* novo_nodo = malloc(sizeof(Transacao));
+        sscanf(linha, "%d;%[^;];%d;%[^\n]", &novo_nodo->codigo_utilizador, novo_nodo->nome_transacao, &novo_nodo->montante_carregado, novo_nodo->data_transacao);
+        novo_nodo->seguinte_transacao = inicio_transacao;
+        inicio_transacao = novo_nodo;
+    }
+    fclose(dados_transacao);
+    return inicio_transacao;
+}
+
+Transacao* escreverFicheiro_transacao(Transacao* inicio_transacao, FILE* dados_transacao)
+{
+    if (inicio_transacao == NULL)
+    {
+        printf("O ficheiro nao foi lido.\n");
+        return 0;
+    }
+    dados_transacao = fopen("historico_transacoes.txt", "wt");
+    if (dados_transacao == NULL)
+    {
+        printf("Nao foi possivel abrir o ficheiro.\n");
+        return 0;
+    }
+    while (inicio_transacao != NULL)
+    {
+        fprintf(dados_transacao, "%d;%s;%d;%s\n", inicio_transacao->codigo_utilizador, inicio_transacao->nome_transacao, inicio_transacao->montante_carregado, inicio_transacao->data_transacao);
+        inicio_transacao = inicio_transacao->seguinte_transacao;
+    }
+    fclose(dados_transacao);
+}
+
+Transacao* escreverFicheiro_transacao_bin(Transacao* inicio_transacao, FILE* dados_transacao)
+{
+    if (inicio_transacao == NULL)
+    {
+        printf("O ficheiro nao foi lido.\n");
+        return 0;
+    }
+    dados_transacao = fopen("historico_transacoes.bin", "wb");
+    if (dados_transacao == NULL)
+    {
+        printf("Nao foi possivel abrir o ficheiro.\n");
+        return 0;
+    }
+    while (inicio_transacao != NULL)
+    {
+        fprintf(dados_transacao, "%d;%s;%d;%s\n", inicio_transacao->codigo_utilizador, inicio_transacao->nome_transacao, inicio_transacao->montante_carregado, inicio_transacao->data_transacao);
+        inicio_transacao = inicio_transacao->seguinte_transacao;
+    }
+    fclose(dados_transacao);
+}
+
+// ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE TRANSACOES----------------------------------------------------
