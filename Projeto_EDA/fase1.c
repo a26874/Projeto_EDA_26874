@@ -14,7 +14,8 @@ int main() {
     Gestor* inicio_gestor = NULL;
     Aluguer* inicio_aluguer = NULL;
     Transacao* inicio_transacao = NULL;
-    FILE* dados_meios, * dados_clientes, * dados_gestor, * dados_aluguer, * dados_transacao;
+    Grafo* inicio_grafo = NULL;
+    FILE* dados_meios, * dados_clientes, * dados_gestor, * dados_aluguer, * dados_transacao, * dados_vertices, * dados_adjacentes;
     int op, bool, op_utilizador, utilizador_login = 0, gestor_login = 0, op_gestor;
     int novo_cliente_codigo, novo_cliente_NIF, novo_cliente_saldo, novo_meio_codigo, novo_meio_custo, novo_gestor_codigo, codigo_meio_remover
         , codigo_cliente_remover, codigo_gestor_remover, codigo_login_utilizador;
@@ -33,6 +34,13 @@ int main() {
     inicio_aluguer = lerFicheiro_Aluguer(inicio_aluguer, dados_aluguer);
     dados_transacao = fopen("historico_transacoes.txt", "rt");
     inicio_transacao = lerFicheiro_transacao(inicio_transacao, dados_transacao);
+    dados_vertices = fopen("vertices.txt", "rt");
+    inicio_grafo = lerFicheiro_Vertices(inicio_grafo,dados_vertices);
+    //listarGrafo(inicio_grafo);
+    dados_adjacentes = fopen("adjacentes.txt", "rt");
+    inicio_grafo = lerFicheiro_Adjacentes(inicio_grafo, dados_adjacentes);
+    listarAdjacentes(inicio_grafo);
+
     bubbleSortMeios(inicio_meios);
     bubbleSortClientes(inicio_clientes);
     bubbleSortGestores(inicio_gestor);
@@ -94,6 +102,9 @@ int main() {
                     break;
                 case 6:
                     listarGeocodigo(inicio_meios);
+                    break;
+                case 7:
+                    //imprimirArvore(inicio_cidades);
                     break;
                 case 0:
                     utilizador_login = 0;

@@ -69,6 +69,7 @@ int menu_utilizador()
     printf("4- Alteracao dos seus dados.\n");
     printf("5- Alugar algum meio.\n");
     printf("6- Listar por geocodigo.\n");
+    printf("7- Calcular distâncias.\n");
     printf("0- Sair.\n");
     printf("A sua escolha:");
     scanf("%d", &escolha);
@@ -1589,7 +1590,7 @@ void listarGeocodigo(Meio* inicio_meios)
     {
         if (strcmp(verificar_geocodigo, inicio_meios->geocodigo) == 0)
         {
-            printf("Codigo:%d      Tipo:%s      Bat:%f      Aut:%f      Custo:%d\n", inicio_meios->codigo, inicio_meios->tipo, inicio_meios->bateria, inicio_meios->autonomia, inicio_meios->custo);
+            printf("Codigo:%d      Tipo:%s      Bat:%.2f      Aut:%.2f      Custo:%d\n", inicio_meios->codigo, inicio_meios->tipo, inicio_meios->bateria, inicio_meios->autonomia, inicio_meios->custo);
         }
         inicio_meios = inicio_meios->seguinte_meio;
     }
@@ -1610,7 +1611,7 @@ Aluguer* lerFicheiro_Aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer)
     while (fgets(linha, MAX_LINE_LEN, dados_aluguer))
     {
         Aluguer* novo_nodo = malloc(sizeof(Aluguer));
-        sscanf(linha, "%d;%[^;];%[^;];%[^\n]\n", &novo_nodo->cod_comprador, novo_nodo->data_compra, novo_nodo->nome_comprador, novo_nodo->nome_meio_comprado);
+        sscanf(linha,"%d;%[^;];%[^;];%[^\n]\n", &novo_nodo->cod_comprador, novo_nodo->data_compra, novo_nodo->nome_comprador, novo_nodo->nome_meio_comprado);
         novo_nodo->seguinte_compra = inicio_aluguer;
         inicio_aluguer = novo_nodo;
     }
@@ -1702,7 +1703,7 @@ Aluguer* escreverFicheiro_aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer)
     fclose(dados_aluguer);
 }
 
-// Escreve todos os dados sobre os alugueres, em ficheiro binário.
+ //Escreve todos os dados sobre os alugueres, em ficheiro binário.
 Aluguer* escreverFicheiro_aluguer_bin(Aluguer* inicio_aluguer, FILE* dados_aluguer)
 {
     if (inicio_aluguer == NULL)
@@ -1723,6 +1724,8 @@ Aluguer* escreverFicheiro_aluguer_bin(Aluguer* inicio_aluguer, FILE* dados_alugu
     }
     fclose(dados_aluguer);
 }
+
+
 #pragma endregion
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE ALUGUER----------------------------------------------------
 
@@ -1788,3 +1791,127 @@ Transacao* escreverFicheiro_transacao_bin(Transacao* inicio_transacao, FILE* dad
 
 #pragma endregion
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE TRANSACOES----------------------------------------------------
+
+
+// ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE CIDADES----------------------------------------------------
+
+#pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE CIDADES
+Grafo* lerFicheiro_Vertices(Grafo* inicio_grafo, FILE* dados_vertices)
+{
+    char* token_vertice;
+    if (dados_vertices == NULL)
+    { 
+        printf("O ficheiro nao existe.\n"); 
+        return 0;
+    }
+    char linha[MAX_LINE_LEN];
+    while (fgets(linha, MAX_LINE_LEN, dados_vertices))
+    {
+            token_vertice = strtok(linha, ";");
+            while (token_vertice != NULL)
+            {
+                Grafo* novo_nodo = malloc(sizeof(Grafo));
+                strcpy(novo_nodo->vertice, token_vertice);
+                novo_nodo->meios = NULL;
+                novo_nodo->adjacentes = NULL;
+                novo_nodo->seguinte_vertice = inicio_grafo;
+                inicio_grafo = novo_nodo;
+                token_vertice = strtok(NULL, ";");
+            }
+
+    }
+    return inicio_grafo;
+}
+Grafo* lerFicheiro_Adjacentes(Grafo* inicio_grafo, FILE* dados_adjacentes)
+{
+    Adjacente* novo_adj = NULL;
+    Grafo* aux = inicio_grafo;
+    int inserido = 0;
+    char* vertice, * adjacente, * peso, linha[MAX_LINE_LEN];
+    while (fgets(linha, MAX_LINE_LEN, dados_adjacentes))
+    {
+        inserido = 0;
+        vertice = strtok(linha, ";");
+        aux = inicio_grafo;
+        while (inserido != 1)
+        {
+            while (aux != NULL)
+            {
+                if (strcmp(aux->vertice, vertice) == 0)
+                {
+                    while (vertice != NULL)
+                    {
+                        if (novo_adj == NULL)
+                        {
+                            novo_adj = malloc(sizeof(Adjacente));
+                            adjacente = strtok(NULL, "/");
+                            peso = strtok(NULL, ";");
+                            strcpy(novo_adj->vertice, adjacente);
+                            novo_adj->peso = atof(peso);
+                            novo_adj->seguinte = aux->adjacentes;
+                            aux->adjacentes = novo_adj;
+                        }
+                        else
+                        {
+                            if (vertice != NULL) {
+                                adjacente = strtok(NULL, "/");
+                                peso = strtok(NULL, ";");
+                                if (adjacente == NULL || peso == NULL)
+                                {
+                                    vertice = NULL;
+                                    inserido = 1;
+                                    break;
+                                }
+                                novo_adj = malloc(sizeof(Adjacente));
+                                strcpy(novo_adj->vertice, adjacente);
+                                novo_adj->peso = atof(peso);
+                                if (aux->adjacentes == NULL) {
+                                    aux->adjacentes = novo_adj;
+                                    novo_adj->seguinte = NULL;
+                                }
+                                else {
+                                    novo_adj->seguinte = aux->adjacentes->seguinte;
+                                    aux->adjacentes->seguinte = novo_adj;
+                                }
+                            }
+                        }
+                    }
+                }
+                aux = aux->seguinte_vertice;
+                if (inserido == 1)
+                    break;
+            }
+        }
+    }
+    return inicio_grafo;
+}
+
+void listarGrafo(Grafo* inicio_grafo)
+{
+    char aux[100];
+    while (inicio_grafo != NULL)
+    {
+        strcpy(aux, inicio_grafo->vertice);
+        int pos = strcspn(inicio_grafo->vertice, "\n");
+        inicio_grafo->vertice[pos] = '\0';
+        printf("%s\n", inicio_grafo->vertice);
+        inicio_grafo = inicio_grafo->seguinte_vertice;
+    }
+}
+
+void listarAdjacentes(Grafo* inicio_grafo)
+{
+    while (inicio_grafo != NULL)
+    {
+        printf("A localizacao %s pode ir para:\n", inicio_grafo->vertice);
+        while (inicio_grafo->adjacentes != NULL)
+        {
+            printf("%s com distancia de %.2f\n", inicio_grafo->adjacentes->vertice, inicio_grafo->adjacentes->peso);
+            inicio_grafo->adjacentes = inicio_grafo->adjacentes->seguinte;
+        }
+        printf("\n");
+        inicio_grafo = inicio_grafo->seguinte_vertice;
+    }
+}
+#pragma endregion
+// ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE CIDADES----------------------------------------------------

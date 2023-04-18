@@ -3,6 +3,7 @@
 #include <time.h>
 #include <Windows.h>
 #define MAX_LINE_LEN 350
+#define TAM 50
 
 typedef struct registo_meios
 {
@@ -13,7 +14,6 @@ typedef struct registo_meios
 	char geocodigo[100];
 	int custo;
 	int ativo;
-	struct registo_aluguer* alugado;
 	struct registo_meio* seguinte_meio; // endereço de memória para uma struct registo_meio
 } Meio;
 
@@ -55,15 +55,37 @@ typedef struct registo_transacoes
 	struct registo_transacoes* seguinte_transacao;
 }Transacao;
 
+typedef struct Meios
+{
+	int codigo;
+	struct Meios* seguinte;
+} Meios;
+
+// Representação de um grafo orientado e pesado
+typedef struct Adjacente
+{
+	char vertice[100]; // geocódigo what3words
+	float peso;
+	struct Adjacente* seguinte;
+} Adjacente;
+
+typedef struct Grafo
+{
+	char vertice[100]; // geocódigo what3words
+	Adjacente* adjacentes;
+	Meios* meios; // Lista ligada com os códigos dos meios de transporte existente neste geocódigo
+	struct Grafo* seguinte_vertice;
+} Grafo;
+
 int menu();
 
 int menu_utilizador();
 
 int menu_gestor();
 
+#pragma region MEIOS
 
 // -------------------------------------------------FUNÇÕES_I-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS-------------------------------------------------
-
 
 Meio* lerFicheiro_meios(Meio* inicio, FILE* dados_meios);
 
@@ -83,10 +105,9 @@ float mediaAutonomia(Meio* inicio_meios);
 
 // -------------------------------------------------FUNÇÕES_F-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS-------------------------------------------------
 
+#pragma endregion
 
-
-
-
+#pragma region CLIENTES
 // -------------------------------------------------FUNÇÕES_I-LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES-------------------------------------------------
 
 Cliente* lerFicheiro_clientes(Cliente* inicio_clientes, FILE* dados_clientes);
@@ -109,9 +130,10 @@ int existeClienteNIF(Cliente* inicio_clientes, int NIF);
 
 Cliente* bubbleSortClientes(Cliente* inicio_clientes);
 
-
 // -------------------------------------------------FUNÇÕES_F-LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES-------------------------------------------------
+#pragma endregion
 
+#pragma region GESTORES
 
 // -------------------------------------------------FUNÇÕES_I-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES-------------------------------------------------
 
@@ -129,8 +151,9 @@ Gestor* bubbleSortGestores(Gestor* inicio_gestores);
 
 
 // -------------------------------------------------FUNÇÕES_F-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES-------------------------------------------------
+#pragma endregion
 
-
+#pragma region ADD/RMV/ALT
 // ---------------------------------------------------FUNÇÕES_I-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
 
 Gestor* modoGestor(Gestor* inicio_gestores);
@@ -156,6 +179,9 @@ int encryptSenha(Gestor* inicio_gestor, char senha[50]);
 int decryptSenha(Gestor* inicio_gestor, char senha[50]);
 // ---------------------------------------------------FUNÇÕES_F-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
 
+#pragma endregion
+
+#pragma region ALUGUER
 // -------------------------------------------------------------------FUNÇÕES_I-ALUGUER--------------------------------------------------------------------
 
 Aluguer* lerFicheiro_Aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer);
@@ -170,8 +196,12 @@ Aluguer* escreverFicheiro_aluguer_bin(Aluguer* inicio_aluguer, FILE* dados_alugu
 
 Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio* inicio_meios);
 
-// -------------------------------------------------------------------FUNÇÕES_F-ALUGUER--------------------------------------------------------------------
+Aluguer* escreverAlug_test_bin(Aluguer* inicio_aluguer, FILE* dados_aluguer);
 
+// -------------------------------------------------------------------FUNÇÕES_F-ALUGUER--------------------------------------------------------------------
+#pragma endregion
+
+#pragma region TRANSACOES
 // -------------------------------------------------------------------FUNÇÕES_I-TRANSACOES--------------------------------------------------------------------
 
 Transacao* lerFicheiro_transacao(Transacao* inicio_transacao, FILE* dados_transacao);
@@ -183,3 +213,16 @@ Transacao* escreverFicheiro_transacao_bin(Transacao* inicio_transacao, FILE* dad
 void listarTransacao(Transacao* inicio_transacao);
 
 // -------------------------------------------------------------------FUNÇÕES_F-TRANSACOES--------------------------------------------------------------------
+#pragma endregion
+
+// -------------------------------------------------------------------FUNÇÕES_I-CIDADES--------------------------------------------------------------------
+Grafo* lerFicheiro_Vertices(Grafo* inicio_grafo, FILE* dados_vertices);
+
+Grafo* lerFicheiro_Adjacentes(Grafo* inicio_grafo, FILE* dados_adjacentes);
+
+int criar_Vertice(Grafo* inicio_grafo, char nome_vertice);
+
+void listarGrafo(Grafo* inicio_grafo);
+
+void listarAdjacentes(Grafo* inicio_grafo);
+// -------------------------------------------------------------------FUNÇÕES_F-CIDADES--------------------------------------------------------------------
