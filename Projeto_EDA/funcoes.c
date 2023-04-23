@@ -70,6 +70,7 @@ int menu_utilizador()
     printf("5- Alugar algum meio.\n");
     printf("6- Listar por geocodigo.\n");
     printf("7- Calcular distâncias.\n");
+    printf("8- Listar adjacentes.\n");
     printf("0- Sair.\n");
     printf("A sua escolha:");
     scanf("%d", &escolha);
@@ -122,14 +123,14 @@ void listarMeios(Meio* inicio_meios)
     {
         // Enquanto o pointer inicio_meios não for NULL (que esse mesmo está sempre a apontar para um valor de memória diferente na lista ligada)
         // É apresentada a informação dos meios.
-        printf("Dados de meios disponiveis:\n------------------------------------------------------------------------------------------------------------------------\n");
+        printf("Dados de meios disponiveis:\n------------------------------------------------------------------------------------------------------------------------\n\n");
         while (inicio_meios != NULL)
         {
             printf("Codigo:%d    Tipo:%s  Nivel Bateria:%.2f  Autonomia:%.2f  Custo:%d Geocodigo:%s Ativo:%d\n", inicio_meios->codigo, inicio_meios->tipo,
                 inicio_meios->bateria, inicio_meios->autonomia, inicio_meios->custo, inicio_meios->geocodigo, inicio_meios->ativo);
             inicio_meios = inicio_meios->seguinte_meio;
         }
-        printf("------------------------------------------------------------------------------------------------------------------------\n");
+        printf("------------------------------------------------------------------------------------------------------------------------\n\n");
     }
 }
 
@@ -641,8 +642,9 @@ Gestor* modoGestor(Gestor* inicio_gestores) {
 
 // Função para inserir um novo meio elétrico, é pedido ao gestor na função main, um novo codigo, nome, nivel bateria, autonomia, o seu custo 
 // e a sua geolocalização. De seguida é inserido no ultimo lugar da lista ligada dos meios, quando é o ultimo endereço NULL.
-Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float aut, int custo, char geo[50])
+Meio* inserirMeio(Grafo* inicio_grafo, Meio* inicio_meios, int cod, char nome[50], float bat, float aut, int custo, char geo[50])
 {
+    Grafo* aux = inicio_grafo;
     int inserir = 0;
     while (inserir != 1)
     {
@@ -655,6 +657,10 @@ Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float a
             novo_meio->autonomia = aut;
             novo_meio->custo = custo;
             strcpy(novo_meio->geocodigo, geo);
+            if (!existeVertice(aux, novo_meio->geocodigo))
+            {
+                inserirVertice(aux, novo_meio->geocodigo);
+            }
             novo_meio->ativo = 0;
             novo_meio->seguinte_meio = NULL;
             inicio_meios = novo_meio;
@@ -672,6 +678,33 @@ Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float a
             novo_meio->autonomia = aut;
             novo_meio->custo = custo;
             strcpy(novo_meio->geocodigo, geo);
+            if (!existeVertice(aux, novo_meio->geocodigo))
+            {
+                int auxVertice, escolhaAdjacente, inserido = 1;
+                auxVertice=inserirVertice(aux, novo_meio->geocodigo);
+                if (auxVertice == 1)
+                {
+                    printf("A %s tem algum destino? 1-Sim/0-Nao\n", novo_meio->geocodigo);
+                    printf("A sua escolha:");
+                    scanf("%d", &escolhaAdjacente);
+                    while(escolhaAdjacente == 1 && inserido != 0)
+                    {
+                        char novoAdjacente[50];
+                        float novoPeso;
+                        printf("Nome do novo adjacente a %s:", novo_meio->geocodigo);
+                        scanf("%s", novoAdjacente);
+                        printf("Distancia em km:");
+                        scanf("%f", &novoPeso);
+                        if (inserirAdjacente(aux, novo_meio->geocodigo, novoAdjacente, novoPeso))
+                        {
+                            printf("Adjacente inserido com sucesso.\n");
+                            printf("Deseja inserir mais adjacentes ao geocodigo %s?\n 1-Sim/0-Nao\n", novo_meio->geocodigo);
+                            printf("A sua escolha:");
+                            scanf("%d", &inserido);
+                        }
+                    }
+                }
+            }
             novo_meio->ativo = 0;
             inicio_meios->seguinte_meio = novo_meio;
             novo_meio->seguinte_meio = NULL;
@@ -1731,7 +1764,6 @@ Aluguer* escreverFicheiro_aluguer_bin(Aluguer* inicio_aluguer, FILE* dados_alugu
 
 
 // ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE TRANSACOES----------------------------------------------------
-
 #pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE TRANSACOES
 Transacao* lerFicheiro_transacao(Transacao* inicio_transacao, FILE* dados_transacao)
 {
@@ -1796,20 +1828,22 @@ Transacao* escreverFicheiro_transacao_bin(Transacao* inicio_transacao, FILE* dad
 // ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE CIDADES----------------------------------------------------
 
 #pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE CIDADES
-Grafo* lerFicheiro_Vertices(Grafo* inicio_grafo, FILE* dados_vertices)
+Grafo* lerFicheiro_Vertices(Grafo* inicio_grafo, FILE* dados_grafo)
 {
     char* token_vertice;
-    if (dados_vertices == NULL)
+    if (dados_grafo == NULL)
     { 
         printf("O ficheiro nao existe.\n"); 
         return 0;
     }
     char linha[MAX_LINE_LEN];
-    while (fgets(linha, MAX_LINE_LEN, dados_vertices))
+    while (fgets(linha, MAX_LINE_LEN, dados_grafo))
     {
             token_vertice = strtok(linha, ";");
             while (token_vertice != NULL)
             {
+                int pos = strcspn(token_vertice, "\n");
+                token_vertice[pos] = '\0';
                 Grafo* novo_nodo = malloc(sizeof(Grafo));
                 strcpy(novo_nodo->vertice, token_vertice);
                 novo_nodo->meios = NULL;
@@ -1822,6 +1856,7 @@ Grafo* lerFicheiro_Vertices(Grafo* inicio_grafo, FILE* dados_vertices)
     }
     return inicio_grafo;
 }
+
 Grafo* lerFicheiro_Adjacentes(Grafo* inicio_grafo, FILE* dados_adjacentes)
 {
     Adjacente* novo_adj = NULL;
@@ -1848,7 +1883,7 @@ Grafo* lerFicheiro_Adjacentes(Grafo* inicio_grafo, FILE* dados_adjacentes)
                             peso = strtok(NULL, ";");
                             strcpy(novo_adj->vertice, adjacente);
                             novo_adj->peso = atof(peso);
-                            novo_adj->seguinte = aux->adjacentes;
+                            novo_adj->seguinte_adjacente = aux->adjacentes;
                             aux->adjacentes = novo_adj;
                         }
                         else
@@ -1865,13 +1900,15 @@ Grafo* lerFicheiro_Adjacentes(Grafo* inicio_grafo, FILE* dados_adjacentes)
                                 novo_adj = malloc(sizeof(Adjacente));
                                 strcpy(novo_adj->vertice, adjacente);
                                 novo_adj->peso = atof(peso);
-                                if (aux->adjacentes == NULL) {
+                                if (aux->adjacentes == NULL) 
+                                {
                                     aux->adjacentes = novo_adj;
-                                    novo_adj->seguinte = NULL;
+                                    novo_adj->seguinte_adjacente = NULL;
                                 }
-                                else {
-                                    novo_adj->seguinte = aux->adjacentes->seguinte;
-                                    aux->adjacentes->seguinte = novo_adj;
+                                else 
+                                {
+                                    novo_adj->seguinte_adjacente = aux->adjacentes->seguinte_adjacente;
+                                    aux->adjacentes->seguinte_adjacente = novo_adj;
                                 }
                             }
                         }
@@ -1889,29 +1926,168 @@ Grafo* lerFicheiro_Adjacentes(Grafo* inicio_grafo, FILE* dados_adjacentes)
 void listarGrafo(Grafo* inicio_grafo)
 {
     char aux[100];
+    char continuar=0;
+    printf("Localizacoes existentes:\n");
     while (inicio_grafo != NULL)
     {
+        printf("->");
         strcpy(aux, inicio_grafo->vertice);
         int pos = strcspn(inicio_grafo->vertice, "\n");
         inicio_grafo->vertice[pos] = '\0';
         printf("%s\n", inicio_grafo->vertice);
         inicio_grafo = inicio_grafo->seguinte_vertice;
     }
+    printf("Prima espaco e de seguida enter para sair.");
+    while (continuar != " ")
+    {
+        scanf("%c", &continuar);
+        if (continuar == ' ')
+        {
+            printf("Voltando ao menu.\n");
+            Sleep(2000);
+            system("cls");
+            return 0;
+        }
+    }
 }
 
 void listarAdjacentes(Grafo* inicio_grafo)
 {
+    char continuar = 0;
     while (inicio_grafo != NULL)
     {
-        printf("A localizacao %s pode ir para:\n", inicio_grafo->vertice);
+        printf("Dados de %s:\n------------------------------------------------------------------------------------------------------------------------\n", inicio_grafo->vertice);
+        printf("Esta localizacao pode ir para:\n");
+        if (inicio_grafo->adjacentes == NULL)
+        {
+            printf("A localizacao %s nao tem destinos.\n", inicio_grafo->vertice);
+        }
         while (inicio_grafo->adjacentes != NULL)
         {
-            printf("%s com distancia de %.2f\n", inicio_grafo->adjacentes->vertice, inicio_grafo->adjacentes->peso);
-            inicio_grafo->adjacentes = inicio_grafo->adjacentes->seguinte;
+            printf("%s com distancia de %.2f km; \n", inicio_grafo->adjacentes->vertice, inicio_grafo->adjacentes->peso);
+            inicio_grafo->adjacentes = inicio_grafo->adjacentes->seguinte_adjacente;
         }
+        printf("------------------------------------------------------------------------------------------------------------------------\n");
         printf("\n");
         inicio_grafo = inicio_grafo->seguinte_vertice;
     }
+    printf("Prima espaco e enter para sair.");
+    while (continuar != " ")
+    {
+        scanf("%c", &continuar);
+        if (continuar == ' ')
+        {
+            printf("Voltando ao menu.\n");
+            Sleep(2000);
+            system("cls");
+            return 0;
+        }
+    }
+}
+
+int existeVertice(Grafo* inicio_grafo, char verticeVerificar[50])
+{
+    Grafo* aux = inicio_grafo;
+    while (aux != NULL)
+    {
+        if (strcmp(verticeVerificar, aux->vertice) == 0)
+        {
+            return 1;
+        }
+        aux = aux->seguinte_vertice;
+    }
+    return 0;
+}
+
+int inserirVertice(Grafo* inicio_grafo, char verticeInserir[50])
+{
+    while (inicio_grafo != NULL)
+    {
+        if (inicio_grafo->seguinte_vertice == NULL)
+        {
+            Grafo* novo_vertice = malloc(sizeof(Grafo));
+            strcpy(novo_vertice->vertice, verticeInserir);
+            novo_vertice->adjacentes = NULL;
+            novo_vertice->meios = NULL;
+            inicio_grafo->seguinte_vertice = novo_vertice;
+            novo_vertice->seguinte_vertice = NULL;
+            inicio_grafo = novo_vertice;
+        }
+        inicio_grafo = inicio_grafo->seguinte_vertice;
+    }
+    return inicio_grafo, 1;
+}
+
+void escreverFicheiroGrafo(Grafo* inicio_grafo, FILE* dados_grafo)
+{
+    Grafo* aux = inicio_grafo;
+    if (inicio_grafo == NULL)
+    {
+        printf("O ficheiro nao foi lido.\n");
+        return;
+    }
+    dados_grafo = fopen("vertices.txt", "wt");
+    if (dados_grafo == NULL)
+    {
+        printf("Nao foi possivel abrir o ficheiro.\n");
+        return;
+    }
+    char listaCopiada[20][50];
+    int iterador = 0;
+    while (aux != NULL)
+    {
+        strcpy(listaCopiada[iterador], aux->vertice);
+        aux = aux->seguinte_vertice;
+        iterador++;
+    }
+    for (int i = iterador; i > 0; i--)
+    {
+        fprintf(dados_grafo, "%s;", listaCopiada[iterador-1]);
+        iterador--;
+    }
+    fclose(dados_grafo);
+}
+
+int existeAdjacente(Grafo* inicio_grafo, char verticeFinal[50])
+{
+    Grafo* aux = inicio_grafo;
+    while (aux != NULL)
+    {
+        if (strcmp(aux->adjacentes->vertice, verticeFinal) == 0)
+        {
+            return 1;
+        }
+        aux = aux->seguinte_vertice;
+    }
+    return 0;
+}
+
+int inserirAdjacente(Grafo* inicio_grafo, char verticeInicial[50], char verticeFinal[50], float peso)
+{
+    Grafo* aux = inicio_grafo;
+    int existeVert = 0, existeAdj = 0;
+    existeVert = existeVertice(aux, verticeInicial);
+    existeAdj = existeAdjacente(aux, verticeFinal);
+    if (existeVert)
+    {
+        while (!strcmp(aux->vertice, verticeInicial)==0)
+            aux = aux->seguinte_vertice;
+        if (!existeAdj)
+        {
+            Adjacente* novo_adj = malloc(sizeof(Adjacente));
+            strcpy(novo_adj->vertice, verticeFinal);
+            novo_adj->peso = peso;
+            novo_adj->seguinte_adjacente = aux->adjacentes;
+            aux->adjacentes = novo_adj;
+            inicio_grafo = aux;
+            return inicio_grafo,1;
+        }
+        else
+        {
+            return 2;
+        }
+    }
+    return 0;
 }
 #pragma endregion
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE CIDADES----------------------------------------------------

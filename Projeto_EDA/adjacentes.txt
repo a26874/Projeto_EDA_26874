@@ -6,3 +6,4 @@ reparou.definicao.artilheiro;maloca.fungos.poderia/4.3;ocupei.embasando.ralar/3.
 maloca.fungos.poderia;fagocitose.crestar.esperanca/9.0;inala.fervido.engavetar/8.0
 ocupei.embasando.ralar;fracos.ovelha.quadradao/5.0;reparou.definicao.artilheiro/6.0
 inala.fervido.engavetar;fracos.ovelha.quadradao/4.4;arrumar.etiquetar.pressione/1.0
+aifw.asfk;asdf.asd/20.20

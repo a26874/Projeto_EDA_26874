@@ -15,12 +15,12 @@ int main() {
     Aluguer* inicio_aluguer = NULL;
     Transacao* inicio_transacao = NULL;
     Grafo* inicio_grafo = NULL;
-    FILE* dados_meios, * dados_clientes, * dados_gestor, * dados_aluguer, * dados_transacao, * dados_vertices, * dados_adjacentes;
+    FILE* dados_meios, * dados_clientes, * dados_gestor, * dados_aluguer, * dados_transacao, * dados_grafo, * dados_adjacentes;
     int op, bool, op_utilizador, utilizador_login = 0, gestor_login = 0, op_gestor;
     int novo_cliente_codigo, novo_cliente_NIF, novo_cliente_saldo, novo_meio_codigo, novo_meio_custo, novo_gestor_codigo, codigo_meio_remover
         , codigo_cliente_remover, codigo_gestor_remover, codigo_login_utilizador;
-    float novo_meio_bateria, novo_meio_autonomia;
-    char novo_cliente_nome[50], novo_meio_nome[50], novo_meio_geocodigo[50], novo_gestor_nome[50], novo_gestor_senha[50], novo_gestor_area[50];
+    float novo_meio_bateria, novo_meio_autonomia, novopesoAdjacente;
+    char novo_cliente_nome[50], novo_meio_nome[50], novo_meio_geocodigo[50], novo_gestor_nome[50], novo_gestor_senha[50], novo_gestor_area[50], novoverticeinicial[50], novoverticeFinal[50];
 
 
     // No arranque é feito de imediato a leitura dos ficheiros.
@@ -34,12 +34,10 @@ int main() {
     inicio_aluguer = lerFicheiro_Aluguer(inicio_aluguer, dados_aluguer);
     dados_transacao = fopen("historico_transacoes.txt", "rt");
     inicio_transacao = lerFicheiro_transacao(inicio_transacao, dados_transacao);
-    dados_vertices = fopen("vertices.txt", "rt");
-    inicio_grafo = lerFicheiro_Vertices(inicio_grafo,dados_vertices);
-    //listarGrafo(inicio_grafo);
+    dados_grafo = fopen("vertices.txt", "rt");
+    inicio_grafo = lerFicheiro_Vertices(inicio_grafo, dados_grafo);
     dados_adjacentes = fopen("adjacentes.txt", "rt");
     inicio_grafo = lerFicheiro_Adjacentes(inicio_grafo, dados_adjacentes);
-    listarAdjacentes(inicio_grafo);
 
     bubbleSortMeios(inicio_meios);
     bubbleSortClientes(inicio_clientes);
@@ -104,7 +102,10 @@ int main() {
                     listarGeocodigo(inicio_meios);
                     break;
                 case 7:
-                    //imprimirArvore(inicio_cidades);
+                    listarGrafo(inicio_grafo);
+                    break;
+                case 8:
+                    listarAdjacentes(inicio_grafo);
                     break;
                 case 0:
                     utilizador_login = 0;
@@ -230,12 +231,12 @@ int main() {
                         scanf("%[^\n]", novo_meio_geocodigo);
                         if (inicio_meios == NULL)
                         {
-                            inicio_meios = inserirMeio(inicio_meios, novo_meio_codigo, novo_meio_nome, novo_meio_bateria, novo_meio_autonomia, novo_meio_custo, novo_meio_geocodigo);
+                            inicio_meios = inserirMeio(inicio_grafo, inicio_meios, novo_meio_codigo, novo_meio_nome, novo_meio_bateria, novo_meio_autonomia, novo_meio_custo, novo_meio_geocodigo);
                             break;
                         }
                         if (existeMeio(inicio_meios, novo_meio_codigo) == 1)
                         {
-                            inserirMeio(inicio_meios, novo_meio_codigo, novo_meio_nome, novo_meio_bateria, novo_meio_autonomia, novo_meio_custo, novo_meio_geocodigo);
+                            inserirMeio(inicio_grafo, inicio_meios, novo_meio_codigo, novo_meio_nome, novo_meio_bateria, novo_meio_autonomia, novo_meio_custo, novo_meio_geocodigo);
                             break;
                         }
                         else
@@ -339,6 +340,28 @@ int main() {
                     case 15:
                         listarTransacao(inicio_transacao);
                         break;
+                    case 16:
+                        printf("Insira os seguintes dados: Vertice inicial, vertice final e distancia em km.\n");
+                        printf("Vertice inicial:");
+                        scanf("%s", novoverticeinicial);
+                        printf("Vertice Final:");
+                        scanf("%s", novoverticeFinal);
+                        printf("Distancia em km:");
+                        scanf("%f", &novopesoAdjacente);
+                        int resultado = inserirAdjacente(inicio_grafo, novoverticeinicial, novoverticeFinal, novopesoAdjacente);
+                        if (resultado==1)
+                        { 
+                            printf("Adjacente de %s, adicionado com sucesso.\n", novoverticeinicial);
+                            Sleep(2000);
+                            system("cls");
+                        }  
+                        else if (resultado == 2)
+                        {
+                            printf("O Adjacente %s ja existe, no vertice %s.\n", novoverticeFinal, novoverticeinicial);
+                            Sleep(2000);
+                            system("cls");
+                        }
+                        break;
                     case 0:
                         gestor_login = 0;
                         break;
@@ -367,6 +390,8 @@ int main() {
             dados_transacao = fopen("historico_transacoes.txt", "rt");
             escreverFicheiro_transacao(inicio_transacao, dados_transacao);
             escreverFicheiro_transacao_bin(inicio_transacao, dados_transacao);
+            dados_grafo = fopen("vertices.txt", "rt");
+            escreverFicheiroGrafo(inicio_grafo, dados_grafo);
             printf("O programa ira ser encerrado.\n");
             return 0;
         default:

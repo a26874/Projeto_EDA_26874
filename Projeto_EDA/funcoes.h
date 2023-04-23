@@ -58,7 +58,7 @@ typedef struct registo_transacoes
 typedef struct Meios
 {
 	int codigo;
-	struct Meios* seguinte;
+	struct Meios* seguinte_meio;
 } Meios;
 
 // Representação de um grafo orientado e pesado
@@ -66,7 +66,7 @@ typedef struct Adjacente
 {
 	char vertice[100]; // geocódigo what3words
 	float peso;
-	struct Adjacente* seguinte;
+	struct Adjacente* seguinte_adjacente;
 } Adjacente;
 
 typedef struct Grafo
@@ -158,7 +158,7 @@ Gestor* bubbleSortGestores(Gestor* inicio_gestores);
 
 Gestor* modoGestor(Gestor* inicio_gestores);
 
-Meio* inserirMeio(Meio* inicio_meios, int cod, char nome[50], float bat, float aut, int custo, char geo[50]);
+Meio* inserirMeio(Grafo* inicio_grafo, Meio* inicio_meios, int cod, char nome[50], float bat, float aut, int custo, char geo[50]);
 
 Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NIF, int saldo);
 
@@ -220,7 +220,17 @@ Grafo* lerFicheiro_Vertices(Grafo* inicio_grafo, FILE* dados_vertices);
 
 Grafo* lerFicheiro_Adjacentes(Grafo* inicio_grafo, FILE* dados_adjacentes);
 
-int criar_Vertice(Grafo* inicio_grafo, char nome_vertice);
+void escreverFicheiroGrafo(Grafo* inicio_grafo, FILE* dados_grafo);
+
+void escreverFicheiroGrafo_recursivo(Grafo* nodo_atual, FILE* dados_grafo);
+
+char copiarListaGrafo(Grafo* inicio_grafo);
+
+int existeVertice(Grafo* inicio_grafo, char verticeVerificar[50]);
+
+int inserirVertice(Grafo* inicio_grafo, char verticeInserir[50]);
+
+int inserirAdjacente(Grafo* inicio_grafo, char verticeInicial[50], char verticeFinal[50], float peso);
 
 void listarGrafo(Grafo* inicio_grafo);
 
