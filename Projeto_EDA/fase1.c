@@ -15,8 +15,9 @@ int main() {
     Aluguer* inicio_aluguer = NULL;
     Transacao* inicio_transacao = NULL;
     Grafo* inicio_grafo = NULL;
+    ResFuncoes resFunc;
     FILE* dados_meios, * dados_clientes, * dados_gestor, * dados_aluguer, * dados_transacao, * dados_grafo, * dados_adjacentes;
-    int op, bool, op_utilizador, utilizador_login = 0, gestor_login = 0, op_gestor;
+    int op, bool, op_utilizador, utilizador_login = 0, gestor_login = 0, op_gestor, retFunc;
     int novo_cliente_codigo, novo_cliente_NIF, novo_cliente_saldo, novo_meio_codigo, novo_meio_custo, novo_gestor_codigo, codigo_meio_remover
         , codigo_cliente_remover, codigo_gestor_remover, codigo_login_utilizador;
     float novo_meio_bateria, novo_meio_autonomia, novopesoAdjacente;
@@ -50,53 +51,133 @@ int main() {
         switch (op)
         {
         case 1:
-            if (inicio_clientes == NULL)
-            {
-                printf("Nao existem utilizadores, por favor registe-se.\n");
-                break;
-            }
+            //if (inicio_clientes == NULL)
+            //{
+            //    printf("Nao existem utilizadores, por favor registe-se.\n");
+            //    break;
+            //}
             utilizador_login = 1;
             while (utilizador_login > 0)
             {
                 op_utilizador = menu_utilizador();
                 switch (op_utilizador) {
                 case 1:
-                    listarMeios(inicio_meios);
+                    resFunc = listarMeios(inicio_meios);
+                    switch (resFunc)
+                    {
+                    case SUCESSO:
+                        printf("sucesso.\n");
+                        break;
+                    case CLIENTES_NAO_EXISTEM:
+                        printf("Nao existem clientes.\n");
+                        Sleep(2000);
+                        system("cls");
+                        break;
+                    default:
+                        break;
+                    }
                     break;
                 case 2:
                     if (inicio_transacao == NULL)
                     {
                         inicio_transacao = carregarSaldo(inicio_clientes, inicio_transacao);
+                        break;
                     }
-                    else
+                    retFunc = carregarSaldo(inicio_clientes, inicio_transacao);
+                    switch (retFunc)
                     {
-                        carregarSaldo(inicio_clientes, inicio_transacao);
+                    case SUCESSO:
+                        Sleep(2000);
+                        system("cls");
+                        break;
+                    case COD_NIF_NAO_EXISTE:
+                        printf("Nao existe o cliente com o codigo/NIF inserido.\n");
+                        Sleep(2000);
+                        system("cls");
+                        break;
+                    case CLIENTES_NAO_EXISTEM:
+                        printf("Nao existem clientes.\n");
+                        Sleep(2000);
+                        system("cls");
+                        break;
+                    case SALDO_CARR_NEGATIVO:
+                        printf("Nao pode carregar saldo negativo.\n");
+                        Sleep(2000);
+                        system("cls");
+                        break;
                     }
                     break;
                 case 3:
-                    consultaSaldo(inicio_clientes);
-                    break;
-                case 4:
-                    alterarDadosCliente(inicio_clientes);
-                    break;
-                case 5:
-                    if (inicio_meios == NULL)
+                    resFunc = consultaSaldo(inicio_clientes);
+                    switch (resFunc)
                     {
-                        printf("Nao existem meios para alugar.\n");
+                    case CLIENTES_NAO_EXISTEM:
+                        printf("Nao existem clientes.\n");
+                        Sleep(2000);
+                        system("cls");
+                        break;
+                    case COD_NIF_NAO_EXISTE:
+                        printf("Nao existe o cliente com o codigo/NIF inserido.\n");
+                        Sleep(2000);
+                        system("cls");
+                        break;
+                    case SALDO_ATUAL:
+                        Sleep(2000);
+                        system("cls");
                         break;
                     }
-                    else
+                    break;
+                case 4:
+                    resFunc = alterarDadosCliente(inicio_clientes,inicio_transacao);
+                    switch (resFunc)
                     {
-                        listarMeios(inicio_meios);
+                        case SUCESSO:
+                            break;
+                        case COD_CLIENTE_NAO_EXISTE:
+                        {
+                            printf("Nao existe nenhum cliente registado com o cod inserido.\n");
+                            Sleep(2000);
+                            system("cls");
+                            break;
+                        }
+                        case NIF_CLIENTE_NAO_EXISTE:
+                        {
+                            printf("O codigo inserido, nao esta registado com o NIF inserido.\n");
+                            Sleep(2000);
+                            system("cls");
+                            break;
+                        }
+                        case CLIENTES_NAO_EXISTEM:
+                        {
+                            printf("Nao existem clientes registados.\n");
+                            Sleep(2000);
+                            system("cls");
+                            break;
+                        }
+                    }
+                    break;
+                case 5:
+                    resFunc = listarMeios(inicio_meios);
+                    switch (resFunc)
+                    {
+                    case CLIENTES_NAO_EXISTEM:
+                        printf("Nao existem meios para alugar.\n");
+                        break;
+                    case SUCESSO:
+                        printf("teste.\n");
+                        break;
                     }
                     if (inicio_aluguer == NULL)
                     {
                         inicio_aluguer = realizarAluguer(inicio_clientes, inicio_aluguer, inicio_meios);
                     }
-                    else
+                    //resFunc = realizarAluguer(inicio_clientes, inicio_aluguer, inicio_meios);
+                    /*else if (!resFunc)
                     {
-                        realizarAluguer(inicio_clientes, inicio_aluguer, inicio_meios);
-                    }
+                        printf("O meio introduzido, nao existe.\n");
+                        Sleep(2000);
+                        system("cls");
+                    }*/
                     break;
                 case 6:
                     listarGeocodigo(inicio_meios);
@@ -332,7 +413,7 @@ int main() {
                         alterarMeio(inicio_meios);
                         break;
                     case 13:
-                        alterarDadosCliente(inicio_clientes);
+                        alterarDadosCliente(inicio_clientes,inicio_transacao);
                         break;
                     case 14:
                         mediaAutonomia(inicio_meios);

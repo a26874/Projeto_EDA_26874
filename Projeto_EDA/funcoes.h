@@ -5,6 +5,21 @@
 #define MAX_LINE_LEN 350
 #define TAM 50
 
+typedef enum ResultadoFuncoes {
+	ERRO,
+	SUCESSO,
+	CLIENTES_NAO_EXISTEM,
+	COD_CLIENTE_NAO_EXISTE,
+	NIF_CLIENTE_NAO_EXISTE,
+	COD_NIF_NAO_EXISTE,
+	JA_EXISTE_COD_CLIENTE,
+	SALDO_CARR_NEGATIVO,
+	SALDO_CARREGADO,
+	SALDO_ATUAL,
+	MEIOS_NAO_EXISTEM
+
+}ResFuncoes;
+
 typedef struct registo_meios
 {
 	int codigo; // código do meio de mobilidade elétrica
@@ -89,7 +104,7 @@ int menu_gestor();
 
 Meio* lerFicheiro_meios(Meio* inicio, FILE* dados_meios);
 
-void listarMeios(Meio* inicio_meios);
+ResFuncoes listarMeios(Meio* inicio_meios);
 
 void listarGeocodigo(Meio* inicio_meios);
 
@@ -120,9 +135,9 @@ Cliente* escreverFicheiro_clientes_bin(Cliente* inicio_clientes, FILE* dados_cli
 
 Cliente* carregarSaldo(Cliente* inicio_clientes, Transacao* inicio_transacao);
 
-Cliente* consultaSaldo(Cliente* inicio_clientes);
+ResFuncoes consultaSaldo(Cliente* inicio_clientes);
 
-Cliente* alterarDadosCliente(Cliente* inicio_clientes);
+ResFuncoes alterarDadosCliente(Cliente* inicio_clientes,Transacao* inicio_transacao);
 
 int existeClienteCod(Cliente* inicio_clientes, int cod);
 
@@ -198,6 +213,7 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
 
 Aluguer* escreverAlug_test_bin(Aluguer* inicio_aluguer, FILE* dados_aluguer);
 
+
 // -------------------------------------------------------------------FUNÇÕES_F-ALUGUER--------------------------------------------------------------------
 #pragma endregion
 
@@ -211,6 +227,11 @@ Transacao* escreverFicheiro_transacao(Transacao* inicio_transacao, FILE* dados_t
 Transacao* escreverFicheiro_transacao_bin(Transacao* inicio_transacao, FILE* dados_transacao);
 
 void listarTransacao(Transacao* inicio_transacao);
+
+int existeClienteTransacao(Transacao* inicio_transacao, int codVerificar);
+
+Transacao* criarTransacao(Transacao* inicio_transacao, int codigoCliente, int saldoCarregar, char nomeCliente[50]);
+
 
 // -------------------------------------------------------------------FUNÇÕES_F-TRANSACOES--------------------------------------------------------------------
 #pragma endregion
