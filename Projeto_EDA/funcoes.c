@@ -47,6 +47,7 @@ int menu_gestor()
     printf("13- Alterar dados cliente.\n");
     printf("14- Media autonomia.\n");
     printf("15- Listar transacoes.\n");
+    printf("16- Adicionar Adjacentes.\n");
     printf("0- Sair.\n");
     printf("A sua escolha:");
     scanf("%d", &escolha);
@@ -111,13 +112,12 @@ Meio* lerFicheiro_meios(Meio* inicio_meios, FILE* dados_meios)
 }
 
 // Apresenta na consola toda a informação existente sobre os clientes.
-void listarMeios(Meio* inicio_meios)
+ResFuncoes listarMeios(Meio* inicio_meios)
 {
     system("cls");
     if (inicio_meios == NULL)
     {
-        printf("Nao existem meios.\n");
-        return 0;
+        return MEIOS_NAO_EXISTEM;
     }
     else
     {
@@ -132,6 +132,7 @@ void listarMeios(Meio* inicio_meios)
         }
         printf("------------------------------------------------------------------------------------------------------------------------\n\n");
     }
+    return SUCESSO;
 }
 
 // Escreve todos os dados inseridos sobre os meios, em ficheiro de texto.
@@ -566,24 +567,7 @@ Gestor* bubbleSortGestores(Gestor* inicio_gestor) {
     return inicio_gestor;
 }
 
-void listarTransacao(Transacao* inicio_transacao)
-{
-    system("cls");
-    if (inicio_transacao == NULL)
-    {
-        printf("Nao existem registos de transacoes.\n");
-        Sleep(2000);
-        system("cls");
-        return 0;
-    }
-    printf("Dados de transacoes:\n------------------------------------------------------------------------------------------------------------------------\n");
-    while (inicio_transacao != NULL)
-    {
-        printf("Codigo:%d   Nome:%s     Mont.Carregado:%dEur   Data:%s \n", inicio_transacao->codigo_utilizador, inicio_transacao->nome_transacao, inicio_transacao->montante_carregado, inicio_transacao->data_transacao);
-        inicio_transacao = inicio_transacao->seguinte_transacao;
-    }
-    printf("------------------------------------------------------------------------------------------------------------------------\n");
-}
+
 #pragma endregion
 
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES----------------------------------------------------
@@ -1071,16 +1055,17 @@ Gestor* alterarGestor(Gestor* inicio_gestores)
 
 // Função para alteração de dados do cliente.
 // É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel fazer alteração de nome, codigo e NIF.
-Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
-    int codigo, NIF, novo_codigo, novo_NIF, inserir = 1, escolha;
+ResFuncoes alterarDadosCliente(Cliente* inicio_clientes, Transacao* inicio_transacao) {
+    int codigo, NIF, novo_codigo, novo_NIF, inserir = 1, escolha, codigoAux;
     char novo_nome[50];
     Cliente* aux = inicio_clientes;
+    Transacao* auxTrans = inicio_transacao;
     if (inicio_clientes == NULL)
     {
-        printf("Nao existem clientes.\n");
+       /* printf("Nao existem clientes.\n");
         Sleep(2000);
-        system("cls");
-        return 0;
+        system("cls");*/
+        return CLIENTES_NAO_EXISTEM;
     }
     printf("Introduza o seu codigo:");
     scanf("%d", &codigo);
@@ -1088,17 +1073,14 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
     scanf("%d", &NIF);
     if (existeClienteCod(aux, codigo) == 1)
     {
-        printf("Nao existe nenhum cliente registado com o cod %d.\n", codigo);
-        Sleep(2000);
-        system("cls");
-        return 0;
+        return COD_CLIENTE_NAO_EXISTE;
     }
     else if (existeClienteNIF(aux, NIF) == 1)
     {
-        printf("O codigo %d, nao esta registado com o NIF %d.\n", codigo, NIF);
+        /*printf("O codigo %d, nao esta registado com o NIF %d.\n", codigo, NIF);
         Sleep(2000);
-        system("cls");
-        return 0;
+        system("cls");*/
+        return NIF_CLIENTE_NAO_EXISTE;
     }
     while (inicio_clientes != NULL)
     {
@@ -1133,8 +1115,20 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
                     scanf("%d", &novo_codigo);
                     if (existeClienteCod(aux, novo_codigo))
                     {
+                        codigoAux = inicio_clientes->codigo;
                         inicio_clientes->codigo = novo_codigo;
                         printf("O seu novo codigo %d\n", inicio_clientes->codigo);
+                        if (existeClienteTransacao(auxTrans, codigoAux))
+                        {
+                            while (auxTrans != NULL )
+                            {
+                                if (auxTrans->codigo_utilizador == codigoAux)
+                                {
+                                    auxTrans->codigo_utilizador = novo_codigo;
+                                }
+                                auxTrans = auxTrans->seguinte_transacao;
+                            }
+                        }
                         Sleep(2000);
                         system("cls");
                     }
@@ -1164,16 +1158,19 @@ Cliente* alterarDadosCliente(Cliente* inicio_clientes) {
                             printf("O seu novo NIF %d\n", inicio_clientes->NIF);
                             Sleep(2000);
                             system("cls");
+                            break;
                         }
                         else
                         {
                             printf("Ja existe alguem com o NIF inserido %d.\n", novo_NIF);
                             Sleep(2000);
                             system("cls");
+                            break;
                         }
                     }
                     break;
                 case 0:
+                    return 1;
                     break;
                 }
             } while (escolha != 0);
@@ -1353,18 +1350,16 @@ Meio* alterarMeio(Meio* inicio_meios)
 // Função para carregamento de saldo, de um certo utilizador.
 // É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel carregar o saldo desse mesmo utilizador.
 Cliente* carregarSaldo(Cliente* inicio_clientes, Transacao* inicio_transacao) {
+    if (inicio_clientes == NULL)
+    {
+        return CLIENTES_NAO_EXISTEM;
+    }
+    Transacao* auxTrans = inicio_transacao;
     int codigo, NIF, inserir = 1;
     printf("Introduza o seu codigo:");
     scanf("%d", &codigo);
     printf("Introduza o seu NIF:");
     scanf("%d", &NIF);
-    if (inicio_clientes == NULL)
-    {
-        printf("Nao existe nenhum cliente.\n");
-        Sleep(2000);
-        system("cls");
-        return 0;
-    }
     while (inicio_clientes != NULL)
     {
         if (inicio_clientes->codigo == codigo && inicio_clientes->NIF == NIF)
@@ -1376,73 +1371,34 @@ Cliente* carregarSaldo(Cliente* inicio_clientes, Transacao* inicio_transacao) {
             scanf("%d", &saldo_carregar);
             if (saldo_carregar < 0)
             {
-                printf("Nao pode carregar saldo negativo.\n");
-                Sleep(2000);
-                system("cls");
-                return 0;
+                return SALDO_CARR_NEGATIVO;
             }
             inicio_clientes->saldo = saldo_carregar + inicio_clientes->saldo;
             printf("%d carregado com sucesso. Tem agora %d de saldo.\n", saldo_carregar, inicio_clientes->saldo);
             if (inicio_transacao == NULL)
             {
-                Transacao* nova_transacao = malloc(sizeof(Transacao));
-                nova_transacao->codigo_utilizador = inicio_clientes->codigo;
-                nova_transacao->montante_carregado = saldo_carregar;
-                strcpy(nova_transacao->nome_transacao, inicio_clientes->nome);
-                time_t dataTransacao;
-                time(&dataTransacao);
-                char aux_data_transacao[50];
-                strcpy(aux_data_transacao, ctime(&dataTransacao));
-                for (int i = 0; i < strlen(aux_data_transacao); i++)
-                {
-                    if (aux_data_transacao[i] == '\n')
-                        aux_data_transacao[i] = '\0';
-                }
-                strcpy(nova_transacao->data_transacao, aux_data_transacao);
-                nova_transacao->seguinte_transacao = NULL;
-                inicio_transacao = nova_transacao;
-                return inicio_transacao;
+                if (inicio_transacao = criarTransacao(inicio_transacao, inicio_clientes->codigo, saldo_carregar, inicio_clientes->nome))
+                    return inicio_transacao;
             }
             while (inserir == 1)
             {
                 if (inicio_transacao->seguinte_transacao == NULL)
                 {
-                    Transacao* nova_transacao = malloc(sizeof(Transacao));
-                    nova_transacao->codigo_utilizador = inicio_clientes->codigo;
-                    nova_transacao->montante_carregado = saldo_carregar;
-                    strcpy(nova_transacao->nome_transacao, inicio_clientes->nome);
-                    time_t dataTransacao;
-                    time(&dataTransacao);
-                    char aux_data_transacao[50];
-                    strcpy(aux_data_transacao, ctime(&dataTransacao));
-                    for (int i = 0; i < strlen(aux_data_transacao); i++)
-                    {
-                        if (aux_data_transacao[i] == '\n')
-                            aux_data_transacao[i] = '\0';
-                    }
-                    strcpy(nova_transacao->data_transacao, aux_data_transacao);
-                    inicio_transacao->seguinte_transacao = nova_transacao;
-                    nova_transacao->seguinte_transacao = NULL;
-                    inicio_transacao = nova_transacao;
-                    inserir = 0;
+                    if (criarTransacao(auxTrans, inicio_clientes->codigo, saldo_carregar, inicio_clientes->nome))
+                        inserir = 0;
                 }
                 inicio_transacao = inicio_transacao->seguinte_transacao;
                 if (inserir == 0)
                 {
-                    Sleep(2000);
-                    system("cls");
-                    return 1;
+                    return SUCESSO;
                 }
             }
-           
-
         }
         inicio_clientes = inicio_clientes->seguinte_cliente;
     }
     if (inicio_clientes == NULL)
     {
-        printf("Nao existe o cliente com o cod %d.\n", codigo);
-        return 0;
+        return COD_NIF_NAO_EXISTE;
     }
     Sleep(2000);
     system("cls");
@@ -1450,32 +1406,29 @@ Cliente* carregarSaldo(Cliente* inicio_clientes, Transacao* inicio_transacao) {
 
 // Função para consulta de saldo, de um certo utilizador.
 // É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel visualizar quando saldo está disponível.
-Cliente* consultaSaldo(Cliente* inicio_clientes) {
+ResFuncoes consultaSaldo(Cliente* inicio_clientes, int *saldoVerifica) {
     int codigo, NIF;
     printf("Introduza o seu codigo:");
     scanf("%d", &codigo);
-    printf("Introduza o seu NIF:");
-    scanf("%d", &NIF);
+    //printf("Introduza o seu NIF:");
+    //scanf("%d", &NIF);
     if (inicio_clientes == NULL)
     {
-        printf("Nao existe nenhum cliente.\n");
-        return 0;
+        return CLIENTES_NAO_EXISTEM;
     }
     while (inicio_clientes != NULL)
     {
-        if (inicio_clientes->codigo == codigo && inicio_clientes->NIF == NIF)
+        if (inicio_clientes->codigo == codigo /*&& inicio_clientes->NIF == NIF*/)
         {
             printf("Voce tem %d de saldo.\n", inicio_clientes->saldo);
-            Sleep(2000);
-            system("cls");
-            return 1;
+            return SALDO_ATUAL;
         }
         inicio_clientes = inicio_clientes->seguinte_cliente;
     }
     if (inicio_clientes == NULL)
     {
-        printf("Nao existe o cliente com o cod %d.\n", codigo);
-        return 0;
+        //printf("Nao existe o cliente com o cod %d.\n", codigo);
+        return COD_NIF_NAO_EXISTE;
     }
 }
 
@@ -1573,9 +1526,9 @@ Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio
         }
         else
         {
-            printf("O meio introduzido, nao existe.\n");
-            Sleep(2000);
-            system("cls");
+            //printf("O meio introduzido, nao existe.\n");
+            //Sleep(2000);
+            //system("cls");
             return 0;
         }
     }
@@ -1758,7 +1711,18 @@ Aluguer* escreverFicheiro_aluguer_bin(Aluguer* inicio_aluguer, FILE* dados_alugu
     fclose(dados_aluguer);
 }
 
-
+int existeClienteTransacao(Transacao* inicio_transacao, int codVerificar)
+{
+    int teste = 0;
+    Transacao* aux = inicio_transacao;
+    while (aux != NULL)
+    {
+        if (aux->codigo_utilizador == codVerificar)
+            return 1;
+        aux = aux->seguinte_transacao;
+    }
+    return 0;
+}
 #pragma endregion
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE ALUGUER----------------------------------------------------
 
@@ -1821,6 +1785,56 @@ Transacao* escreverFicheiro_transacao_bin(Transacao* inicio_transacao, FILE* dad
     fclose(dados_transacao);
 }
 
+void listarTransacao(Transacao* inicio_transacao)
+{
+    system("cls");
+    if (inicio_transacao == NULL)
+    {
+        printf("Nao existem registos de transacoes.\n");
+        Sleep(2000);
+        system("cls");
+        return 0;
+    }
+    printf("Dados de transacoes:\n------------------------------------------------------------------------------------------------------------------------\n");
+    while (inicio_transacao != NULL)
+    {
+        printf("Codigo:%d   Nome:%s     Mont.Carregado:%dEur   Data:%s \n", inicio_transacao->codigo_utilizador, inicio_transacao->nome_transacao, inicio_transacao->montante_carregado, inicio_transacao->data_transacao);
+        inicio_transacao = inicio_transacao->seguinte_transacao;
+    }
+    printf("------------------------------------------------------------------------------------------------------------------------\n");
+}
+
+Transacao* criarTransacao(Transacao* inicio_transacao, int codigoCliente, int saldoCarregar, char nomeCliente[50])
+{
+    Transacao* nova_transacao = malloc(sizeof(Transacao));
+    nova_transacao->codigo_utilizador = codigoCliente;
+    nova_transacao->montante_carregado = saldoCarregar;
+    strcpy(nova_transacao->nome_transacao, nomeCliente);
+    time_t dataTransacao;
+    time(&dataTransacao);
+    char aux_data_transacao[50];
+    strcpy(aux_data_transacao, ctime(&dataTransacao));
+    for (int i = 0; i < strlen(aux_data_transacao); i++)
+    {
+        if (aux_data_transacao[i] == '\n')
+            aux_data_transacao[i] = '\0';
+    }
+    strcpy(nova_transacao->data_transacao, aux_data_transacao);
+
+    if (inicio_transacao == NULL) {
+        inicio_transacao = nova_transacao;
+    }
+    else {
+        Transacao* current_transacao = inicio_transacao;
+        while (current_transacao->seguinte_transacao != NULL) {
+            current_transacao = current_transacao->seguinte_transacao;
+        }
+        current_transacao->seguinte_transacao = nova_transacao;
+    }
+        nova_transacao->seguinte_transacao = NULL;
+        inicio_transacao = nova_transacao;
+    return inicio_transacao;
+}
 #pragma endregion
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE TRANSACOES----------------------------------------------------
 
