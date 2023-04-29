@@ -2,8 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 #include <Windows.h>
+#include <float.h>
+#include <stdbool.h>
 #define MAX_LINE_LEN 350
-#define TAM 50
 
 typedef enum ResultadoFuncoes {
 	ERRO,
@@ -16,7 +17,8 @@ typedef enum ResultadoFuncoes {
 	SALDO_CARR_NEGATIVO,
 	SALDO_CARREGADO,
 	SALDO_ATUAL,
-	MEIOS_NAO_EXISTEM
+	MEIOS_NAO_EXISTEM,
+	VERTICE_NAO_EXISTE
 
 }ResFuncoes;
 
@@ -76,7 +78,6 @@ typedef struct Meios
 	struct Meios* seguinte_meio;
 } Meios;
 
-// Representação de um grafo orientado e pesado
 typedef struct Adjacente
 {
 	char vertice[100]; // geocódigo what3words
@@ -91,6 +92,24 @@ typedef struct Grafo
 	Meios* meios; // Lista ligada com os códigos dos meios de transporte existente neste geocódigo
 	struct Grafo* seguinte_vertice;
 } Grafo;
+
+#pragma region STACK
+
+typedef struct Stack
+{
+	char vertice[100];
+	bool visitado;
+	struct Stack* seguinte_stack;
+}Stack;
+
+typedef struct ListaStack
+{
+	Stack* novaStack;
+	struct ListaStack* seguinte_lista;
+} ListaStack;
+
+#pragma endregion
+
 
 int menu();
 
@@ -236,16 +255,15 @@ Transacao* criarTransacao(Transacao* inicio_transacao, int codigoCliente, int sa
 // -------------------------------------------------------------------FUNÇÕES_F-TRANSACOES--------------------------------------------------------------------
 #pragma endregion
 
+#pragma region GRAFO
 // -------------------------------------------------------------------FUNÇÕES_I-CIDADES--------------------------------------------------------------------
 Grafo* lerFicheiro_Vertices(Grafo* inicio_grafo, FILE* dados_vertices);
 
 Grafo* lerFicheiro_Adjacentes(Grafo* inicio_grafo, FILE* dados_adjacentes);
 
+float calculoDistanciaMinima(Grafo* inicio_grafo, char verticeOrigem[50], char verticeDestino[50]);
+
 void escreverFicheiroGrafo(Grafo* inicio_grafo, FILE* dados_grafo);
-
-void escreverFicheiroGrafo_recursivo(Grafo* nodo_atual, FILE* dados_grafo);
-
-char copiarListaGrafo(Grafo* inicio_grafo);
 
 int existeVertice(Grafo* inicio_grafo, char verticeVerificar[50]);
 
@@ -255,5 +273,22 @@ int inserirAdjacente(Grafo* inicio_grafo, char verticeInicial[50], char verticeF
 
 void listarGrafo(Grafo* inicio_grafo);
 
+int totalVertices(Grafo* inicio_grafo);
+
 void listarAdjacentes(Grafo* inicio_grafo);
+
+Stack* caminhoTexto(Grafo* inicio_grafo, char verticeAtual[50], char verticeDestino[50], Stack* inicio_stack, ListaStack* inicio_lista);
+
+bool verticeVisitado(Stack* inicio_stack, char* vertice[50]);
+
+#pragma endregion
+
+#pragma region STACK
+
+Stack* push(Stack* inicio_stack, char* vertice[50]);
+
+Stack* retirar(Stack* inicio_stack);
+
+void mostrarCaminho(Stack* inicio_stack);
+#pragma endregion
 // -------------------------------------------------------------------FUNÇÕES_F-CIDADES--------------------------------------------------------------------
