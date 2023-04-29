@@ -6,6 +6,7 @@
 #include <Windows.h>
 #include "funcoes.h"
 
+
 // ---------------------------------------------------------------MENU---------------------------------------------------------------
 
 #pragma region MENU
@@ -2103,5 +2104,159 @@ int inserirAdjacente(Grafo* inicio_grafo, char verticeInicial[50], char verticeF
     }
     return 0;
 }
+
+int totalVertices(Grafo* inicio_grafo)
+{
+    int total = 0;
+    Grafo* aux = inicio_grafo;
+    while (aux != NULL && aux->seguinte_vertice !=NULL)
+    {
+        aux = aux->seguinte_vertice;
+        total++;
+    }
+    return total;
+}
+
+Stack* caminhoTexto(Grafo* inicio_grafo, char verticeAtual[50], char verticeDestino[50], Stack* inicio_stack, ListaStack* inicio_lista)
+{
+    Grafo* aux = inicio_grafo;
+    Stack* aux_stack = inicio_stack;
+    Adjacente* aux_adj = NULL;
+    if (existeVertice(aux, verticeAtual))
+    {
+        while (aux != NULL)
+        {
+            if (strcmp(aux->vertice, verticeAtual) == 0)
+            {
+                aux_stack = push(aux_stack, aux->vertice);
+                inicio_stack = aux_stack;
+                break;
+            }
+            aux = aux->seguinte_vertice;
+        }
+    }
+    else
+        return;
+
+    if (strcmp(aux->vertice, verticeDestino) == 0)
+    {
+        ListaStack* novaListaStack = malloc(sizeof(ListaStack));
+        novaListaStack->novaStack = inicio_stack;
+        novaListaStack->seguinte_lista = inicio_lista;
+        inicio_lista = novaListaStack;
+        mostrarCaminho(inicio_stack);
+        return;
+    }
+    else
+    {
+       aux_adj = aux->adjacentes;
+       while (aux_adj != NULL)
+       {
+           if (!verticeVisitado(inicio_stack, aux_adj->vertice))
+           {
+               inicio_stack->visitado = true;
+               caminhoTexto(inicio_grafo, aux_adj->vertice, verticeDestino, inicio_stack, inicio_lista);
+               inicio_stack = retirar(inicio_stack);
+               if (strcmp(aux_stack->vertice, verticeAtual) == 0)
+               {
+                   break;
+               }
+               return;
+           }
+           aux_adj = aux_adj->seguinte_adjacente;
+       }
+    }
+    caminhoTexto(inicio_grafo, aux_stack->vertice, verticeDestino, inicio_stack, inicio_lista);
+}
+
+bool verticeVisitado(Stack* inicio_stack, char* vertice)
+{
+    Stack* aux_stack = inicio_stack;
+    while (aux_stack != NULL)
+    {
+        if (strcmp(aux_stack->vertice, vertice) == 0)
+        {
+            return true;
+        }
+        aux_stack = aux_stack->seguinte_stack;
+    }
+    return false;
+}
 #pragma endregion
+
+#pragma region STACK
+
+Stack* push(Stack* inicio_stack, char vertice[50])
+{
+    Stack* aux = inicio_stack;
+    if (inicio_stack == NULL)
+    {
+        Stack* novo_stack = malloc(sizeof(Stack));
+        strcpy(novo_stack->vertice, vertice);
+        novo_stack->visitado = true;
+        novo_stack->seguinte_stack = inicio_stack;
+        return novo_stack;
+    }
+    else
+    {
+        while (inicio_stack->seguinte_stack != NULL)
+        {
+            inicio_stack = inicio_stack->seguinte_stack;
+        }
+        Stack* novo_stack = malloc(sizeof(Stack));
+        strcpy(novo_stack->vertice, vertice);
+        novo_stack->seguinte_stack = NULL;
+        inicio_stack->seguinte_stack = novo_stack;
+    }
+    return aux;  
+}
+
+Stack* retirar(Stack* inicio_stack)
+{
+    Stack* aux = inicio_stack;
+    Stack* prev = NULL;
+    while (aux != NULL && aux->seguinte_stack != NULL)
+    {
+        prev = aux;
+        aux = aux->seguinte_stack;
+    }
+    if (aux == NULL) {
+        return inicio_stack;  // empty list
+    }
+    if (prev == NULL) {
+        inicio_stack = NULL;  // list had only one element
+    }
+    else {
+        prev->seguinte_stack = NULL;
+    }
+    return aux;
+}
+
+void mostrarCaminho(Stack* inicio_stack) {
+    if (inicio_stack == NULL)
+    {
+        printf("Caminho nao encontrado.\n");
+        return ERRO;
+    }
+    else
+    {
+        while (inicio_stack != NULL)
+        {
+            if (inicio_stack->seguinte_stack == NULL)
+            {
+                printf("%s.\n", inicio_stack->vertice);
+            }
+            else
+            {
+                printf("%s -> ", inicio_stack->vertice);
+            }
+            inicio_stack = inicio_stack->seguinte_stack;
+
+        }
+        return SUCESSO;
+    }
+    return ERRO;
+}
+#pragma endregion
+
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE CIDADES----------------------------------------------------

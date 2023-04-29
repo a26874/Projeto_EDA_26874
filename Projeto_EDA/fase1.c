@@ -16,12 +16,15 @@ int main() {
     Transacao* inicio_transacao = NULL;
     Grafo* inicio_grafo = NULL;
     ResFuncoes resFunc;
+    Stack* inicio_stack = NULL;
+    ListaStack* inicio_lista = NULL;
     FILE* dados_meios, * dados_clientes, * dados_gestor, * dados_aluguer, * dados_transacao, * dados_grafo, * dados_adjacentes;
-    int op, bool, op_utilizador, utilizador_login = 0, gestor_login = 0, op_gestor, retFunc;
+    int op, bool_int, op_utilizador, utilizador_login = 0, gestor_login = 0, op_gestor, retFunc;
     int novo_cliente_codigo, novo_cliente_NIF, novo_cliente_saldo, novo_meio_codigo, novo_meio_custo, novo_gestor_codigo, codigo_meio_remover
         , codigo_cliente_remover, codigo_gestor_remover, codigo_login_utilizador;
     float novo_meio_bateria, novo_meio_autonomia, novopesoAdjacente;
-    char novo_cliente_nome[50], novo_meio_nome[50], novo_meio_geocodigo[50], novo_gestor_nome[50], novo_gestor_senha[50], novo_gestor_area[50], novoverticeinicial[50], novoverticeFinal[50];
+    char novo_cliente_nome[50], novo_meio_nome[50], novo_meio_geocodigo[50], novo_gestor_nome[50], novo_gestor_senha[50], novo_gestor_area[50], novoverticeinicial[50], novoverticeFinal[50]
+        , verticeInicial[50], verticeDestino[50];
 
 
     // No arranque é feito de imediato a leitura dos ficheiros.
@@ -183,7 +186,14 @@ int main() {
                     listarGeocodigo(inicio_meios);
                     break;
                 case 7:
-                    listarGrafo(inicio_grafo);
+                    printf("Insira a partida e o destino:\n");
+                    printf("Partida:");
+                    strcpy(verticeInicial, "fagocitose.crestar.esperanca");
+                    //scanf("%s", verticeInicial);
+                    printf("Chegada:");
+                    //scanf("%s", ocupei.embasando.ralar);
+                    strcpy(verticeDestino, "ocupei.embasando.ralar");
+                    caminhoTexto(inicio_grafo, verticeInicial, verticeDestino, inicio_stack,inicio_lista);
                     break;
                 case 8:
                     listarAdjacentes(inicio_grafo);
