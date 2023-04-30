@@ -277,7 +277,7 @@ int totalVertices(Grafo* inicio_grafo);
 
 void listarAdjacentes(Grafo* inicio_grafo);
 
-Stack* caminhoTexto(Grafo* inicio_grafo, char verticeAtual[50], char verticeDestino[50], Stack* inicio_stack, ListaStack* inicio_lista);
+ListaStack* caminhoTexto(Grafo* inicio_grafo, char verticeAtual[50], char verticeDestino[50], Stack* inicio_stack, ListaStack* inicio_lista);
 
 bool verticeVisitado(Stack* inicio_stack, char* vertice[50]);
 
@@ -286,8 +286,6 @@ bool verticeVisitado(Stack* inicio_stack, char* vertice[50]);
 #pragma region STACK
 
 Stack* push(Stack* inicio_stack, char* vertice[50]);
-
-Stack* retirar(Stack* inicio_stack);
 
 void mostrarCaminho(Stack* inicio_stack);
 #pragma endregion

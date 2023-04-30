@@ -192,8 +192,9 @@ int main() {
                     //scanf("%s", verticeInicial);
                     printf("Chegada:");
                     //scanf("%s", ocupei.embasando.ralar);
-                    strcpy(verticeDestino, "ocupei.embasando.ralar");
-                    caminhoTexto(inicio_grafo, verticeInicial, verticeDestino, inicio_stack,inicio_lista);
+                    strcpy(verticeDestino, "fracos.ovelha.quadradao");
+                    inicio_lista = caminhoTexto(inicio_grafo, verticeInicial, verticeDestino, inicio_stack,inicio_lista);
+                    mostrarCaminho(inicio_lista);
                     break;
                 case 8:
                     listarAdjacentes(inicio_grafo);
