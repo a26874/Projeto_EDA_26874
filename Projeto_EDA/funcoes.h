@@ -40,6 +40,7 @@ typedef struct registo_clientes
 	char nome[50]; // nome do cliente
 	int NIF; // NIF do cliente
 	int saldo; // saldo do cliente
+	char geocodigo[100];
 	struct registo_aluguer* comprador;
 	struct registo_clientes* seguinte_cliente; // endereço de memória para uma struct registo_clientes
 } Cliente;
@@ -72,11 +73,7 @@ typedef struct registo_transacoes
 	struct registo_transacoes* seguinte_transacao;
 }Transacao;
 
-typedef struct Meios
-{
-	int codigo;
-	struct Meios* seguinte_meio;
-} Meios;
+
 
 typedef struct Adjacente
 {
@@ -89,7 +86,8 @@ typedef struct Grafo
 {
 	char vertice[100]; // geocódigo what3words
 	Adjacente* adjacentes;
-	Meios* meios; // Lista ligada com os códigos dos meios de transporte existente neste geocódigo
+	Cliente* clientes;
+	Meio* meios; // Lista ligada com os códigos dos meios de transporte existente neste geocódigo
 	struct Grafo* seguinte_vertice;
 } Grafo;
 
@@ -257,9 +255,19 @@ Transacao* criarTransacao(Transacao* inicio_transacao, int codigoCliente, int sa
 
 #pragma region GRAFO
 // -------------------------------------------------------------------FUNÇÕES_I-CIDADES--------------------------------------------------------------------
-Grafo* lerFicheiro_Vertices(Grafo* inicio_grafo, FILE* dados_vertices);
+Grafo* lerFicheiro_Vertices(Grafo* inicio_grafo, Meio* inicio_meios, FILE* dados_vertices);
+
+void testeCLientes(Grafo* inicio_grafo);
+
+Grafo* adicionarClientesGrafo(Grafo* inicio_grafo, Cliente* inicio_clientes);
+
+Grafo* adicionarMeiosGrafo(Grafo* inicio_grafo, Meio* inicio_meios);
 
 Grafo* lerFicheiro_Adjacentes(Grafo* inicio_grafo, FILE* dados_adjacentes);
+
+ResFuncoes localizacaoRaio(Grafo* inicio_grafo,Cliente* inicio_cliente, float raio, int codigo);
+
+void printtestgrafo(Grafo* inicio_grafo);
 
 float calculoDistanciaMinima(Grafo* inicio_grafo, char verticeOrigem[50], char verticeDestino[50]);
 

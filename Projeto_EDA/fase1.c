@@ -24,7 +24,7 @@ int main() {
         , codigo_cliente_remover, codigo_gestor_remover, codigo_login_utilizador;
     float novo_meio_bateria, novo_meio_autonomia, novopesoAdjacente;
     char novo_cliente_nome[50], novo_meio_nome[50], novo_meio_geocodigo[50], novo_gestor_nome[50], novo_gestor_senha[50], novo_gestor_area[50], novoverticeinicial[50], novoverticeFinal[50]
-        , verticeInicial[50], verticeDestino[50];
+        , verticeInicial[50], verticeDestino[50], novo_cliente_geocodigo[100];
 
 
     // No arranque é feito de imediato a leitura dos ficheiros.
@@ -39,14 +39,16 @@ int main() {
     dados_transacao = fopen("historico_transacoes.txt", "rt");
     inicio_transacao = lerFicheiro_transacao(inicio_transacao, dados_transacao);
     dados_grafo = fopen("vertices.txt", "rt");
-    inicio_grafo = lerFicheiro_Vertices(inicio_grafo, dados_grafo);
+    inicio_grafo = lerFicheiro_Vertices(inicio_grafo,inicio_meios, dados_grafo);
     dados_adjacentes = fopen("adjacentes.txt", "rt");
     inicio_grafo = lerFicheiro_Adjacentes(inicio_grafo, dados_adjacentes);
-
     bubbleSortMeios(inicio_meios);
     bubbleSortClientes(inicio_clientes);
     bubbleSortGestores(inicio_gestor);
     bubbleSortAluguer(inicio_aluguer);
+    inicio_grafo->clientes = adicionarClientesGrafo(inicio_grafo, inicio_clientes);
+    inicio_grafo->meios = adicionarMeiosGrafo(inicio_grafo, inicio_meios);
+    testeCLientes(inicio_grafo);
     // Criação de Menu.
     do
     {
@@ -174,13 +176,6 @@ int main() {
                     {
                         inicio_aluguer = realizarAluguer(inicio_clientes, inicio_aluguer, inicio_meios);
                     }
-                    //resFunc = realizarAluguer(inicio_clientes, inicio_aluguer, inicio_meios);
-                    /*else if (!resFunc)
-                    {
-                        printf("O meio introduzido, nao existe.\n");
-                        Sleep(2000);
-                        system("cls");
-                    }*/
                     break;
                 case 6:
                     listarGeocodigo(inicio_meios);
@@ -199,6 +194,14 @@ int main() {
                 case 8:
                     listarAdjacentes(inicio_grafo);
                     break;
+                case 9:
+                    printf("Introduza em km's, a distancia pela qual pretende verificar a existencia de meios:");
+                    float raioVerificar;
+                    int codigoCliente;
+                    scanf("%f", &raioVerificar);
+                    printf("Introduza o seu codigo:");
+                    scanf("%d", &codigoCliente);
+                    localizacaoRaio(inicio_grafo,inicio_clientes, raioVerificar, codigoCliente);
                 case 0:
                     utilizador_login = 0;
                     break;
@@ -272,14 +275,16 @@ int main() {
                         }
                         printf("Saldo:");
                         scanf("%d", &novo_cliente_saldo);
+                        printf("Localizacao:");
+                        scanf("%s", novo_cliente_geocodigo);
                         if (inicio_clientes == NULL)
                         {
-                            inicio_clientes = inserirCliente(inicio_clientes, novo_cliente_codigo, novo_cliente_nome, novo_cliente_NIF, novo_cliente_saldo);
+                            inicio_clientes = inserirCliente(inicio_clientes, novo_cliente_codigo, novo_cliente_nome, novo_cliente_NIF, novo_cliente_saldo, novo_cliente_geocodigo);
                             break;
                         }
                         else if (existeClienteCod(inicio_clientes, novo_cliente_codigo) == 1 && existeClienteNIF(inicio_clientes, novo_cliente_NIF) == 1)
                         {
-                            inserirCliente(inicio_clientes, novo_cliente_codigo, novo_cliente_nome, novo_cliente_NIF, novo_cliente_saldo);
+                            inserirCliente(inicio_clientes, novo_cliente_codigo, novo_cliente_nome, novo_cliente_NIF, novo_cliente_saldo, novo_cliente_geocodigo);
                             break;
                         }
                         else
@@ -456,6 +461,7 @@ int main() {
                         break;
                     case 0:
                         gestor_login = 0;
+                        system("cls");
                         break;
                     default:
                         getchar();
