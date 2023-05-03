@@ -71,8 +71,9 @@ int menu_utilizador()
     printf("4- Alteracao dos seus dados.\n");
     printf("5- Alugar algum meio.\n");
     printf("6- Listar por geocodigo.\n");
-    printf("7- Calcular distâncias.\n");
+    printf("7- Calcular distancias.\n");
     printf("8- Listar adjacentes.\n");
+    printf("9- Localizacao de um meio.\n");
     printf("0- Sair.\n");
     printf("A sua escolha:");
     scanf("%d", &escolha);
@@ -287,7 +288,7 @@ Cliente* lerFicheiro_clientes(Cliente* inicio_clientes, FILE* dados_clientes)
     while (fgets(linha, MAX_LINE_LEN, dados_clientes))
     {
         Cliente* novo_nodo = malloc(sizeof(struct registo_clientes));
-        sscanf(linha, "%d;%[^;];%d;%d\n", &novo_nodo->codigo, novo_nodo->nome, &novo_nodo->NIF, &novo_nodo->saldo);
+        sscanf(linha, "%d;%[^;];%d;%d;%s\n", &novo_nodo->codigo, novo_nodo->nome, &novo_nodo->NIF, &novo_nodo->saldo, novo_nodo->geocodigo);
         novo_nodo->seguinte_cliente = inicio_clientes;
         inicio_clientes = novo_nodo;
     }
@@ -311,7 +312,7 @@ void listarClientes(Cliente* inicio_clientes)
         // É apresentada a informação dos clientes.
         while (inicio_clientes != NULL)
         {
-            printf("Codigo:%d    Nome:%s     NIF:%d      Saldo:%d\n", inicio_clientes->codigo, inicio_clientes->nome, inicio_clientes->NIF, inicio_clientes->saldo);
+            printf("Codigo:%d    Nome:%s     NIF:%d      Saldo:%d   Geocodigo:%s\n", inicio_clientes->codigo, inicio_clientes->nome, inicio_clientes->NIF, inicio_clientes->saldo, inicio_clientes->geocodigo);
             inicio_clientes = inicio_clientes->seguinte_cliente;
         }
         printf("------------------------------------------------------------------------------------------------------------------------");
@@ -329,7 +330,7 @@ Cliente* escreverFicheiro_clientes(Cliente* inicio_clientes, FILE* dados_cliente
     }
     while (inicio_clientes != NULL)
     {
-        fprintf(dados_clientes, "%d;%s;%d;%d\n", inicio_clientes->codigo, inicio_clientes->nome, inicio_clientes->NIF, inicio_clientes->saldo);
+        fprintf(dados_clientes, "%d;%s;%d;%d;%s\n", inicio_clientes->codigo, inicio_clientes->nome, inicio_clientes->NIF, inicio_clientes->saldo, inicio_clientes->geocodigo);
         inicio_clientes = inicio_clientes->seguinte_cliente;
     }
     fclose(dados_clientes);
@@ -346,7 +347,7 @@ Cliente* escreverFicheiro_clientes_bin(Cliente* inicio_clientes, FILE* dados_cli
     }
     while (inicio_clientes != NULL)
     {
-        fprintf(dados_clientes, "%d;%s;%d;%d\n", inicio_clientes->codigo, inicio_clientes->nome, inicio_clientes->NIF, inicio_clientes->saldo);
+        fprintf(dados_clientes, "%d;%s;%d;%d;%s\n", inicio_clientes->codigo, inicio_clientes->nome, inicio_clientes->NIF, inicio_clientes->saldo, inicio_clientes->geocodigo);
         inicio_clientes = inicio_clientes->seguinte_cliente;
     }
     fclose(dados_clientes);
@@ -355,7 +356,6 @@ Cliente* escreverFicheiro_clientes_bin(Cliente* inicio_clientes, FILE* dados_cli
 // Verifica, consoante o endereço de memória de um certo utilizador, se o seu código é igual ao que foi inserido para um novo utilizador.
 int existeClienteCod(Cliente* inicio_clientes, int cod)
 {
-    Cliente* aux;
     while (inicio_clientes != NULL)
     {
         if (inicio_clientes->codigo == cod)
@@ -388,7 +388,7 @@ int existeClienteNIF(Cliente* inicio_clientes, int NIF)
 Cliente* bubbleSortClientes(Cliente* inicio_clientes) {
     Cliente* atual, * seguinte;
     int b = 1, aux_codigo, aux_NIF, aux_saldo;
-    char aux_nome[50];
+    char aux_nome[50], aux_geocodigo[100];
     while (b)
     {
         b = 0;
@@ -406,16 +406,19 @@ Cliente* bubbleSortClientes(Cliente* inicio_clientes) {
                 strcpy(aux_nome, atual->nome);
                 aux_NIF = atual->NIF;
                 aux_saldo = atual->saldo;
+                strcpy(aux_geocodigo, atual->geocodigo);
 
                 atual->codigo = seguinte->codigo;
                 strcpy(atual->nome, seguinte->nome);
                 atual->NIF = seguinte->NIF;
                 atual->saldo = seguinte->saldo;
+                strcpy(atual->geocodigo, seguinte->geocodigo);
 
                 seguinte->codigo = aux_codigo;
                 strcpy(seguinte->nome, aux_nome);
                 seguinte->NIF = aux_NIF;
                 seguinte->saldo = aux_saldo;
+                strcpy(seguinte->geocodigo, aux_geocodigo);
 
                 b = 1;
             }
@@ -707,7 +710,7 @@ Meio* inserirMeio(Grafo* inicio_grafo, Meio* inicio_meios, int cod, char nome[50
 
 // Função para inserir um novo cliente, é pedido ao gestor na função main, um novo codigo, nome, NIF e saldo.  
 // De seguida é inserido no ultimo lugar da lista ligada dos clientes, quando é o ultimo endereço NULL.
-Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NIF, int saldo)
+Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NIF, int saldo, char geocodigo[100])
 {
     int inserir = 0;
     while (inserir != 1)
@@ -719,6 +722,7 @@ Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NI
             strcpy(novo_cliente->nome, nome);
             novo_cliente->NIF = NIF;
             novo_cliente->saldo = saldo;
+            strcpy(novo_cliente->geocodigo, geocodigo);
             novo_cliente->seguinte_cliente = NULL;
             inicio_clientes = novo_cliente;
             printf("Cliente com codigo %d adicionado com sucesso.\n", novo_cliente->codigo);
@@ -733,6 +737,7 @@ Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NI
             strcpy(novo_cliente->nome, nome);
             novo_cliente->NIF = NIF;
             novo_cliente->saldo = saldo;
+            strcpy(novo_cliente->geocodigo, geocodigo);
             inicio_clientes->seguinte_cliente = novo_cliente;
             novo_cliente->seguinte_cliente = NULL;
             inicio_clientes = novo_cliente;
@@ -1058,7 +1063,7 @@ Gestor* alterarGestor(Gestor* inicio_gestores)
 // É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel fazer alteração de nome, codigo e NIF.
 ResFuncoes alterarDadosCliente(Cliente* inicio_clientes, Transacao* inicio_transacao) {
     int codigo, NIF, novo_codigo, novo_NIF, inserir = 1, escolha, codigoAux;
-    char novo_nome[50];
+    char novo_nome[50], novo_geocodigo[100];
     Cliente* aux = inicio_clientes;
     Transacao* auxTrans = inicio_transacao;
     if (inicio_clientes == NULL)
@@ -1091,12 +1096,13 @@ ResFuncoes alterarDadosCliente(Cliente* inicio_clientes, Transacao* inicio_trans
             {
                 printf("Este sao os seus dados, %s.\n", inicio_clientes->nome);
                 printf("------------------------------------------------------------------------------------------------------------------------\n");
-                printf("Nome:%s     Codigo:%d       NIF:%d\n", inicio_clientes->nome, inicio_clientes->codigo, inicio_clientes->NIF);
+                printf("Nome:%s     Codigo:%d       NIF:%d      Localizacao:%s\n", inicio_clientes->nome, inicio_clientes->codigo, inicio_clientes->NIF, inicio_clientes->geocodigo);
                 printf("------------------------------------------------------------------------------------------------------------------------\n");
                 printf("O que deseja alterar?\n");
                 printf("1- Nome.\n");
                 printf("2- Codigo.\n");
                 printf("3- NIF.\n");
+                printf("4- Localizacao.\n");
                 printf("0- Sair.\n");
                 printf("A sua escolha:");
                 scanf("%d", &escolha);
@@ -1169,6 +1175,14 @@ ResFuncoes alterarDadosCliente(Cliente* inicio_clientes, Transacao* inicio_trans
                             break;
                         }
                     }
+                    break;
+                case 4:
+                    printf("Insira o seu novo geocodigo/localizacao:");
+                    scanf("%s", novo_geocodigo);
+                    strcpy(inicio_clientes->geocodigo, novo_geocodigo);
+                    printf("Geocodigo alterado com sucesso para %s.\n", inicio_clientes->geocodigo);
+                    Sleep(2000);
+                    system("cls");
                     break;
                 case 0:
                     return 1;
@@ -1843,8 +1857,51 @@ Transacao* criarTransacao(Transacao* inicio_transacao, int codigoCliente, int sa
 // ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE CIDADES----------------------------------------------------
 
 #pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE CIDADES
-Grafo* lerFicheiro_Vertices(Grafo* inicio_grafo, FILE* dados_grafo)
+Grafo* lerFicheiro_Vertices(Grafo* inicio_grafo,Meio* inicio_meios, FILE* dados_grafo)
 {
+    //int existe = 0;
+    //Grafo* aux = inicio_grafo;
+    //Grafo* auxExiste = inicio_grafo;
+    //Meio* auxMeio = inicio_meios;
+    //while (auxMeio != NULL)
+    //{
+    //    existe = 0;
+    //    auxExiste = inicio_grafo;
+    //    if (auxExiste == NULL)
+    //    {
+    //    }
+    //    else
+    //    {
+    //        while (auxExiste != NULL)
+    //        {
+    //            if (strcmp(auxExiste->vertice, auxMeio->geocodigo) == 0)
+    //            {
+    //                existe = 1;
+    //            }
+    //            auxExiste = auxExiste->seguinte_vertice;
+    //        }
+    //    }
+    //    while (existe == 0)
+    //    {
+    //        Grafo* novo_nodo = malloc(sizeof(Grafo));
+    //        strcpy(novo_nodo->vertice, auxMeio->geocodigo);
+    //        novo_nodo->meios = NULL;
+    //        novo_nodo->clientes = NULL;
+    //        novo_nodo->adjacentes = NULL;
+    //        novo_nodo->seguinte_vertice = inicio_grafo;
+    //        inicio_grafo = novo_nodo;
+    //        existe = 1;
+    //    }
+    //    //Grafo* novo_nodo = malloc(sizeof(Grafo));
+    //    //strcpy(novo_nodo->vertice, auxMeio->geocodigo);
+    //    //novo_nodo->meios = NULL;
+    //    //novo_nodo->clientes = NULL;
+    //    //novo_nodo->adjacentes = NULL;
+    //    //novo_nodo->seguinte_vertice = inicio_grafo;
+    //    //inicio_grafo = novo_nodo;
+    //    auxMeio = auxMeio->seguinte_meio;
+    //}
+    //return inicio_grafo;
     char* token_vertice;
     if (dados_grafo == NULL)
     { 
@@ -1867,7 +1924,6 @@ Grafo* lerFicheiro_Vertices(Grafo* inicio_grafo, FILE* dados_grafo)
                 inicio_grafo = novo_nodo;
                 token_vertice = strtok(NULL, ";");
             }
-
     }
     return inicio_grafo;
 }
@@ -1938,6 +1994,120 @@ Grafo* lerFicheiro_Adjacentes(Grafo* inicio_grafo, FILE* dados_adjacentes)
     return inicio_grafo;
 }
 
+void testeCLientes(Grafo* inicio_grafo)
+{
+    Grafo* aux = inicio_grafo;
+    while (aux != NULL)
+    {
+        if (aux->clientes == NULL)
+        {
+            printf("Nao existe clientes registados com a cidade: %s\n", aux->vertice);
+        }
+        else if (aux->clientes != NULL)
+        {
+            printf("Nome: %s    Cod: %d\n", aux->clientes->nome, aux->clientes->codigo);
+        }
+        aux = aux->seguinte_vertice;
+    }
+}
+
+Grafo* adicionarClientesGrafo(Grafo* inicio_grafo, Cliente* inicio_clientes)
+{
+    int teste = 0;
+    Grafo* aux = inicio_grafo;
+    while (aux != NULL)
+    {
+        teste = 0;
+        Cliente* auxClientes = inicio_clientes;
+        while (auxClientes != NULL)
+        {
+            if (strcmp(auxClientes->geocodigo, aux->vertice) == 0)
+            {
+                aux->clientes = auxClientes;
+                teste = 1;
+            }
+            auxClientes = auxClientes->seguinte_cliente;
+        }
+        if (teste == 0)
+        {
+            aux->clientes = NULL;
+        }
+        aux = aux->seguinte_vertice;
+    }
+    return inicio_grafo->clientes;
+}
+
+Grafo* adicionarMeiosGrafo(Grafo* inicio_grafo, Meio* inicio_meios)
+{
+    Grafo* aux = inicio_grafo;
+    while (aux!=NULL)
+    {
+        Meio* auxMeio = inicio_meios;
+        while (auxMeio!=NULL)
+        {
+            if (strcmp(auxMeio->geocodigo, aux->vertice) == 0)
+            {
+                aux->meios = auxMeio;
+            }
+            auxMeio = auxMeio->seguinte_meio;
+        }
+        aux = aux->seguinte_vertice;
+    }
+    return inicio_grafo->meios;
+}
+
+ResFuncoes localizacaoRaio(Grafo* inicio_grafo, Cliente* inicio_clientes, float raio, int codigo)
+{
+    Grafo* aux = inicio_grafo;
+    Cliente* auxClientes = inicio_clientes;
+    char geocodigoProcurar[100];
+    int print = 0;
+    if (!existeClienteCod(auxClientes, codigo))
+    {
+        while (auxClientes->codigo != codigo)
+            auxClientes = auxClientes->seguinte_cliente;
+    }
+    else
+    {
+        return CLIENTES_NAO_EXISTEM;
+    }
+    strcpy(geocodigoProcurar, auxClientes->geocodigo);
+    while (strcmp(geocodigoProcurar, aux->vertice) != 0)
+    {
+        aux = aux->seguinte_vertice;
+    }
+    Adjacente* auxAdj = aux->adjacentes;
+    while (auxAdj != NULL)
+    {
+        if (raio > auxAdj->peso)
+        {
+            printf("Pode ir para %s com uma distancia de %.2f\n", auxAdj->vertice, auxAdj->peso);
+            print = 1;
+        }
+        auxAdj = auxAdj->seguinte_adjacente;
+    }
+    if (print == 0)
+    {
+        printf("Nao e possivel ir para nenhuma localizacao com a distancia definida.\n");
+        return ERRO;
+    }
+    return SUCESSO;
+}
+
+void printtestgrafo(Grafo* inicio_grafo)
+{
+    Grafo* aux = inicio_grafo;
+    while (aux->clientes != NULL)
+    {
+        printf("Cliente: %s \n", aux->clientes->nome);
+        aux->clientes = aux->clientes->seguinte_cliente;
+    }
+    while (aux->meios != NULL)
+    {
+        printf("Meios: %s \n", aux->meios->tipo);
+        aux->meios = aux->meios->seguinte_meio;
+    }
+}
 void listarGrafo(Grafo* inicio_grafo)
 {
     char aux[100];
