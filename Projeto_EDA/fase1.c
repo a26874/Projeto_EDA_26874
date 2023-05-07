@@ -48,7 +48,7 @@ int main() {
     bubbleSortAluguer(inicio_aluguer);
     inicio_grafo->clientes = adicionarClientesGrafo(inicio_grafo, inicio_clientes);
     inicio_grafo->meios = adicionarMeiosGrafo(inicio_grafo, inicio_meios);
-    testeCLientes(inicio_grafo);
+    //testeCLientes(inicio_grafo);
     // Criação de Menu.
     do
     {
@@ -154,7 +154,7 @@ int main() {
                         }
                         case CLIENTES_NAO_EXISTEM:
                         {
-                            printf("Nao existem clientes registados.\n");
+                            //printf("Nao existem clientes registados.\n");
                             Sleep(2000);
                             system("cls");
                             break;
@@ -185,11 +185,14 @@ int main() {
                     printf("Partida:");
                     strcpy(verticeInicial, "fagocitose.crestar.esperanca");
                     //scanf("%s", verticeInicial);
-                    printf("Chegada:");
+                    printf("Chegada:"); 
                     //scanf("%s", ocupei.embasando.ralar);
-                    strcpy(verticeDestino, "fracos.ovelha.quadradao");
+                    strcpy(verticeDestino, "ocupei.embasando.ralar");
                     inicio_lista = caminhoTexto(inicio_grafo, verticeInicial, verticeDestino, inicio_stack,inicio_lista);
+                    inicio_lista = retirarStackMaior(inicio_lista);
+                    inicio_lista = caminhoTexto(inicio_grafo, verticeDestino, inicio_lista->novaStack->vertice, inicio_stack, inicio_lista);
                     mostrarCaminho(inicio_lista);
+                    printf("\n");
                     break;
                 case 8:
                     listarAdjacentes(inicio_grafo);

@@ -1071,6 +1071,7 @@ ResFuncoes alterarDadosCliente(Cliente* inicio_clientes, Transacao* inicio_trans
        /* printf("Nao existem clientes.\n");
         Sleep(2000);
         system("cls");*/
+        fprintf(stderr, "Nao existem clientes registados.\n");
         return CLIENTES_NAO_EXISTEM;
     }
     printf("Introduza o seu codigo:");
@@ -1367,6 +1368,7 @@ Meio* alterarMeio(Meio* inicio_meios)
 Cliente* carregarSaldo(Cliente* inicio_clientes, Transacao* inicio_transacao) {
     if (inicio_clientes == NULL)
     {
+        perror(CLIENTES_NAO_EXISTEM);
         return CLIENTES_NAO_EXISTEM;
     }
     Transacao* auxTrans = inicio_transacao;
@@ -2305,17 +2307,14 @@ ListaStack* caminhoTexto(Grafo* inicio_grafo, char verticeAtual[50], char vertic
             aux = aux->seguinte_vertice;
         }
     }
-    else
-        return;
-
     if (strcmp(aux->vertice, verticeDestino) == 0)
     {
         ListaStack* novaListaStack = malloc(sizeof(ListaStack));
         novaListaStack->novaStack = inicio_stack;
+        novaListaStack->tamanho = tamanhoStack(inicio_stack);
         novaListaStack->seguinte_lista = inicio_lista;
         inicio_lista = novaListaStack;
-        mostrarCaminho(inicio_lista);
-        return;
+        return inicio_lista;
     }
 
     aux_adj = aux->adjacentes;
@@ -2330,15 +2329,69 @@ ListaStack* caminhoTexto(Grafo* inicio_grafo, char verticeAtual[50], char vertic
                 novo_stack = push(novo_stack, aux_stack2->vertice);
                 aux_stack2 = aux_stack2->seguinte_stack;
             }
-
             inicio_stack->visitado = true;
-            caminhoTexto(inicio_grafo, aux_adj->vertice, verticeDestino, novo_stack, inicio_lista);
+            inicio_lista = caminhoTexto(inicio_grafo, aux_adj->vertice, verticeDestino, novo_stack, inicio_lista);
+            if (inicio_lista != NULL)
+            {
+
+            }
         }
         aux_adj = aux_adj->seguinte_adjacente;
     }
     return inicio_lista;
 }
 
+int tamanhoStack(Stack* inicio_stack)
+{
+    Stack* aux = inicio_stack;
+    int tamanho = 0;
+    while (aux!= NULL)
+    {
+        tamanho++;
+        aux= aux->seguinte_stack;
+    }
+    return tamanho;
+}
+
+ListaStack* retirarStackMaior(ListaStack* inicio_lista)
+{
+
+    ListaStack* aux = inicio_lista, *anterior = NULL;
+    int menorcaminho = aux->tamanho;
+    while (aux != NULL)
+    {
+        int auxCaminho;
+        auxCaminho = aux->tamanho;
+        if (auxCaminho < menorcaminho)
+            menorcaminho = aux->tamanho;
+        aux = aux->seguinte_lista;
+    }
+    aux = inicio_lista;
+    while (aux!=NULL)
+    {
+        if (aux->tamanho > menorcaminho)
+        {
+            if (anterior != NULL)
+            {
+                anterior->seguinte_lista = aux->seguinte_lista;
+            }
+            else
+            {
+                inicio_lista = aux->seguinte_lista;
+            }
+            ListaStack* aux_remover = aux;
+            aux = aux->seguinte_lista;
+            free(aux_remover);
+        }
+        else
+        {
+            anterior = aux;
+            aux = aux->seguinte_lista;
+        }
+    }
+    inicio_lista = anterior;
+    return inicio_lista;
+}
 bool verticeVisitado(Stack* inicio_stack, char* vertice)
 {
     Stack* aux_stack = inicio_stack;
@@ -2389,12 +2442,10 @@ void mostrarCaminho(ListaStack* inicio_lista) {
         printf("Caminho nao encontrado.\n");
         return;
     }
-
     ListaStack* aux_lista = inicio_lista;
     while (aux_lista != NULL)
     {
         Stack* aux_stack = aux_lista->novaStack;
-
         while (aux_stack != NULL)
         {
             printf("%s", aux_stack->vertice);
@@ -2404,7 +2455,7 @@ void mostrarCaminho(ListaStack* inicio_lista) {
             }
             aux_stack = aux_stack->seguinte_stack;
         }
-        printf("\n");
+        printf("\ntamanho:%d\n", aux_lista->tamanho);
         aux_lista = aux_lista->seguinte_lista;
     }
 }

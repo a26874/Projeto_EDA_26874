@@ -1,9 +1,11 @@
-fagocitose.crestar.esperanca;fracos.ovelha.quadradao/2.0;revaloriza.dignificante.velhos/5.0;arrumar.etiquetar.pressione/50.0
+fagocitose.crestar.esperanca;fracos.ovelha.quadradao/2.0;revaloriza.dignificante.velhos/5.0;arrumar.etiquetar.pressione/50.0;aifw.asfk/1.0
 revaloriza.dignificante.velhos;inala.fervido.engavetar/6.2;ocupei.embasando.ralar/2.3
 arrumar.etiquetar.pressione;revaloriza.dignificante.velhos/10.0;reparou.definicao.artilheiro/5.5
 fracos.ovelha.quadradao;maloca.fungos.poderia/4.3;ocupei.embasando.ralar/5.0
 reparou.definicao.artilheiro;maloca.fungos.poderia/4.3;ocupei.embasando.ralar/3.3;inala.fervido.engavetar/10.4
 maloca.fungos.poderia;ocupei.embasando.ralar/9.0;inala.fervido.engavetar/8.0
-ocupei.embasando.ralar;fracos.ovelha.quadradao/5.0;reparou.definicao.artilheiro/6.0
+ocupei.embasando.ralar;fracos.ovelha.quadradao/5.0;reparou.definicao.artilheiro/6.0;aifw.asfk/20
 inala.fervido.engavetar;fracos.ovelha.quadradao/4.4;arrumar.etiquetar.pressione/1.0
-aifw.asfk;asdf.asd/20.20
+aifw.asfk;asdf.asd/20.20;fagocitose.crestar.esperanca/5.0
+teste123;fagocitose.crestar.esperanca/2.0;teste1234/5.0
+teste1234;aifw.asfk/2.0;fagocitose.crestar.esperanca/3.0

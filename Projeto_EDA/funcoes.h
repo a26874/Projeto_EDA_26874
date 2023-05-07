@@ -103,6 +103,7 @@ typedef struct Stack
 typedef struct ListaStack
 {
 	Stack* novaStack;
+	int tamanho;
 	struct ListaStack* seguinte_lista;
 } ListaStack;
 
@@ -295,6 +296,9 @@ bool verticeVisitado(Stack* inicio_stack, char* vertice[50]);
 
 Stack* push(Stack* inicio_stack, char* vertice[50]);
 
-void mostrarCaminho(Stack* inicio_stack);
+void mostrarCaminho(ListaStack* inicio_stack);
+
+ListaStack* retirarStackMaior(ListaStack* inicio_lista);
+
 #pragma endregion
 // -------------------------------------------------------------------FUNÇÕES_F-CIDADES--------------------------------------------------------------------
