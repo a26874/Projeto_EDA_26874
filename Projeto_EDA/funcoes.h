@@ -9,20 +9,22 @@
 typedef enum ResultadoFuncoes {
 	ERRO,
 	SUCESSO,
-	CLIENTES_NAO_EXISTEM,
-	COD_CLIENTE_NAO_EXISTE,
-	NIF_CLIENTE_NAO_EXISTE,
-	COD_NIF_NAO_EXISTE,
-	JA_EXISTE_COD_CLIENTE,
-	SALDO_CARR_NEGATIVO,
-	SALDO_CARREGADO,
-	SALDO_ATUAL,
-	MEIOS_NAO_EXISTEM,
-	VERTICE_NAO_EXISTE
+	clientesNaoExistem,
+	codClienteNaoExiste,
+	nifClienteNaoExiste,
+	codNifNaoExiste,
+	existeCodCliente,
+	saldoCarrNegativo,
+	saldoCarregado,
+	saldoAtual,
+	meiosNaoExistem,
+	verticeNaoExiste,
+	adjacenteNaoExiste,
+	semEspacoMem,
 
 }ResFuncoes;
 
-typedef struct registo_meios
+typedef struct Meio
 {
 	int codigo; // código do meio de mobilidade elétrica
 	char tipo[50];
@@ -31,55 +33,54 @@ typedef struct registo_meios
 	char geocodigo[100];
 	int custo;
 	int ativo;
-	struct registo_meio* seguinte_meio; // endereço de memória para uma struct registo_meio
+	struct Meio* seguinteMeio; // endereço de memória para uma struct registoMeio
 } Meio;
 
-typedef struct registo_clientes
+typedef struct Cliente
 {
 	int codigo; // código de cliente
 	char nome[50]; // nome do cliente
 	int NIF; // NIF do cliente
 	int saldo; // saldo do cliente
 	char geocodigo[100];
-	struct registo_aluguer* comprador;
-	struct registo_clientes* seguinte_cliente; // endereço de memória para uma struct registo_clientes
+	struct Aluguer* comprador;
+	struct Cliente* seguinteCliente; // endereço de memória para uma struct registoClientes
 } Cliente;
 
-typedef struct registo_gestor
+typedef struct Gestor
 {
 	int codigo; // Identificação do gestor
 	char nome[50]; // nome do gestor
 	char senha[20]; // Senha do gestor
 	int encriptado; // Se a senha está encriptada.
-	char area_responsavel[50];
-	struct registo_gestor* seguinte_gestor; // endereço de memória para uma struct registo_gestor
+	char areaResponsavel[50];
+	struct Gestor* seguinteGestor; // endereço de memória para uma struct registoGestor
 } Gestor;
 
-typedef struct registo_aluguer
+typedef struct Aluguer
 {
-	char data_compra[50]; // Data de compra de um certo meio
-	char nome_comprador[50]; // Nome do comprador.
-	char nome_meio_comprado[50]; // Nome do meio.
-	int cod_comprador; // Codigo do comprador.
-	struct registo_aluguer* seguinte_compra;
+	char dataCompra[50]; // Data de compra de um certo meio
+	char nomeComprador[50]; // Nome do comprador.
+	char nomeMeioComprado[50]; // Nome do meio.
+	int codComprador; // Codigo do comprador.
+	struct Aluguer* seguinteCompra;
 }Aluguer;
 
-typedef struct registo_transacoes
+typedef struct Transacao
 {
-	int codigo_utilizador;
-	char nome_transacao[50];
-	int montante_carregado;
-	char data_transacao[50];
-	struct registo_transacoes* seguinte_transacao;
+	int codigoUtilizador;
+	char nomeTransacao[50];
+	int montanteCarregado;
+	char dataTransacao[50];
+	struct Transacao* seguinteTransacao;
 }Transacao;
-
-
 
 typedef struct Adjacente
 {
 	char vertice[100]; // geocódigo what3words
 	float peso;
-	struct Adjacente* seguinte_adjacente;
+	Meio* meios;
+	struct Adjacente* seguinteAdjacente;
 } Adjacente;
 
 typedef struct Grafo
@@ -88,7 +89,7 @@ typedef struct Grafo
 	Adjacente* adjacentes;
 	Cliente* clientes;
 	Meio* meios; // Lista ligada com os códigos dos meios de transporte existente neste geocódigo
-	struct Grafo* seguinte_vertice;
+	struct Grafo* seguinteVertice;
 } Grafo;
 
 #pragma region STACK
@@ -97,44 +98,51 @@ typedef struct Stack
 {
 	char vertice[100];
 	bool visitado;
-	struct Stack* seguinte_stack;
+	float dist;
+	struct Stack* seguinteStack;
 }Stack;
+
+typedef struct ListastackVolta
+{
+	Stack* novaStack;
+	int tamanho;
+	struct ListastackVolta* seguinteLista;
+} ListastackVolta;
 
 typedef struct ListaStack
 {
 	Stack* novaStack;
-	int tamanho;
-	struct ListaStack* seguinte_lista;
+	float tamanho;
+	struct ListaStack* seguinteLista;
 } ListaStack;
 
 #pragma endregion
 
-
 int menu();
 
-int menu_utilizador();
+int menuUtilizador();
 
-int menu_gestor();
+int menuGestor();
 
 #pragma region MEIOS
 
 // -------------------------------------------------FUNÇÕES_I-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS-------------------------------------------------
 
-Meio* lerFicheiro_meios(Meio* inicio, FILE* dados_meios);
+Meio* lerFicheiroMeios(Meio* inicioMeios, FILE* dadosMeios);
 
-ResFuncoes listarMeios(Meio* inicio_meios);
+ResFuncoes listarMeios(Meio* inicioMeios);
 
-void listarGeocodigo(Meio* inicio_meios);
+void listarGeocodigo(Meio* inicioMeios);
 
-Meio* escreverFicheiro_meios(Meio* inicio_meios, FILE* dados_meios);
+Meio* escreverFicheiroMeios(Meio* inicioMeios, FILE* dadosMeios);
 
-Meio* escreverFicheiro_meios_bin(Meio* inicio_meios, FILE* dados_meios);
+Meio* escreverFicheiroMeiosBin(Meio* inicioMeios, FILE* dadosMeios);
 
-Meio* existeMeio(Meio* inicio_meios, int cod);
+Meio* existeMeio(Meio* inicioMeios, int cod);
 
-Meio* bubbleSortMeios(Meio* inicio_meios);
+Meio* bubbleSortMeios(Meio* inicioMeios);
 
-float mediaAutonomia(Meio* inicio_meios);
+float mediaAutonomia(Meio* inicioMeios);
 
 // -------------------------------------------------FUNÇÕES_F-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS-------------------------------------------------
 
@@ -143,25 +151,25 @@ float mediaAutonomia(Meio* inicio_meios);
 #pragma region CLIENTES
 // -------------------------------------------------FUNÇÕES_I-LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES-------------------------------------------------
 
-Cliente* lerFicheiro_clientes(Cliente* inicio_clientes, FILE* dados_clientes);
+Cliente* lerFicheiroClientes(Cliente* inicioClientes, FILE* dadosClientes);
 
-void listarClientes(Cliente* inicio_clientes);
+void listarClientes(Cliente* inicioClientes);
 
-Cliente* escreverFicheiro_clientes(Cliente* inicio_clientes, FILE* dados_clientes);
+Cliente* escreverFicheiroClientes(Cliente* inicioClientes, FILE* dadosClientes);
 
-Cliente* escreverFicheiro_clientes_bin(Cliente* inicio_clientes, FILE* dados_clientes);
+Cliente* escreverFicheiroClientesBin(Cliente* inicioClientes, FILE* dadosClientes);
 
-Cliente* carregarSaldo(Cliente* inicio_clientes, Transacao* inicio_transacao);
+Cliente* carregarSaldo(Cliente* inicioClientes, Transacao* inicioTransacao);
 
-ResFuncoes consultaSaldo(Cliente* inicio_clientes);
+ResFuncoes consultaSaldo(Cliente* inicioClientes);
 
-ResFuncoes alterarDadosCliente(Cliente* inicio_clientes,Transacao* inicio_transacao);
+ResFuncoes alterarDadosCliente(Cliente* inicioClientes,Transacao* inicioTransacao);
 
-int existeClienteCod(Cliente* inicio_clientes, int cod);
+int existeClienteCod(Cliente* inicioClientes, int cod);
 
-int existeClienteNIF(Cliente* inicio_clientes, int NIF);
+int existeClienteNIF(Cliente* inicioClientes, int NIF);
 
-Cliente* bubbleSortClientes(Cliente* inicio_clientes);
+Cliente* bubbleSortClientes(Cliente* inicioClientes);
 
 // -------------------------------------------------FUNÇÕES_F-LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES-------------------------------------------------
 #pragma endregion
@@ -170,17 +178,17 @@ Cliente* bubbleSortClientes(Cliente* inicio_clientes);
 
 // -------------------------------------------------FUNÇÕES_I-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES-------------------------------------------------
 
-Gestor* lerFicheiro_gestores(Gestor* inicio_gestor, FILE* dados_gestor);
+Gestor* lerFicheiroGestores(Gestor* inicioGestor, FILE* dadosGestor);
 
-void listarGestores(Gestor* inicio_gestor);
+void listarGestores(Gestor* inicioGestor);
 
-Gestor* escreverFicheiro_gestores(Gestor* inicio_gestor, FILE* dados_gestor);
+Gestor* escreverFicheiroGestores(Gestor* inicioGestor, FILE* dadosGestor);
 
-Gestor* escreverFicheiro_gestores_bin(Gestor* inicio_gestor, FILE* dados_gestor);
+Gestor* escreverFicheiroGestoresBin(Gestor* inicioGestor, FILE* dadosGestor);
 
-int existeGestor(Gestor* inicio_gestor, int cod);
+int existeGestor(Gestor* inicioGestor, int cod);
 
-Gestor* bubbleSortGestores(Gestor* inicio_gestores);
+Gestor* bubbleSortGestores(Gestor* inicioGestor);
 
 
 // -------------------------------------------------FUNÇÕES_F-LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES-------------------------------------------------
@@ -189,27 +197,27 @@ Gestor* bubbleSortGestores(Gestor* inicio_gestores);
 #pragma region ADD/RMV/ALT
 // ---------------------------------------------------FUNÇÕES_I-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
 
-Gestor* modoGestor(Gestor* inicio_gestores);
+Gestor* modoGestor(Gestor* inicioGestor);
 
-Meio* inserirMeio(Grafo* inicio_grafo, Meio* inicio_meios, int cod, char nome[50], float bat, float aut, int custo, char geo[50]);
+Meio* inserirMeio(Grafo* inicioGrafo, Meio* inicioMeios, int cod, char nome[], float bat, float aut, int custo, char geo[]);
 
-Cliente* inserirCliente(Cliente* inicio_clientes, int cod, char nome[50], int NIF, int saldo);
+Cliente* inserirCliente(Cliente* inicioClientes, int cod, char nome[], int NIF, int saldo, char geocodigo[]);
 
-Gestor* inserirGestor(Gestor* inicio_gestor, int cod, char nome[50], char senha[50]);
+Gestor* inserirGestor(Gestor* inicioGestor, int cod, char nome[], char senha[]);
 
-Meio* removerMeio(Meio* inicio_meios, int cod);
+Meio* removerMeio(Meio* inicioMeios, int cod);
 
-Cliente* removerCliente(Cliente* inicio_clientes, int cod);
+Cliente* removerCliente(Cliente* inicioClientes, int cod);
 
-Gestor* removerGestor(Gestor* inicio_gestores, int cod);
+Gestor* removerGestor(Gestor* inicioGestor, int cod);
 
-Meio* alterarMeio(Meio* inicio_meios);
+Meio* alterarMeio(Meio* inicioMeios);
 
-Gestor* alterarGestor(Gestor* inicio_gestores);
+Gestor* alterarGestor(Gestor* inicioGestor);
 
-int encryptSenha(Gestor* inicio_gestor, char senha[50]);
+int encryptSenha(Gestor* inicioGestor, char senha[]);
 
-int decryptSenha(Gestor* inicio_gestor, char senha[50]);
+int decryptSenha(Gestor* inicioGestor, char senha[]);
 // ---------------------------------------------------FUNÇÕES_F-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
 
 #pragma endregion
@@ -217,19 +225,19 @@ int decryptSenha(Gestor* inicio_gestor, char senha[50]);
 #pragma region ALUGUER
 // -------------------------------------------------------------------FUNÇÕES_I-ALUGUER--------------------------------------------------------------------
 
-Aluguer* lerFicheiro_Aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer);
+Aluguer* lerFicheiroAluguer(Aluguer* inicioAluguer, FILE* dadosAluguer);
 
-void listarAluguer(Aluguer* inicio_aluguer);
+void listarAluguer(Aluguer* inicioAluguer);
 
-Aluguer* bubbleSortAluguer(Aluguer* inicio_aluguer);
+Aluguer* bubbleSortAluguer(Aluguer* inicioAluguer);
 
-Aluguer* escreverFicheiro_aluguer(Aluguer* inicio_aluguer, FILE* dados_aluguer);
+Aluguer* escreverFicheiroAluguer(Aluguer* inicioAluguer, FILE* dadosAluguer);
 
-Aluguer* escreverFicheiro_aluguer_bin(Aluguer* inicio_aluguer, FILE* dados_aluguer);
+Aluguer* escreverFicheiroAluguerBin(Aluguer* inicioAluguer, FILE* dadosAluguer);
 
-Aluguer* realizarAluguer(Cliente* inicio_clientes, Aluguer* inicio_aluguer, Meio* inicio_meios);
+Aluguer* realizarAluguer(Cliente* inicioClientes, Aluguer* inicioAluguer, Meio* inicioMeios);
 
-Aluguer* escreverAlug_test_bin(Aluguer* inicio_aluguer, FILE* dados_aluguer);
+Aluguer* escreverAlugTestBin(Aluguer* inicioAluguer, FILE* dadosAluguer);
 
 
 // -------------------------------------------------------------------FUNÇÕES_F-ALUGUER--------------------------------------------------------------------
@@ -238,17 +246,17 @@ Aluguer* escreverAlug_test_bin(Aluguer* inicio_aluguer, FILE* dados_aluguer);
 #pragma region TRANSACOES
 // -------------------------------------------------------------------FUNÇÕES_I-TRANSACOES--------------------------------------------------------------------
 
-Transacao* lerFicheiro_transacao(Transacao* inicio_transacao, FILE* dados_transacao);
+Transacao* lerFicheiroTransacao(Transacao* inicioTransacao, FILE* dadosTransacao);
 
-Transacao* escreverFicheiro_transacao(Transacao* inicio_transacao, FILE* dados_transacao);
+Transacao* escreverFicheiroTransacao(Transacao* inicioTransacao, FILE* dadosTransacao);
 
-Transacao* escreverFicheiro_transacao_bin(Transacao* inicio_transacao, FILE* dados_transacao);
+Transacao* escreverFicheiroTransacaoBin(Transacao* inicioTransacao, FILE* dadosTransacao);
 
-void listarTransacao(Transacao* inicio_transacao);
+void listarTransacao(Transacao* inicioTransacao);
 
-int existeClienteTransacao(Transacao* inicio_transacao, int codVerificar);
+int existeClienteTransacao(Transacao* inicioTransacao, int codVerificar);
 
-Transacao* criarTransacao(Transacao* inicio_transacao, int codigoCliente, int saldoCarregar, char nomeCliente[50]);
+Transacao* criarTransacao(Transacao* inicioTransacao, int codigoCliente, int saldoCarregar, char nomeCliente[]);
 
 
 // -------------------------------------------------------------------FUNÇÕES_F-TRANSACOES--------------------------------------------------------------------
@@ -256,49 +264,55 @@ Transacao* criarTransacao(Transacao* inicio_transacao, int codigoCliente, int sa
 
 #pragma region GRAFO
 // -------------------------------------------------------------------FUNÇÕES_I-CIDADES--------------------------------------------------------------------
-Grafo* lerFicheiro_Vertices(Grafo* inicio_grafo, Meio* inicio_meios, FILE* dados_vertices);
+Grafo* lerFicheiroVertices(Grafo* inicioGrafo, Meio* inicioMeios, FILE* dadosVertices);
 
-void testeCLientes(Grafo* inicio_grafo);
+void teste(Grafo* inicioGrafo);
 
-Grafo* adicionarClientesGrafo(Grafo* inicio_grafo, Cliente* inicio_clientes);
+Grafo* adicionarClientesGrafo(Grafo* inicioGrafo, Cliente* inicioClientes);
 
-Grafo* adicionarMeiosGrafo(Grafo* inicio_grafo, Meio* inicio_meios);
+Adjacente* adicionarMeiosAdjacente(Grafo* inicioGrafo, Meio* inicioMeios);
 
-Grafo* lerFicheiro_Adjacentes(Grafo* inicio_grafo, FILE* dados_adjacentes);
+Grafo* adicionarMeiosGrafo(Grafo* inicioGrafo, Meio* inicioMeios);
 
-ResFuncoes localizacaoRaio(Grafo* inicio_grafo,Cliente* inicio_cliente, float raio, int codigo);
+Grafo* lerFicheiroAdjacentes(Grafo* inicioGrafo, FILE* dados_adjacentes);
 
-void printtestgrafo(Grafo* inicio_grafo);
+ResFuncoes localizacaoRaio(Grafo* inicioGrafo,Cliente* inicio_cliente, float raio, int codigo, char tipoMeio[]);
 
-float calculoDistanciaMinima(Grafo* inicio_grafo, char verticeOrigem[50], char verticeDestino[50]);
+void printtestgrafo(Grafo* inicioGrafo);
 
-void escreverFicheiroGrafo(Grafo* inicio_grafo, FILE* dados_grafo);
+float calculoDistanciaMinima(Grafo* inicioGrafo, char verticeOrigem[], char verticeDestino[]);
 
-int existeVertice(Grafo* inicio_grafo, char verticeVerificar[50]);
+void escreverFicheiroGrafo(Grafo* inicioGrafo, FILE* dados_grafo);
 
-int inserirVertice(Grafo* inicio_grafo, char verticeInserir[50]);
+int existeVertice(Grafo* inicioGrafo, char verticeVerificar[]);
 
-int inserirAdjacente(Grafo* inicio_grafo, char verticeInicial[50], char verticeFinal[50], float peso);
+int inserirVertice(Grafo* inicioGrafo, char verticeInserir[]);
 
-void listarGrafo(Grafo* inicio_grafo);
+int inserirAdjacente(Grafo* inicioGrafo, char verticeInicial[], char verticeFinal[], float peso);
 
-int totalVertices(Grafo* inicio_grafo);
+void listarGrafo(Grafo* inicioGrafo);
 
-void listarAdjacentes(Grafo* inicio_grafo);
+int totalVertices(Grafo* inicioGrafo);
 
-ListaStack* caminhoTexto(Grafo* inicio_grafo, char verticeAtual[50], char verticeDestino[50], Stack* inicio_stack, ListaStack* inicio_lista);
+void listarAdjacentes(Grafo* inicioGrafo);
 
-bool verticeVisitado(Stack* inicio_stack, char* vertice[50]);
+ListaStack* caminhoTexto(Grafo* inicioGrafo, char verticeAtual[], char verticeDestino[], Stack* inicioStack, ListaStack* inicioLista);
+
+bool verticeVisitado(Stack* inicioStack, char* vertice[]);
 
 #pragma endregion
 
 #pragma region STACK
 
-Stack* push(Stack* inicio_stack, char* vertice[50]);
+Stack* push(Stack* inicioStack, char* vertice[]);
 
-void mostrarCaminho(ListaStack* inicio_stack);
+void printPath(Stack* path);
 
-ListaStack* retirarStackMaior(ListaStack* inicio_lista);
+void mostrarCaminho(ListaStack* inicioLista);
+
+ListaStack* retirarStackMaior(ListaStack* inicioLista);
+
+ListaStack* retirarStackMaiorVolta(ListaStack* inicioLista,char verticeDestino[], char verticeInicial[]);
 
 #pragma endregion
 // -------------------------------------------------------------------FUNÇÕES_F-CIDADES--------------------------------------------------------------------
