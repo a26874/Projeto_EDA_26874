@@ -29,7 +29,7 @@ int menu()
 
 #pragma region menuGestor
 
-//Menu do gestor. Retorna a opÁ„o escolhida pelo gestor, para executar uma tarefa.
+//Menu do gestor. Retorna a op√ß√£o escolhida pelo gestor, para executar uma tarefa.
 int menuGestor()
 {
     int escolha;
@@ -61,7 +61,7 @@ int menuGestor()
 
 #pragma region menuUtilizador
 
-//Menu do utilizador. Retorna o valor escolhido, para execuÁ„o de uma tarefa.
+//Menu do utilizador. Retorna o valor escolhido, para execu√ß√£o de uma tarefa.
 int menuUtilizador()
 {
     int escolha;
@@ -87,38 +87,38 @@ int menuUtilizador()
 // -------------------------------------------------------------FIM-MENU-------------------------------------------------------------
 
 
-// -------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTA«√O DE MEIOS-------------------------------------------------
+// -------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTA√á√ÉO DE MEIOS-------------------------------------------------
 
-#pragma region LEITURA/ESCRITA/REPRESENTA«√O DE MEIOS
-// Ler ficheiro de texto, contendo informaÁ„o sobre os meios.
-// Ser„o todos os dados, inseridos numa lista ligada, que de inicio È vazia.
+#pragma region LEITURA/ESCRITA/REPRESENTA√á√ÉO DE MEIOS
+// Ler ficheiro de texto, contendo informa√ß√£o sobre os meios.
+// Ser√£o todos os dados, inseridos numa lista ligada, que de inicio √© vazia.
 Meio* lerFicheiroMeios(Meio* inicioMeios, FILE* dadosMeios)
 {
-    // DefiniÁ„o de vari·veis.
+    // Defini√ß√£o de vari√°veis.
     char linha[tamanhoLinha];
-    // Usando a funÁ„o fgets, lemos a partir do ficheiro dadosMeios todo o seu conte˙do, onde È armazenado em cada novoNodo criado
-    // Depois È atribuido ao inicio o valor de cada nodo criado, de seguida fechamos o ficheiro e por fim damos return da variavel inicio,
-    // Contendo assim toda as informaÁıes e pointers necess·rios para criar a lista ligada.
+    // Usando a fun√ß√£o fgets, lemos a partir do ficheiro dadosMeios todo o seu conte√∫do, onde √© armazenado em cada novoNodo criado
+    // Depois √© atribuido ao inicio o valor de cada nodo criado, de seguida fechamos o ficheiro e por fim damos return da variavel inicio,
+    // Contendo assim toda as informa√ß√µes e pointers necess√°rios para criar a lista ligada.
     while (fgets(linha, tamanhoLinha, dadosMeios))
     {
-        // Enquanto È possivel obter texto do ficheiro dadosMeios, ir· ser criado um novo espaÁo na memÛria para a struct meios
-        // A cada iteraÁ„o È atribuido todo o conteudo obtido ao inicioMeios, criando assim uma lista ligada.
+        // Enquanto √© possivel obter texto do ficheiro dadosMeios, ir√° ser criado um novo espa√ßo na mem√≥ria para a struct meios
+        // A cada itera√ß√£o √© atribuido todo o conteudo obtido ao inicioMeios, criando assim uma lista ligada.
         Meio* novoNodo = malloc(sizeof(Meio));
         if (novoNodo == NULL)
         {
             return 0;
         }
         sscanf(linha, "%d;%[^;];%f;%f;%d;%[^;];%d\n", &novoNodo->codigo, novoNodo->tipo, &novoNodo->bateria, &novoNodo->autonomia, &novoNodo->custo, novoNodo->geocodigo, &novoNodo->ativo);
-        // O seguinte valor de memÛria È igual a inicioMeios que foi inicializado a NULL, para de seguida ser possivel atribuir outro elemento da lista ligada.
+        // O seguinte valor de mem√≥ria √© igual a inicioMeios que foi inicializado a NULL, para de seguida ser possivel atribuir outro elemento da lista ligada.
         novoNodo->seguinteMeio = inicioMeios;
-        // Inicio_meios vai obter toda a informaÁ„o que foi lida por novoNodo
+        // Inicio_meios vai obter toda a informa√ß√£o que foi lida por novoNodo
         inicioMeios = novoNodo;
     }
     fclose(dadosMeios);
     return inicioMeios;
 }
 
-// Apresenta na consola toda a informaÁ„o existente sobre os clientes.
+// Apresenta na consola toda a informa√ß√£o existente sobre os clientes.
 ResFuncoes listarMeios(Meio* inicioMeios)
 {
     system("cls");
@@ -128,8 +128,8 @@ ResFuncoes listarMeios(Meio* inicioMeios)
     }
     else
     {
-        // Enquanto o pointer inicioMeios n„o for NULL (que esse mesmo est· sempre a apontar para um valor de memÛria diferente na lista ligada)
-        // … apresentada a informaÁ„o dos meios.
+        // Enquanto o pointer inicioMeios n√£o for NULL (que esse mesmo est√° sempre a apontar para um valor de mem√≥ria diferente na lista ligada)
+        // √â apresentada a informa√ß√£o dos meios.
         printf("Dados de meios disponiveis:\n------------------------------------------------------------------------------------------------------------------------\n\n");
         while (inicioMeios != NULL)
         {
@@ -161,7 +161,7 @@ Meio* escreverFicheiroMeios(Meio* inicioMeios, FILE* dadosMeios)
     return 1;
 }
 
-// Escreve todos os dados inseridos sobre os meios, em ficheiro bin·rio.
+// Escreve todos os dados inseridos sobre os meios, em ficheiro bin√°rio.
 Meio* escreverFicheiroMeiosBin(Meio* inicioMeios, FILE* dadosMeios)
 {
     dadosMeios = fopen("meios.bin", "wb");
@@ -179,7 +179,7 @@ Meio* escreverFicheiroMeiosBin(Meio* inicioMeios, FILE* dadosMeios)
     fclose(dadosMeios);
 }
 
-// Verifica, consoante o endereÁo de memÛria de certo meio, se o seu cÛdigo È igual ao que foi inserido para um novo meio.
+// Verifica, consoante o endere√ßo de mem√≥ria de certo meio, se o seu c√≥digo √© igual ao que foi inserido para um novo meio.
 Meio* existeMeio(Meio* inicioMeios, int cod)
 {
     if (inicioMeios == NULL)
@@ -195,7 +195,7 @@ Meio* existeMeio(Meio* inicioMeios, int cod)
     return 1;
 }
 
-// Verifica cada meio existente, se o seu valor de autonomia do elemento que est· a verificar for maior que o elemento seguinte, ir· ser feita uma troca
+// Verifica cada meio existente, se o seu valor de autonomia do elemento que est√° a verificar for maior que o elemento seguinte, ir√° ser feita uma troca
 // para ordenar todos os elementos da lista ligada por um valor decrescente a nivel de autonomia.
 Meio* bubbleSortMeios(Meio* inicioMeios)
 {
@@ -273,23 +273,23 @@ float mediaAutonomia(Meio* inicioMeios)
 }
 #pragma endregion 
 
-// ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTA«√O DE MEIOS--------------------------------------------------------
+// ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTA√á√ÉO DE MEIOS--------------------------------------------------------
 
 
-// --------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTA«√O DE CLIENTES--------------------------------------------------
+// --------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTA√á√ÉO DE CLIENTES--------------------------------------------------
 
-#pragma region LEITURA/ESCRITA/REPRESENTA«√O DE CLIENTES
+#pragma region LEITURA/ESCRITA/REPRESENTA√á√ÉO DE CLIENTES
 
-// Ler ficheiro de texto, contendo informaÁ„o sobre os clientes.
-// Ser„o todos os dados, inseridos numa lista ligada, que de inicio È vazia.
+// Ler ficheiro de texto, contendo informa√ß√£o sobre os clientes.
+// Ser√£o todos os dados, inseridos numa lista ligada, que de inicio √© vazia.
 Cliente* lerFicheiroClientes(Cliente* inicioClientes, FILE* dadosClientes)
 {
-    // DefiniÁ„o de vari·veis.
+    // Defini√ß√£o de vari√°veis.
     char linha[tamanhoLinha];
 
-    //Usando a funÁ„o fgets, lemos a partir do ficheiro dadosClientes todo o seu conte˙do, onde È armazenado em cada novoNodo criado
-    //Depois È atribuido ao inicio o valor de cada nodo criado, de seguida fechamos o ficheiro e por fim damos return da variavel inicio,
-    //Contendo assim toda as informaÁıes e pointers necess·rios para criar a lista ligada.
+    //Usando a fun√ß√£o fgets, lemos a partir do ficheiro dadosClientes todo o seu conte√∫do, onde √© armazenado em cada novoNodo criado
+    //Depois √© atribuido ao inicio o valor de cada nodo criado, de seguida fechamos o ficheiro e por fim damos return da variavel inicio,
+    //Contendo assim toda as informa√ß√µes e pointers necess√°rios para criar a lista ligada.
 
     while (fgets(linha, tamanhoLinha, dadosClientes))
     {
@@ -306,7 +306,7 @@ Cliente* lerFicheiroClientes(Cliente* inicioClientes, FILE* dadosClientes)
     return inicioClientes;
 }
 
-// Apresenta na consola toda a informaÁ„o existente sobre os clientes.
+// Apresenta na consola toda a informa√ß√£o existente sobre os clientes.
 void listarClientes(Cliente* inicioClientes)
 {
     system("cls");
@@ -318,8 +318,8 @@ void listarClientes(Cliente* inicioClientes)
     else
     {
         printf("Dados de Clientes:\n------------------------------------------------------------------------------------------------------------------------\n");
-        // Enquanto o pointer inicioClientes n„o for NULL (que esse mesmo est· sempre a apontar para um valor de memÛria diferente na lista ligada)
-        // … apresentada a informaÁ„o dos clientes.
+        // Enquanto o pointer inicioClientes n√£o for NULL (que esse mesmo est√° sempre a apontar para um valor de mem√≥ria diferente na lista ligada)
+        // √â apresentada a informa√ß√£o dos clientes.
         while (inicioClientes != NULL)
         {
             printf("Codigo:%d    Nome:%s     NIF:%d      Saldo:%d   Geocodigo:%s\n", inicioClientes->codigo, inicioClientes->nome, inicioClientes->NIF, inicioClientes->saldo, inicioClientes->geocodigo);
@@ -346,7 +346,7 @@ Cliente* escreverFicheiroClientes(Cliente* inicioClientes, FILE* dadosClientes)
     fclose(dadosClientes);
 }
 
-// Escreve todos os dados inseridos sobre os clientes, em ficheiro bin·rio.
+// Escreve todos os dados inseridos sobre os clientes, em ficheiro bin√°rio.
 Cliente* escreverFicheiroClientesBin(Cliente* inicioClientes, FILE* dadosClientes)
 {
     dadosClientes = fopen("clientes.bin", "wb");
@@ -363,7 +363,7 @@ Cliente* escreverFicheiroClientesBin(Cliente* inicioClientes, FILE* dadosCliente
     fclose(dadosClientes);
 }
 
-// Verifica, consoante o endereÁo de memÛria de um certo utilizador, se o seu cÛdigo È igual ao que foi inserido para um novo utilizador.
+// Verifica, consoante o endere√ßo de mem√≥ria de um certo utilizador, se o seu c√≥digo √© igual ao que foi inserido para um novo utilizador.
 int existeClienteCod(Cliente* inicioClientes, int cod)
 {
     while (inicioClientes != NULL)
@@ -378,7 +378,7 @@ int existeClienteCod(Cliente* inicioClientes, int cod)
         return 1;
 }
 
-// Verifica, consoante o endereÁo de memÛria de um certo utilizador, se o seu NIF È igual ao que foi inserido para um novo utilizador.
+// Verifica, consoante o endere√ßo de mem√≥ria de um certo utilizador, se o seu NIF √© igual ao que foi inserido para um novo utilizador.
 int existeClienteNIF(Cliente* inicioClientes, int NIF)
 {
     while (inicioClientes != NULL)
@@ -393,7 +393,7 @@ int existeClienteNIF(Cliente* inicioClientes, int NIF)
         return 1;
 }
 
-// Verifica cada cliente existente, se o seu codigo do elemento que est· a verificar for maior que o elemento seguinte, ir· ser feita uma troca
+// Verifica cada cliente existente, se o seu codigo do elemento que est√° a verificar for maior que o elemento seguinte, ir√° ser feita uma troca
 // para ordenar todos os elementos da lista ligada por um valor crescente.
 Cliente* bubbleSortClientes(Cliente* inicioClientes) {
     Cliente* atual, * seguinte;
@@ -440,15 +440,15 @@ Cliente* bubbleSortClientes(Cliente* inicioClientes) {
 }
 #pragma endregion
 
-// ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTA«√O DE CLIENTES----------------------------------------------------
+// ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTA√á√ÉO DE CLIENTES----------------------------------------------------
 
 
-// ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTA«√O DE GESTORES----------------------------------------------------
+// ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTA√á√ÉO DE GESTORES----------------------------------------------------
 
-#pragma region LEITURA/ESCRITA/REPRESENTA«√O DE GESTORES
+#pragma region LEITURA/ESCRITA/REPRESENTA√á√ÉO DE GESTORES
 
-// Ler ficheiro de texto, contendo informaÁ„o sobre os gestores.
-// Ser„o todos os dados, inseridos numa lista ligada, que de inicio È vazia.
+// Ler ficheiro de texto, contendo informa√ß√£o sobre os gestores.
+// Ser√£o todos os dados, inseridos numa lista ligada, que de inicio √© vazia.
 Gestor* lerFicheiroGestores(Gestor* inicioGestor, FILE* dadosGestor)
 {
     char linha[tamanhoLinha];
@@ -467,7 +467,7 @@ Gestor* lerFicheiroGestores(Gestor* inicioGestor, FILE* dadosGestor)
     return inicioGestor;
 }
 
-// Apresenta na consola toda a informaÁ„o existente sobre os gestores.
+// Apresenta na consola toda a informa√ß√£o existente sobre os gestores.
 void listarGestores(Gestor* inicioGestor)
 {
     system("cls");
@@ -507,7 +507,7 @@ Gestor* escreverFicheiroGestores(Gestor* inicioGestores, FILE* dadosGestores)
     fclose(dadosGestores);
 }
 
-// Escreve todos os dados inseridos sobre os gestores, em ficheiro bin·rio.
+// Escreve todos os dados inseridos sobre os gestores, em ficheiro bin√°rio.
 Gestor* escreverFicheiroGestoresBin(Gestor* inicioGestores, FILE* dadosGestores)
 {
     dadosGestores = fopen("gestores.bin", "wb");
@@ -524,7 +524,7 @@ Gestor* escreverFicheiroGestoresBin(Gestor* inicioGestores, FILE* dadosGestores)
     fclose(dadosGestores);
 }
 
-// Verifica, consoante o endereÁo de memÛria de um certo gestor, se o seu cÛdigo È igual ao que foi inserido para um novo gestor.
+// Verifica, consoante o endere√ßo de mem√≥ria de um certo gestor, se o seu c√≥digo √© igual ao que foi inserido para um novo gestor.
 int existeGestor(Gestor* inicioGestores, int cod)
 {
     while (inicioGestores != NULL)
@@ -539,7 +539,7 @@ int existeGestor(Gestor* inicioGestores, int cod)
         return 1;
 }
 
-// Verifica cada gestor existente, se o seu codigo do elemento que est· a verificar for maior que o elemento seguinte, ir· ser feita uma troca
+// Verifica cada gestor existente, se o seu codigo do elemento que est√° a verificar for maior que o elemento seguinte, ir√° ser feita uma troca
 // para ordenar todos os elementos da lista ligada por um valor crescente.
 Gestor* bubbleSortGestores(Gestor* inicioGestor) {
     Gestor* atual, * seguinte;
@@ -588,14 +588,14 @@ Gestor* bubbleSortGestores(Gestor* inicioGestor) {
 
 #pragma endregion
 
-// ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTA«√O DE GESTORES----------------------------------------------------
+// ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTA√á√ÉO DE GESTORES----------------------------------------------------
 
 
 // ---------------------------------------------------INICIO-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
 #pragma region INSERIR
 
-// FunÁ„o para entrar em modo gestor, no qual È pedido um codigo e uma senha. Caso sejam iguais ao que est· no ficheiro È garantido o acesso
-// a funÁıes de gestor.
+// Fun√ß√£o para entrar em modo gestor, no qual √© pedido um codigo e uma senha. Caso sejam iguais ao que est√° no ficheiro √© garantido o acesso
+// a fun√ß√µes de gestor.
 Gestor* modoGestor(Gestor* inicioGestores) {
     int codigoInserido;
     char senha[20];
@@ -643,8 +643,8 @@ Gestor* modoGestor(Gestor* inicioGestores) {
     }
 }
 
-// FunÁ„o para inserir um novo meio elÈtrico, È pedido ao gestor na funÁ„o main, um novo codigo, nome, nivel bateria, autonomia, o seu custo 
-// e a sua geolocalizaÁ„o. De seguida È inserido no ultimo lugar da lista ligada dos meios, quando È o ultimo endereÁo NULL.
+// Fun√ß√£o para inserir um novo meio el√©trico, √© pedido ao gestor na fun√ß√£o main, um novo codigo, nome, nivel bateria, autonomia, o seu custo 
+// e a sua geolocaliza√ß√£o. De seguida √© inserido no ultimo lugar da lista ligada dos meios, quando √© o ultimo endere√ßo NULL.
 Meio* inserirMeio(Grafo* inicioGrafo, Meio* inicioMeios, int cod, char nome[], float bat, float aut, int custo, char geo[])
 {
     Grafo* aux = inicioGrafo;
@@ -728,8 +728,8 @@ Meio* inserirMeio(Grafo* inicioGrafo, Meio* inicioMeios, int cod, char nome[], f
     return inicioMeios;
 }
 
-// FunÁ„o para inserir um novo cliente, È pedido ao gestor na funÁ„o main, um novo codigo, nome, NIF e saldo.  
-// De seguida È inserido no ultimo lugar da lista ligada dos clientes, quando È o ultimo endereÁo NULL.
+// Fun√ß√£o para inserir um novo cliente, √© pedido ao gestor na fun√ß√£o main, um novo codigo, nome, NIF e saldo.  
+// De seguida √© inserido no ultimo lugar da lista ligada dos clientes, quando √© o ultimo endere√ßo NULL.
 Cliente* inserirCliente(Cliente* inicioClientes, int cod, char nome[], int NIF, int saldo, char geocodigo[])
 {
     int inserir = 0;
@@ -771,8 +771,8 @@ Cliente* inserirCliente(Cliente* inicioClientes, int cod, char nome[], int NIF, 
     return inicioClientes;
 }
 
-// FunÁ„o para inserir um novo gestor, È pedido ao gestor na funÁ„o main, um novo codigo, nome e senha.  
-// De seguida È inserido no ultimo lugar da lista ligada dos gestores, quando È o ultimo endereÁo NULL.
+// Fun√ß√£o para inserir um novo gestor, √© pedido ao gestor na fun√ß√£o main, um novo codigo, nome e senha.  
+// De seguida √© inserido no ultimo lugar da lista ligada dos gestores, quando √© o ultimo endere√ßo NULL.
 Gestor* inserirGestor(Gestor* inicioGestor, int cod, char nome[], char senha[], char area[])
 {
     int inserir = 0, encriptado;
@@ -837,7 +837,7 @@ Gestor* inserirGestor(Gestor* inicioGestor, int cod, char nome[], char senha[], 
     return inicioGestor;
 }
 
-// Pequena funÁ„o para encriptaÁ„o da senha do gestor.
+// Pequena fun√ß√£o para encripta√ß√£o da senha do gestor.
 int encryptSenha(Gestor* inicioGestor, char senha[])
 {
     for (int i = 0; i < strlen(senha); i++)
@@ -847,7 +847,7 @@ int encryptSenha(Gestor* inicioGestor, char senha[])
     return 1;
 }
 
-// Pequena funÁ„o para desencriptaÁ„o da senha do gestor.
+// Pequena fun√ß√£o para desencripta√ß√£o da senha do gestor.
 int decryptSenha(Gestor* inicioGestor, char senha[])
 {
     for (int i = 0; i < strlen(senha); i++)
@@ -860,14 +860,14 @@ int decryptSenha(Gestor* inicioGestor, char senha[])
 
 #pragma region REMOVER
 
-// FunÁ„o para remover algum meio, a partir do cÛdigo inserido pelo gestor. … removido o meio e de seguida È retornada toda a lista ligada
+// Fun√ß√£o para remover algum meio, a partir do c√≥digo inserido pelo gestor. √â removido o meio e de seguida √© retornada toda a lista ligada
 // com o meio removido.
 Meio* removerMeio(Meio* inicioMeios, int cod)
 {
     Meio* anterior = inicioMeios, * atual = inicioMeios, * aux;
 
     if (atual == NULL) return(NULL); // Lista vazia.
-    else if (atual->codigo == cod) // remoÁ„o do 1∫ registo
+    else if (atual->codigo == cod) // remo√ß√£o do 1¬∫ registo
     {
         aux = atual->seguinteMeio;
         free(atual);
@@ -878,13 +878,13 @@ Meio* removerMeio(Meio* inicioMeios, int cod)
     }
     else
     {
-        while ((atual != NULL) && (atual->codigo != cod)) // IteraÁ„o atÈ ser igual.
+        while ((atual != NULL) && (atual->codigo != cod)) // Itera√ß√£o at√© ser igual.
         {
             anterior = atual;
             atual = atual->seguinteMeio;
         }
         if (atual == NULL) return(inicioMeios);
-        else // RemoÁ„o do meio com cod introduzido.
+        else // Remo√ß√£o do meio com cod introduzido.
         {
             anterior->seguinteMeio = atual->seguinteMeio;
             free(atual);
@@ -896,14 +896,14 @@ Meio* removerMeio(Meio* inicioMeios, int cod)
     }
 }
 
-// FunÁ„o para remover algum cliente, a partir do cÛdigo inserido pelo gestor. … removido o cliente e de seguida È retornada toda a lista ligada
+// Fun√ß√£o para remover algum cliente, a partir do c√≥digo inserido pelo gestor. √â removido o cliente e de seguida √© retornada toda a lista ligada
 // com o meio removido.
 Cliente* removerCliente(Cliente* inicioClientes, int cod)
 {
     Cliente* anterior = inicioClientes, * atual = inicioClientes, * aux;
 
     if (atual == NULL) return(NULL); // Lista vazia.
-    else if (atual->codigo == cod) // remoÁ„o do 1∫ registo
+    else if (atual->codigo == cod) // remo√ß√£o do 1¬∫ registo
     {
         aux = atual->seguinteCliente;
         free(atual);
@@ -914,13 +914,13 @@ Cliente* removerCliente(Cliente* inicioClientes, int cod)
     }
     else
     {
-        while ((atual != NULL) && (atual->codigo != cod)) // IteraÁ„o atÈ ser igual.
+        while ((atual != NULL) && (atual->codigo != cod)) // Itera√ß√£o at√© ser igual.
         {
             anterior = atual;
             atual = atual->seguinteCliente;
         }
         if (atual == NULL) return(inicioClientes);
-        else // RemoÁ„o do cliente com cod introduzido.
+        else // Remo√ß√£o do cliente com cod introduzido.
         {
             anterior->seguinteCliente = atual->seguinteCliente;
             free(atual);
@@ -932,14 +932,14 @@ Cliente* removerCliente(Cliente* inicioClientes, int cod)
     }
 }
 
-// FunÁ„o para remover algum gestor, a partir do cÛdigo inserido pelo gestor. … removido o gestor e de seguida È retornada toda a lista ligada
+// Fun√ß√£o para remover algum gestor, a partir do c√≥digo inserido pelo gestor. √â removido o gestor e de seguida √© retornada toda a lista ligada
 // com o meio removido.
 Gestor* removerGestor(Gestor* inicioGestores, int cod)
 {
     Gestor* anterior = inicioGestores, * atual = inicioGestores, * aux;
 
     if (atual == NULL) return(NULL); // Lista vazia.
-    else if (atual->codigo == cod) // remoÁ„o do 1∫ registo
+    else if (atual->codigo == cod) // remo√ß√£o do 1¬∫ registo
     {
         aux = atual->seguinteGestor;
         free(atual);
@@ -948,13 +948,13 @@ Gestor* removerGestor(Gestor* inicioGestores, int cod)
     }
     else
     {
-        while ((atual != NULL) && (atual->codigo != cod)) // IteraÁ„o atÈ ser igual.
+        while ((atual != NULL) && (atual->codigo != cod)) // Itera√ß√£o at√© ser igual.
         {
             anterior = atual;
             atual = atual->seguinteGestor;
         }
         if (atual == NULL) return(inicioGestores); // Lista ligada toda percorrida, nao foi encontrado nenhum gestor com o codigo inserido.
-        else // RemoÁ„o do gestor com cod introduzido.
+        else // Remo√ß√£o do gestor com cod introduzido.
         {
             anterior->seguinteGestor = atual->seguinteGestor;
             free(atual);
@@ -967,8 +967,8 @@ Gestor* removerGestor(Gestor* inicioGestores, int cod)
 
 #pragma region ALTERAR
 
-// FunÁ„o para alteraÁ„o de dados de algum gestor.
-// Apenas È pedido o codigo de gestor. … possivel alterar codigo, nome, senha, area responsavel.
+// Fun√ß√£o para altera√ß√£o de dados de algum gestor.
+// Apenas √© pedido o codigo de gestor. √â possivel alterar codigo, nome, senha, area responsavel.
 Gestor* alterarGestor(Gestor* inicioGestores)
 {
     int cod, escolha, novoCodigo, encriptar, acabadoAlterar = 1;
@@ -1079,8 +1079,8 @@ Gestor* alterarGestor(Gestor* inicioGestores)
     }
 }
 
-// FunÁ„o para alteraÁ„o de dados do cliente.
-// … pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes È possivel fazer alteraÁ„o de nome, codigo e NIF.
+// Fun√ß√£o para altera√ß√£o de dados do cliente.
+// √â pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes √© possivel fazer altera√ß√£o de nome, codigo e NIF.
 ResFuncoes alterarDadosCliente(Cliente* inicioClientes, Transacao* inicioTransacao) {
     int codigo, NIF, novoCodigoigo, novoNIF, inserir = 1, escolha, codigoAux;
     char novoNome[50], novoGeocodigo[100];
@@ -1215,8 +1215,8 @@ ResFuncoes alterarDadosCliente(Cliente* inicioClientes, Transacao* inicioTransac
     }
 }
 
-// FunÁ„o para alteraÁ„o de dados de algum meio.
-// … pedido o codigo do meio a alterar. … possivel alterar o seu codigo, tipo, se est· ativo, custo, bat, aut, etc...
+// Fun√ß√£o para altera√ß√£o de dados de algum meio.
+// √â pedido o codigo do meio a alterar. √â possivel alterar o seu codigo, tipo, se est√° ativo, custo, bat, aut, etc...
 Meio* alterarMeio(Meio* inicioMeios)
 {
     int cod, codAlterar, ativoAlterar, custoAlterar, escolha;
@@ -1383,8 +1383,8 @@ Meio* alterarMeio(Meio* inicioMeios)
 
 // ---------------------------------------------------------------INICIO_OP_UTILIZADOR-----------------------------------------------------------------
 #pragma region opUtilizador
-// FunÁ„o para carregamento de saldo, de um certo utilizador.
-// … pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes È possivel carregar o saldo desse mesmo utilizador.
+// Fun√ß√£o para carregamento de saldo, de um certo utilizador.
+// √â pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes √© possivel carregar o saldo desse mesmo utilizador.
 Cliente* carregarSaldo(Cliente* inicioClientes, Transacao* inicioTransacao) {
     if (inicioClientes == NULL)
     {
@@ -1441,8 +1441,8 @@ Cliente* carregarSaldo(Cliente* inicioClientes, Transacao* inicioTransacao) {
     system("cls");
 }
 
-// FunÁ„o para consulta de saldo, de um certo utilizador.
-// … pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes È possivel visualizar quando saldo est· disponÌvel.
+// Fun√ß√£o para consulta de saldo, de um certo utilizador.
+// √â pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes √© possivel visualizar quando saldo est√° dispon√≠vel.
 ResFuncoes consultaSaldo(Cliente* inicioClientes, int *saldoVerifica) {
     int codigo, NIF;
     printf("Introduza o seu codigo:");
@@ -1469,10 +1469,10 @@ ResFuncoes consultaSaldo(Cliente* inicioClientes, int *saldoVerifica) {
     }
 }
 
-// FunÁ·o para realizaÁ„o de aluguer de qualquer meio existente, que n„o esteja ativo.
-// … pedido o codigo de utilizador, È verificado se existe esse mesmo utilizador. De seguida È perguntado qual o meio que deseja alugar. 
-// S„o apresentados dados, tais como o tipo de meio, o seu custo e o saldo do utilizador. Caso o utilizador, decida comprar o meio
-// … criado um novo registo na lista ligada de alugueres.
+// Fun√ß√°o para realiza√ß√£o de aluguer de qualquer meio existente, que n√£o esteja ativo.
+// √â pedido o codigo de utilizador, √© verificado se existe esse mesmo utilizador. De seguida √© perguntado qual o meio que deseja alugar. 
+// S√£o apresentados dados, tais como o tipo de meio, o seu custo e o saldo do utilizador. Caso o utilizador, decida comprar o meio
+// √â criado um novo registo na lista ligada de alugueres.
 Aluguer* realizarAluguer(Cliente* inicioClientes, Aluguer* inicioAluguer, Meio* inicioMeios)
 {
     int meioAlugar, codigoUtilizador, NIF;
@@ -1578,7 +1578,7 @@ Aluguer* realizarAluguer(Cliente* inicioClientes, Aluguer* inicioAluguer, Meio* 
     }
 }
 
-// FunÁ„o para listar na consola, todos os meios existentes com um certo geocodigo.
+// Fun√ß√£o para listar na consola, todos os meios existentes com um certo geocodigo.
 void listarGeocodigo(Meio* inicioMeios)
 {
     system("cls");
@@ -1623,11 +1623,11 @@ void listarGeocodigo(Meio* inicioMeios)
 // -----------------------------------------------------------------FIM_OP_UTILIZADOR-------------------------------------------------------------------
 
 
-// ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTA«√O DE ALUGUER----------------------------------------------------
+// ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTA√á√ÉO DE ALUGUER----------------------------------------------------
 
-#pragma region LEITURA/ESCRITA/REPRESENTA«√O DE ALUGUER
-// Ler ficheiro de texto, contendo informaÁ„o sobre os alugueres.
-// Ser„o todos os dados, inseridos numa lista ligada, que de inicio È vazia.
+#pragma region LEITURA/ESCRITA/REPRESENTA√á√ÉO DE ALUGUER
+// Ler ficheiro de texto, contendo informa√ß√£o sobre os alugueres.
+// Ser√£o todos os dados, inseridos numa lista ligada, que de inicio √© vazia.
 Aluguer* lerFicheiroAluguer(Aluguer* inicioAluguer, FILE* dadosAluguer)
 {
     char linha[tamanhoLinha];
@@ -1642,7 +1642,7 @@ Aluguer* lerFicheiroAluguer(Aluguer* inicioAluguer, FILE* dadosAluguer)
     return inicioAluguer;
 }
 
-// FunÁ„o para listar na consola, o historico dos alugueres j· feitos.
+// Fun√ß√£o para listar na consola, o historico dos alugueres j√° feitos.
 void listarAluguer(Aluguer* inicioAluguer)
 {
     system("cls");
@@ -1662,7 +1662,7 @@ void listarAluguer(Aluguer* inicioAluguer)
     printf("------------------------------------------------------------------------------------------------------------------------\n");
 }
 
-// Verifica cada aluguer existente, se a sua data for maior que a do seguinte elemento, ir· ser feita uma troca
+// Verifica cada aluguer existente, se a sua data for maior que a do seguinte elemento, ir√° ser feita uma troca
 // para ordenar todos os elementos por ordem de compra.
 Aluguer* bubbleSortAluguer(Aluguer* inicioAluguer) {
     Aluguer* atual, * seguinte;
@@ -1726,7 +1726,7 @@ Aluguer* escreverFicheiroAluguer(Aluguer* inicioAluguer, FILE* dadosAluguer)
     fclose(dadosAluguer);
 }
 
- //Escreve todos os dados sobre os alugueres, em ficheiro bin·rio.
+ //Escreve todos os dados sobre os alugueres, em ficheiro bin√°rio.
 Aluguer* escreverFicheiroAluguerBin(Aluguer* inicioAluguer, FILE* dadosAluguer)
 {
     if (inicioAluguer == NULL)
@@ -1761,13 +1761,13 @@ int existeClienteTransacao(Transacao* inicioTransacao, int codVerificar)
     return 0;
 }
 #pragma endregion
-// ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTA«√O DE ALUGUER----------------------------------------------------
+// ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTA√á√ÉO DE ALUGUER----------------------------------------------------
 
 
-// ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTA«√O DE TRANSACOES----------------------------------------------------
-#pragma region LEITURA/ESCRITA/REPRESENTA«√O DE TRANSACOES
-// Ler ficheiro de texto, contendo informaÁ„o sobre transacoes efetuadas.
-// Ser„o todos os dados, inseridos numa lista ligada, que de inicio È vazia.
+// ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTA√á√ÉO DE TRANSACOES----------------------------------------------------
+#pragma region LEITURA/ESCRITA/REPRESENTA√á√ÉO DE TRANSACOES
+// Ler ficheiro de texto, contendo informa√ß√£o sobre transacoes efetuadas.
+// Ser√£o todos os dados, inseridos numa lista ligada, que de inicio √© vazia.
 Transacao* lerFicheiroTransacao(Transacao* inicioTransacao, FILE* dadosTransacao)
 {
     char linha[tamanhoLinha];
@@ -1879,12 +1879,12 @@ Transacao* criarTransacao(Transacao* inicioTransacao, int codigoCliente, int sal
     return inicioTransacao;
 }
 #pragma endregion
-// ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTA«√O DE TRANSACOES----------------------------------------------------
+// ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTA√á√ÉO DE TRANSACOES----------------------------------------------------
 
 
-// ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTA«√O DE CIDADES----------------------------------------------------
+// ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTA√á√ÉO DE CIDADES----------------------------------------------------
 
-#pragma region LEITURA/ESCRITA/REPRESENTA«√O DE CIDADES
+#pragma region LEITURA/ESCRITA/REPRESENTA√á√ÉO DE CIDADES
 Grafo* lerFicheiroVertices(Grafo* inicioGrafo,Meio* inicioMeios, FILE* dadosGrafo)
 {
     char* tokenVertice;
@@ -2715,4 +2715,4 @@ void mostrarCaminho(ListaStack* inicioLista) {
 }
 #pragma endregion
 
-// ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTA«√O DE CIDADES----------------------------------------------------
+// ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTA√á√ÉO DE CIDADES----------------------------------------------------
