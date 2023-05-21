@@ -4,7 +4,7 @@
 #include <Windows.h>
 #include <float.h>
 #include <stdbool.h>
-#define MAX_LINE_LEN 350
+#define tamanhoLinha 350
 
 typedef enum ResultadoFuncoes {
 	ERRO,
@@ -199,11 +199,15 @@ Gestor* bubbleSortGestores(Gestor* inicioGestor);
 
 Gestor* modoGestor(Gestor* inicioGestor);
 
+void printtestgrafo(Grafo* inicioGrafo);
+
+ListaStack* mostrarTeste1234(Grafo* inicioGrafo, char verticeAtual[], Stack* inicioStack, ListaStack* inicioLista, float Tamanho);
+
 Meio* inserirMeio(Grafo* inicioGrafo, Meio* inicioMeios, int cod, char nome[], float bat, float aut, int custo, char geo[]);
 
 Cliente* inserirCliente(Cliente* inicioClientes, int cod, char nome[], int NIF, int saldo, char geocodigo[]);
 
-Gestor* inserirGestor(Gestor* inicioGestor, int cod, char nome[], char senha[]);
+Gestor* inserirGestor(Gestor* inicioGestor, int cod, char nome[], char senha[], char area[]);
 
 Meio* removerMeio(Meio* inicioMeios, int cod);
 
@@ -266,23 +270,23 @@ Transacao* criarTransacao(Transacao* inicioTransacao, int codigoCliente, int sal
 // -------------------------------------------------------------------FUNÇÕES_I-CIDADES--------------------------------------------------------------------
 Grafo* lerFicheiroVertices(Grafo* inicioGrafo, Meio* inicioMeios, FILE* dadosVertices);
 
-void teste(Grafo* inicioGrafo);
+Grafo* lerFicheiroAdjacentes(Grafo* inicioGrafo, FILE* dadosAdjacentes);
 
-Grafo* adicionarClientesGrafo(Grafo* inicioGrafo, Cliente* inicioClientes);
+void escreverFicheiroGrafo(Grafo* inicioGrafo, FILE* dadosGrafo);
+
+void escreverFicheiroAdjacentes(Grafo* inicioGrafo, FILE* dadosAdjacentes);
+
+void escreverFicheiroAdjacentesBin(Grafo* inicioGrafo, FILE* dadosAdjacentes);
 
 Adjacente* adicionarMeiosAdjacente(Grafo* inicioGrafo, Meio* inicioMeios);
 
 Grafo* adicionarMeiosGrafo(Grafo* inicioGrafo, Meio* inicioMeios);
 
-Grafo* lerFicheiroAdjacentes(Grafo* inicioGrafo, FILE* dados_adjacentes);
-
-ResFuncoes localizacaoRaio(Grafo* inicioGrafo,Cliente* inicio_cliente, float raio, int codigo, char tipoMeio[]);
+Grafo* adicionarClientesGrafo(Grafo* inicioGrafo, Cliente* inicioClientes);
 
 void printtestgrafo(Grafo* inicioGrafo);
 
-float calculoDistanciaMinima(Grafo* inicioGrafo, char verticeOrigem[], char verticeDestino[]);
-
-void escreverFicheiroGrafo(Grafo* inicioGrafo, FILE* dados_grafo);
+ResFuncoes localizacaoRaio(Grafo* inicioGrafo,Cliente* inicio_cliente, float raio, int codigo, char tipoMeio[]);
 
 int existeVertice(Grafo* inicioGrafo, char verticeVerificar[]);
 
@@ -296,23 +300,21 @@ int totalVertices(Grafo* inicioGrafo);
 
 void listarAdjacentes(Grafo* inicioGrafo);
 
-ListaStack* caminhoTexto(Grafo* inicioGrafo, char verticeAtual[], char verticeDestino[], Stack* inicioStack, ListaStack* inicioLista);
+ListaStack* mostrarTeste(Grafo* inicioGrafo, char verticeAtual[], Stack* inicioStack, ListaStack* inicioLista, float Tamanho);
 
-bool verticeVisitado(Stack* inicioStack, char* vertice[]);
+int todosVisitados(Stack* inicioStack, Grafo* inicioGrafo);
+
+bool verticeVisitado(Stack* inicioStack, char vertice[]);
 
 #pragma endregion
 
 #pragma region STACK
 
-Stack* push(Stack* inicioStack, char* vertice[]);
-
-void printPath(Stack* path);
+Stack* inserirStack(Stack* inicioStack, char vertice[]);
 
 void mostrarCaminho(ListaStack* inicioLista);
 
 ListaStack* retirarStackMaior(ListaStack* inicioLista);
-
-ListaStack* retirarStackMaiorVolta(ListaStack* inicioLista,char verticeDestino[], char verticeInicial[]);
 
 #pragma endregion
 // -------------------------------------------------------------------FUNÇÕES_F-CIDADES--------------------------------------------------------------------

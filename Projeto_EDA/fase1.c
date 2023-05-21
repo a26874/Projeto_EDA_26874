@@ -19,11 +19,12 @@ int main() {
     Stack* inicioStack = NULL;
     ListaStack* inicioLista = NULL;
     ListastackVolta* iniciolistaVolta = NULL;
+    Stack* caminhoBateria = NULL;
     FILE* dadosMeios, * dadosClientes, * dadosGestor, * dadosAluguer, * dadosTransacao, * dadosGrafo, * dadosAdjacentes;
     int op, opUtilizador, utilizadorLogin = 0, gestorLogin = 0, opGestor, retFunc;
     int novoclienteCodigo, novoclienteNIF, novoclienteSaldo, novomeioCodigo, novomeioCusto, novogestorCodigo, codigomeioRemover
         , codigoclienteRemover, codigogestorRemover;
-    float novomeioBateria, novomeioAutonomia, novopesoAdjacente;
+    float novomeioBateria, novomeioAutonomia, novopesoAdjacente, tamanhoAdj;
     char novoclienteNome[50], novomeioNome[50], novomeioGeocodigo[50], novogestorNome[50], novogestorSenha[50], novogestorArea[50], novoverticeInicial[50], novoverticeFinal[50]
         , verticeInicial[50], verticeDestino[50], novoclienteGeocodigo[100];
 
@@ -193,19 +194,16 @@ int main() {
                     {
                     case 1:
                         printf("Insira a partida e o destino:\n");
-                        /*printf("Partida:");
-                        scanf("%s", verticeInicial);
-                        printf("Chegada:");
-                        scanf("%s", verticeDestino);
-                        */
                         strcpy(verticeInicial, "fagocitose.crestar.esperanca");
-                        strcpy(verticeDestino, "reparou.definicao.artilheiro");
-                        inicioLista = caminhoTexto(inicioGrafo, verticeInicial, verticeDestino, inicioStack, inicioLista);
-                        //inicioLista = retirarStackMaior(inicioLista);
 
-                        iniciolistaVolta = caminhoTexto(inicioGrafo, verticeDestino, verticeInicial, inicioStack, iniciolistaVolta);
+                        tamanhoAdj = 0;
+                        float tamanhoBateria = 0;
+                        inicioLista = mostrarTeste1234(inicioGrafo, verticeInicial, inicioStack, inicioLista,tamanhoAdj, caminhoBateria);
+           
+                        printf("\n");
+                        //inicioLista = retirarStackMaior(inicioLista);
                         mostrarCaminho(inicioLista);
-                        mostrarCaminho(iniciolistaVolta);
+
                         break;
                     }
                     break;
@@ -511,6 +509,11 @@ int main() {
             escreverFicheiroTransacaoBin(inicioTransacao, dadosTransacao);
             dadosGrafo = fopen("vertices.txt", "rt");
             escreverFicheiroGrafo(inicioGrafo, dadosGrafo);
+            escreverFicheiroGrafoBin(inicioGrafo, dadosGrafo);
+            dadosAdjacentes = fopen("adjacentes.txt", "rt");
+            escreverFicheiroAdjacentes(inicioGrafo, dadosAdjacentes);
+            dadosAdjacentes = fopen("adjacentes.txt", "rt");
+            escreverFicheiroAdjacentesBin(inicioGrafo, dadosAdjacentes);
             printf("O programa ira ser encerrado.\n");
             return 0;
         default:
