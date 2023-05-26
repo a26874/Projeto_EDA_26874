@@ -1,3 +1,11 @@
+/*****************************************************************//**
+ * @file   fase1.c
+ * @brief  Execucao
+ *
+ * @author Marco Macedo
+ * @date   February 2023
+ *********************************************************************/
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdlib.h>
 #include <stdio.h>
@@ -18,15 +26,14 @@ int main() {
     ResFuncoes resFunc;
     Stack* inicioStack = NULL;
     ListaStack* inicioLista = NULL;
-    ListastackVolta* iniciolistaVolta = NULL;
     Stack* caminhoBateria = NULL;
     FILE* dadosMeios, * dadosClientes, * dadosGestor, * dadosAluguer, * dadosTransacao, * dadosGrafo, * dadosAdjacentes;
     int op, opUtilizador, utilizadorLogin = 0, gestorLogin = 0, opGestor, retFunc;
-    int novoclienteCodigo, novoclienteNIF, novoclienteSaldo, novomeioCodigo, novomeioCusto, novogestorCodigo, codigomeioRemover
-        , codigoclienteRemover, codigogestorRemover;
-    float novomeioBateria, novomeioAutonomia, novopesoAdjacente, tamanhoAdj;
-    char novoclienteNome[50], novomeioNome[50], novomeioGeocodigo[50], novogestorNome[50], novogestorSenha[50], novogestorArea[50], novoverticeInicial[50], novoverticeFinal[50]
-        , verticeInicial[50], verticeDestino[50], novoclienteGeocodigo[100];
+    int novoClienteCodigo, novoClienteNIF, novoClienteSaldo, novoMeioCodigo, novoMeioCusto, novoGestorCodigo, codigoMeioRemover
+        , codigoClienteRemover, codigoGestorRemover;
+    float novoMeioBateria, novoMeioAutonomia, novoPesoAdjacente, tamanhoIda = 0, tamanhoVolta = 0, tamanhoTotal = 0;
+    char novoClienteNome[50], novoMeioNome[50], novoMeioGeocodigo[50], novoGestorNome[50], novoGestorSenha[50], novoGestorArea[50], novoVerticeInicial[50], novoVerticeFinal[50]
+        , verticeInicial[50], novoClienteGeocodigo[100], verticePartida[100];
 
 
     // No arranque é feito de imediato a leitura dos ficheiros.
@@ -48,6 +55,7 @@ int main() {
     bubbleSortClientes(inicioClientes);
     bubbleSortGestores(inicioGestor);
     bubbleSortAluguer(inicioAluguer);
+    recolhidoMeios(inicioMeios);
 
     inicioGrafo->clientes = adicionarClientesGrafo(inicioGrafo, inicioClientes);
     inicioGrafo->meios = adicionarMeiosGrafo(inicioGrafo, inicioMeios);
@@ -157,7 +165,6 @@ int main() {
                         }
                         case clientesNaoExistem:
                         {
-                            //printf("Nao existem clientes registados.\n");
                             Sleep(2000);
                             system("cls");
                             break;
@@ -193,17 +200,45 @@ int main() {
                     switch (escolhaDist)
                     {
                     case 1:
-                        printf("Insira a partida e o destino:\n");
-                        strcpy(verticeInicial, "fagocitose.crestar.esperanca");
-
-                        tamanhoAdj = 0;
-                        float tamanhoBateria = 0;
-                        inicioLista = mostrarTeste1234(inicioGrafo, verticeInicial, inicioStack, inicioLista,tamanhoAdj, caminhoBateria);
-           
-                        printf("\n");
-                        //inicioLista = retirarStackMaior(inicioLista);
+                        printf("Insira a partida:\n");
+                        scanf("%s", verticePartida);
+                        //strcpy(verticePartida, "fagocitose.crestar.esperanca");
+                        inicioLista = mostrarCaminhoIda(inicioGrafo, verticePartida, inicioStack, inicioLista,tamanhoIda);
+                        if (inicioLista == NULL)
+                        {
+                            printf("Nao existe caminho/Ponto Partida.\n");
+                            break;
+                        }
+                        inicioLista = retirarStackMaior(inicioLista);
+                        printf("Caminho de ida: ");
                         mostrarCaminho(inicioLista);
+                        tamanhoTotal = inicioLista->tamanho;
+                        obterUltimoVertice(inicioLista, verticeInicial);
 
+
+
+
+                        printf("\nCaminho de volta: ");
+                        inicioLista = mostrarCaminhoVolta(inicioGrafo, verticeInicial, verticePartida, inicioStack, inicioLista, tamanhoVolta);
+                        inicioLista = retirarStackMaior(inicioLista);
+                        mostrarCaminho(inicioLista);
+                        tamanhoTotal += inicioLista->tamanho;
+
+                        printf("\nKm's percorridos:%.2f\n", tamanhoTotal);
+                       
+                        
+                        inicioLista= mostrarCaminhoTeste(inicioGrafo, verticePartida, inicioStack, inicioLista, tamanhoVolta);
+                        inicioLista = retirarStackMaior(inicioLista);
+                        mostrarCaminho(inicioLista);
+                        while (1)
+                        {
+                            if (getchar())
+                            {
+                                break;
+                            }
+                        }
+                        Sleep(5000);
+                        system("cls");
                         break;
                     }
                     break;
@@ -233,24 +268,24 @@ int main() {
             {
                 printf("Insira os dados de um novo gestor:\n");
                 printf("Codigo:");
-                scanf("%d", &novogestorCodigo);
+                scanf("%d", &novoGestorCodigo);
                 getchar();
                 printf("Nome:");
-                scanf("%[^\n]", novogestorNome);
+                scanf("%[^\n]", novoGestorNome);
                 getchar();
                 printf("Senha:");
-                scanf("%[^\n]", novogestorSenha);
+                scanf("%[^\n]", novoGestorSenha);
                 getchar();
                 printf("Area:");
-                scanf("%[^\n]", novogestorArea);
-                if (existeGestor(inicioGestor, novogestorCodigo) == 1)
+                scanf("%[^\n]", novoGestorArea);
+                if (existeGestor(inicioGestor, novoGestorCodigo) == 1)
                 {
-                    inicioGestor = inserirGestor(inicioGestor, novogestorCodigo, novogestorNome, novogestorSenha, novogestorArea);
+                    inicioGestor = inserirGestor(inicioGestor, novoGestorCodigo, novoGestorNome, novoGestorSenha, novoGestorArea);
                     break;
                 }
                 else
                 {
-                    printf("Ja existe um gestor com o codigo %d", novogestorCodigo);
+                    printf("Ja existe um gestor com o codigo %d", novoGestorCodigo);
                     break;
                 }
                 break;
@@ -279,13 +314,13 @@ int main() {
                     case 4:
                         printf("Insira os novos dados de cliente:\n");
                         printf("Codigo:");
-                        scanf("%d", &novoclienteCodigo);
+                        scanf("%d", &novoClienteCodigo);
                         getchar();
                         printf("Nome:");
-                        scanf("%[^\n]", novoclienteNome);
+                        scanf("%[^\n]", novoClienteNome);
                         printf("NIF(Entre 192 e 193 com 9 digitos ex:192999999):");
-                        scanf("%d", &novoclienteNIF);
-                        if (novoclienteNIF <= 192000000 || novoclienteNIF >= 193000000)
+                        scanf("%d", &novoClienteNIF);
+                        if (novoClienteNIF <= 192000000 || novoClienteNIF >= 193000000)
                         {
                             printf("Tente de novo.\n");
                             Sleep(2000);
@@ -293,17 +328,17 @@ int main() {
                             break;
                         }
                         printf("Saldo:");
-                        scanf("%d", &novoclienteSaldo);
+                        scanf("%d", &novoClienteSaldo);
                         printf("Localizacao:");
-                        scanf("%s", novoclienteGeocodigo);
+                        scanf("%s", novoClienteGeocodigo);
                         if (inicioClientes == NULL)
                         {
-                            inicioClientes = inserirCliente(inicioClientes, novoclienteCodigo, novoclienteNome, novoclienteNIF, novoclienteSaldo, novoclienteGeocodigo);
+                            inicioClientes = inserirCliente(inicioClientes, novoClienteCodigo, novoClienteNome, novoClienteNIF, novoClienteSaldo, novoClienteGeocodigo);
                             break;
                         }
-                        else if (existeClienteCod(inicioClientes, novoclienteCodigo) == 1 && existeClienteNIF(inicioClientes, novoclienteNIF) == 1)
+                        else if (existeClienteCod(inicioClientes, novoClienteCodigo) == 1 && existeClienteNIF(inicioClientes, novoClienteNIF) == 1)
                         {
-                            inserirCliente(inicioClientes, novoclienteCodigo, novoclienteNome, novoclienteNIF, novoclienteSaldo, novoclienteGeocodigo);
+                            inserirCliente(inicioClientes, novoClienteCodigo, novoClienteNome, novoClienteNIF, novoClienteSaldo, novoClienteGeocodigo);
                             break;
                         }
                         else
@@ -316,14 +351,14 @@ int main() {
                     case 5:
                         printf("Insira os novos dados de um meio:\n");
                         printf("Codigo:");
-                        scanf("%d", &novomeioCodigo);
+                        scanf("%d", &novoMeioCodigo);
                         getchar();
                         printf("Nome Meio:");
-                        scanf("%[^\n]", novomeioNome);
+                        scanf("%[^\n]", novoMeioNome);
                         printf("Bateria(0.00 - 100.00):");
-                        scanf("%f", &novomeioBateria);
-                        printf("nivel:%f\n", novomeioBateria);
-                        if (novomeioBateria <= 0.00 || novomeioBateria > 100.0001)
+                        scanf("%f", &novoMeioBateria);
+                        printf("nivel:%f\n", novoMeioBateria);
+                        if (novoMeioBateria <= 0.00 || novoMeioBateria > 100.0001)
                         {
                             printf("Tente de novo.\n");
                             Sleep(2000);
@@ -331,9 +366,9 @@ int main() {
                             break;
                         }
                         printf("Autonomia(0.00 - 100.00):");
-                        scanf("%f", &novomeioAutonomia);
-                        printf("nivel:%f\n", novomeioAutonomia);
-                        if (novomeioAutonomia <= 0.00 || novomeioAutonomia >= 100.0001)
+                        scanf("%f", &novoMeioAutonomia);
+                        printf("nivel:%f\n", novoMeioAutonomia);
+                        if (novoMeioAutonomia <= 0.00 || novoMeioAutonomia >= 100.0001)
                         {
                             printf("Tente de novo.\n");
                             Sleep(2000);
@@ -341,23 +376,23 @@ int main() {
                             break;
                         }
                         printf("Custo:");
-                        scanf("%d", &novomeioCusto);
+                        scanf("%d", &novoMeioCusto);
                         getchar();
                         printf("Geocodigo:");
-                        scanf("%[^\n]", novomeioGeocodigo);
+                        scanf("%[^\n]", novoMeioGeocodigo);
                         if (inicioMeios == NULL)
                         {
-                            inicioMeios = inserirMeio(inicioGrafo, inicioMeios, novomeioCodigo, novomeioNome, novomeioBateria, novomeioAutonomia, novomeioCusto, novomeioGeocodigo);
+                            inicioMeios = inserirMeio(inicioGrafo, inicioMeios, novoMeioCodigo, novoMeioNome, novoMeioBateria, novoMeioAutonomia, novoMeioCusto, novoMeioGeocodigo);
                             break;
                         }
-                        if (existeMeio(inicioMeios, novomeioCodigo) == 1)
+                        if (existeMeio(inicioMeios, novoMeioCodigo) == 1)
                         {
-                            inserirMeio(inicioGrafo, inicioMeios, novomeioCodigo, novomeioNome, novomeioBateria, novomeioAutonomia, novomeioCusto, novomeioGeocodigo);
+                            inserirMeio(inicioGrafo, inicioMeios, novoMeioCodigo, novoMeioNome, novoMeioBateria, novoMeioAutonomia, novoMeioCusto, novoMeioGeocodigo);
                             break;
                         }
                         else
                         {
-                            printf("Ja existe um meio com o cod %d.\n", novomeioCodigo);
+                            printf("Ja existe um meio com o cod %d.\n", novoMeioCodigo);
                             Sleep(2000);
                             system("cls");
                             break;
@@ -366,24 +401,24 @@ int main() {
                     case 6:
                         printf("Insira os dados de um novo gestor:\n");
                         printf("Codigo:");
-                        scanf("%d", &novogestorCodigo);
+                        scanf("%d", &novoGestorCodigo);
                         getchar();
                         printf("Nome:");
-                        scanf("%[^\n]", novogestorNome);
+                        scanf("%[^\n]", novoGestorNome);
                         getchar();
                         printf("Senha:");
-                        scanf("%[^\n]", novogestorSenha);
+                        scanf("%[^\n]", novoGestorSenha);
                         getchar();
                         printf("Area:");
-                        scanf("%[^\n]", novogestorArea);
-                        if (existeGestor(inicioGestor, novogestorCodigo) == 1)
+                        scanf("%[^\n]", novoGestorArea);
+                        if (existeGestor(inicioGestor, novoGestorCodigo) == 1)
                         {
-                            inserirGestor(inicioGestor, novogestorCodigo, novogestorNome, novogestorSenha, novogestorArea);
+                            inserirGestor(inicioGestor, novoGestorCodigo, novoGestorNome, novoGestorSenha, novoGestorArea);
                             break;
                         }
                         else
                         {
-                            printf("Ja existe um gestor com o codigo %d.\n", novogestorCodigo);
+                            printf("Ja existe um gestor com o codigo %d.\n", novoGestorCodigo);
                             Sleep(2000);
                             system("cls");
                             break;
@@ -391,40 +426,40 @@ int main() {
                         break;
                     case 7:
                         printf("Insira o codigo de meio a remover:");
-                        scanf("%d", &codigomeioRemover);
-                        if (existeMeio(inicioMeios, codigomeioRemover) == 0)
+                        scanf("%d", &codigoMeioRemover);
+                        if (existeMeio(inicioMeios, codigoMeioRemover) == 0)
                         {
-                            inicioMeios = removerMeio(inicioMeios, codigomeioRemover);
+                            inicioMeios = removerMeio(inicioMeios, codigoMeioRemover);
                             break;
                         }
                         else
                         {
-                            printf("O meio com cod %d nao existe.\n", codigomeioRemover);
+                            printf("O meio com cod %d nao existe.\n", codigoMeioRemover);
                             Sleep(2000);
                             system("cls");
                             break;
                         }
                     case 8:
                         printf("Insira o codigo de cliente a remover:");
-                        scanf("%d", &codigoclienteRemover);
-                        if (existeClienteCod(inicioClientes, codigoclienteRemover) == 0)
+                        scanf("%d", &codigoClienteRemover);
+                        if (existeClienteCod(inicioClientes, codigoClienteRemover) == 0)
                         {
-                            inicioClientes = removerCliente(inicioClientes, codigoclienteRemover);
+                            inicioClientes = removerCliente(inicioClientes, codigoClienteRemover);
                             break;
                         }
                         else
                         {
-                            printf("O cliente com cod %d nao existe.\n", codigoclienteRemover);
+                            printf("O cliente com cod %d nao existe.\n", codigoClienteRemover);
                             Sleep(2000);
                             system("cls");
                             break;
                         }
                     case 9:
                         printf("Insira o codigo de gestor a remover:");
-                        scanf("%d", &codigogestorRemover);
-                        if (existeGestor(inicioGestor, codigogestorRemover) == 0)
+                        scanf("%d", &codigoGestorRemover);
+                        if (existeGestor(inicioGestor, codigoGestorRemover) == 0)
                         {
-                            inicioGestor = removerGestor(inicioGestor, codigogestorRemover);
+                            inicioGestor = removerGestor(inicioGestor, codigoGestorRemover);
                             gestorLogin = 0;
                             printf("Terminando sessao.\n");
                             Sleep(2000);
@@ -433,7 +468,7 @@ int main() {
                         }
                         else
                         {
-                            printf("O gestor com cod %d nao existe.\n", codigogestorRemover);
+                            printf("O gestor com cod %d nao existe.\n", codigoGestorRemover);
                             Sleep(2000);
                             system("cls");
                             break;
@@ -459,21 +494,32 @@ int main() {
                     case 16:
                         printf("Insira os seguintes dados: Vertice inicial, vertice final e distancia em km.\n");
                         printf("Vertice inicial:");
-                        scanf("%s", novoverticeInicial);
+                        scanf("%s", novoVerticeInicial);
                         printf("Vertice Final:");
-                        scanf("%s", novoverticeFinal);
+                        scanf("%s", novoVerticeFinal);
                         printf("Distancia em km:");
-                        scanf("%f", &novopesoAdjacente);
-                        int resultado = inserirAdjacente(inicioGrafo, novoverticeInicial, novoverticeFinal, novopesoAdjacente);
+                        scanf("%f", &novoPesoAdjacente);
+                        int resultado = inserirAdjacente(inicioGrafo, novoVerticeInicial, novoVerticeFinal, novoPesoAdjacente);
                         if (resultado==1)
                         { 
-                            printf("Adjacente de %s, adicionado com sucesso.\n", novoverticeInicial);
+                            printf("Adjacente de %s, adicionado com sucesso.\n", novoVerticeInicial);
                             Sleep(2000);
                             system("cls");
                         }  
                         else if (resultado == 2)
                         {
-                            printf("O Adjacente %s ja existe, no vertice %s.\n", novoverticeFinal, novoverticeInicial);
+                            printf("O Adjacente %s ja existe, no vertice %s.\n", novoVerticeFinal, novoVerticeInicial);
+                            Sleep(2000);
+                            system("cls");
+                        }
+                        break;
+                    case 17:
+                        printf("vertice a inserir:");
+                        scanf("%s", novoVerticeInicial);
+                        resFunc = inserirVertice(inicioGrafo, novoVerticeInicial);
+                        if (resFunc == verticeExiste)
+                        {
+                            printf("Ja existe o vertice inserido.\n");
                             Sleep(2000);
                             system("cls");
                         }
