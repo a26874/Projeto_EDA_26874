@@ -1,9 +1,9 @@
 1235656;teste3;6.00;73.00;2;maloca.fungos.poderia;0
-2;Carro;99.00;70.00;2000;reparou.definicao.artilheiro;1
+2;Carro;1.00;70.00;2000;reparou.definicao.artilheiro;1
 112;NovoTipo;60.00;60.00;1000;fagocitose.crestar.esperanca;0
-14985;asfda;62.00;55.00;34845;arrumar.etiquetar.pressione;0
+14985;asfda;4.00;55.00;34845;arrumar.etiquetar.pressione;0
 3;Bicicleta;66.00;55.00;15;fracos.ovelha.quadradao;0
-12441;teste;55.00;52.00;2;revaloriza.dignificante.velhos;0
+12441;teste;2.00;52.00;2;revaloriza.dignificante.velhos;0
 4;Scooter;100.00;51.00;50;arrumar.etiquetar.pressione;0
 12345;teste2;66.00;2.00;1;ocupei.embasando.ralar;0
 123;teste1;66.00;1.00;123;inala.fervido.engavetar;0

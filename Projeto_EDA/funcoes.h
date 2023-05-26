@@ -1,3 +1,11 @@
+/*****************************************************************//**
+ * @file   funcoes.h
+ * @brief  Listagem Funcoes
+ *
+ * @author Marco Macedo
+ * @date   February 2023
+ *********************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -21,6 +29,7 @@ typedef enum ResultadoFuncoes {
 	verticeNaoExiste,
 	adjacenteNaoExiste,
 	semEspacoMem,
+	verticeExiste,
 
 }ResFuncoes;
 
@@ -33,6 +42,7 @@ typedef struct Meio
 	char geocodigo[100];
 	int custo;
 	int ativo;
+	int recolhido;
 	struct Meio* seguinteMeio; // endereço de memória para uma struct registoMeio
 } Meio;
 
@@ -102,13 +112,6 @@ typedef struct Stack
 	struct Stack* seguinteStack;
 }Stack;
 
-typedef struct ListastackVolta
-{
-	Stack* novaStack;
-	int tamanho;
-	struct ListastackVolta* seguinteLista;
-} ListastackVolta;
-
 typedef struct ListaStack
 {
 	Stack* novaStack;
@@ -143,6 +146,8 @@ Meio* existeMeio(Meio* inicioMeios, int cod);
 Meio* bubbleSortMeios(Meio* inicioMeios);
 
 float mediaAutonomia(Meio* inicioMeios);
+
+void recolhidoMeios(Meio* inicioMeios);
 
 // -------------------------------------------------FUNÇÕES_F-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS-------------------------------------------------
 
@@ -201,8 +206,6 @@ Gestor* modoGestor(Gestor* inicioGestor);
 
 void printtestgrafo(Grafo* inicioGrafo);
 
-ListaStack* mostrarTeste1234(Grafo* inicioGrafo, char verticeAtual[], Stack* inicioStack, ListaStack* inicioLista, float Tamanho);
-
 Meio* inserirMeio(Grafo* inicioGrafo, Meio* inicioMeios, int cod, char nome[], float bat, float aut, int custo, char geo[]);
 
 Cliente* inserirCliente(Cliente* inicioClientes, int cod, char nome[], int NIF, int saldo, char geocodigo[]);
@@ -241,7 +244,6 @@ Aluguer* escreverFicheiroAluguerBin(Aluguer* inicioAluguer, FILE* dadosAluguer);
 
 Aluguer* realizarAluguer(Cliente* inicioClientes, Aluguer* inicioAluguer, Meio* inicioMeios);
 
-Aluguer* escreverAlugTestBin(Aluguer* inicioAluguer, FILE* dadosAluguer);
 
 
 // -------------------------------------------------------------------FUNÇÕES_F-ALUGUER--------------------------------------------------------------------
@@ -300,9 +302,17 @@ int totalVertices(Grafo* inicioGrafo);
 
 void listarAdjacentes(Grafo* inicioGrafo);
 
-ListaStack* mostrarTeste(Grafo* inicioGrafo, char verticeAtual[], Stack* inicioStack, ListaStack* inicioLista, float Tamanho);
+ListaStack* mostrarCaminhoIda(Grafo* inicioGrafo, char verticeAtual[], Stack* inicioStack, ListaStack* inicioLista, float Tamanho);
+
+ListaStack* mostrarCaminhoVolta(Grafo* inicioGrafo, char verticeAtual[], char verticeDestino[], Stack* inicioStack, ListaStack* inicioLista, float Tamanho);
+
+ListaStack* mostrarCaminhoCamiao(Grafo* inicioGrafo, char verticeAtual[], Stack* inicioStack, ListaStack* inicioLista, float Tamanho);
+
+ListaStack* mostrarCaminhoTeste(Grafo* inicioGrafo, char verticeAtual[], Stack* inicioStack, ListaStack* inicioLista, float Tamanho);
 
 int todosVisitados(Stack* inicioStack, Grafo* inicioGrafo);
+
+ListaStack* teste123(inicioGrafo, verticeInicial, inicioStack, inicioLista, tamanhoAdj);
 
 bool verticeVisitado(Stack* inicioStack, char vertice[]);
 
@@ -310,11 +320,16 @@ bool verticeVisitado(Stack* inicioStack, char vertice[]);
 
 #pragma region STACK
 
+void obterUltimoVertice(ListaStack* inicioLista, char* vertice);
+
 Stack* inserirStack(Stack* inicioStack, char vertice[]);
 
 void mostrarCaminho(ListaStack* inicioLista);
 
 ListaStack* retirarStackMaior(ListaStack* inicioLista);
+
+ListaStack* adicionarCaminho(Stack* caminho, ListaStack* listaCaminhos, float tamanho);
+
 
 #pragma endregion
 // -------------------------------------------------------------------FUNÇÕES_F-CIDADES--------------------------------------------------------------------
