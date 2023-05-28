@@ -58,6 +58,7 @@ int menuGestor()
     printf("14- Media autonomia.\n");
     printf("15- Listar transacoes.\n");
     printf("16- Adicionar Adjacentes.\n");
+    printf("17- Inserir Vertice.\n");
     printf("0- Sair.\n");
     printf("A sua escolha:");
     scanf("%d", &escolha);
@@ -98,8 +99,15 @@ int menuUtilizador()
 // -------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS-------------------------------------------------
 
 #pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE MEIOS
-// Ler ficheiro de texto, contendo informação sobre os meios.
-// Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
+ /**
+  * Ler ficheiro de texto, contendo informação sobre os meios.
+  * Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
+  * 
+  * \FunctionName lerFicheiroMeios
+  * \param inicioMeios
+  * \param dadosMeios
+  * \return 
+  */
 Meio* lerFicheiroMeios(Meio* inicioMeios, FILE* dadosMeios)
 {
     // Definição de variáveis.
@@ -126,7 +134,13 @@ Meio* lerFicheiroMeios(Meio* inicioMeios, FILE* dadosMeios)
     return inicioMeios;
 }
 
-// Apresenta na consola toda a informação existente sobre os clientes.
+/**
+ * Apresenta na consola toda a informação existente sobre os clientes.
+ * 
+ * \FunctionName listarMeios
+ * \param inicioMeios
+ * \return ResFuncoes
+ */
 ResFuncoes listarMeios(Meio* inicioMeios)
 {
     system("cls");
@@ -150,7 +164,14 @@ ResFuncoes listarMeios(Meio* inicioMeios)
     return SUCESSO;
 }
 
-// Escreve todos os dados inseridos sobre os meios, em ficheiro de texto.
+/**
+ * Escreve todos os dados inseridos sobre os meios, em ficheiro de texto.
+ * 
+ * \FunctionName escreverFicheiroMeios
+ * \param inicioMeios
+ * \param dadosMeios
+ * \return Meio
+ */
 Meio* escreverFicheiroMeios(Meio* inicioMeios, FILE* dadosMeios)
 {
     dadosMeios = fopen("meios.txt", "wt");
@@ -169,7 +190,14 @@ Meio* escreverFicheiroMeios(Meio* inicioMeios, FILE* dadosMeios)
     return 1;
 }
 
-// Escreve todos os dados inseridos sobre os meios, em ficheiro binário.
+/**
+ * Escreve todos os dados inseridos sobre os meios, em ficheiro binário.
+ * 
+ * \FunctionName escreverFicheiroMeiosBin
+ * \param inicioMeios
+ * \param dadosMeios
+ * \return Meio
+ */
 Meio* escreverFicheiroMeiosBin(Meio* inicioMeios, FILE* dadosMeios)
 {
     dadosMeios = fopen("meios.bin", "wb");
@@ -185,9 +213,17 @@ Meio* escreverFicheiroMeiosBin(Meio* inicioMeios, FILE* dadosMeios)
         inicioMeios = inicioMeios->seguinteMeio;
     }
     fclose(dadosMeios);
+    return 1;
 }
 
-// Verifica, consoante o endereço de memória de certo meio, se o seu código é igual ao que foi inserido para um novo meio.
+/**
+ * Verifica, consoante o endereço de memória de certo meio, se o seu código é igual ao que foi inserido para um novo meio.
+ * 
+ * \FunctionName existeMeio
+ * \param inicioMeios
+ * \param cod
+ * \return Meio
+ */
 Meio* existeMeio(Meio* inicioMeios, int cod)
 {
     if (inicioMeios == NULL)
@@ -203,8 +239,13 @@ Meio* existeMeio(Meio* inicioMeios, int cod)
     return 1;
 }
 
-// Verifica cada meio existente, se o seu valor de autonomia do elemento que está a verificar for maior que o elemento seguinte, irá ser feita uma troca
-// para ordenar todos os elementos da lista ligada por um valor decrescente a nivel de autonomia.
+/**
+ * Verifica cada meio existente, se o seu valor de autonomia do elemento que está a verificar for maior que o elemento seguinte, irá ser feita uma troca
+ * para ordenar todos os elementos da lista ligada por um valor decrescente a nivel de autonomia.
+ * \FunctionName bubbleSortMeios
+ * \param inicioMeios
+ * \return Meio
+ */
 Meio* bubbleSortMeios(Meio* inicioMeios)
 {
     Meio* atual, * seguinte;
@@ -259,6 +300,13 @@ Meio* bubbleSortMeios(Meio* inicioMeios)
 }
 
 //Devolve a media da autonimia de todos os meios existentes.
+/**
+ * 
+ * 
+ * \FunctionName mediaAutonomia
+ * \param inicioMeios
+ * \return 1
+ */
 float mediaAutonomia(Meio* inicioMeios)
 {
     int tamanho = 0;
@@ -278,9 +326,15 @@ float mediaAutonomia(Meio* inicioMeios)
     }
     resultado = resultado / tamanho;
     printf("A media de autonomia de todos os meios e de: %.2f\n", resultado);
+    return 1;
 }
 
-//Colocar todos os meios com o campo recolhido a 0.
+/**
+ * Colocar todos os meios com o campo recolhido a 0.
+ * 
+ * \FunctionName recolhidoMeios
+ * \param inicioMeios
+ */
 void recolhidoMeios(Meio* inicioMeios)
 {
     Meio* aux = inicioMeios;
@@ -300,8 +354,14 @@ void recolhidoMeios(Meio* inicioMeios)
 
 #pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE CLIENTES
 
-// Ler ficheiro de texto, contendo informação sobre os clientes.
-// Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
+/**
+ * Ler ficheiro de texto, contendo informação sobre os clientes.
+ * Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
+ * \FunctionName lerFicheiroClientes
+ * \param inicioClientes
+ * \param dadosClientes
+ * \return Cliente*
+ */
 Cliente* lerFicheiroClientes(Cliente* inicioClientes, FILE* dadosClientes)
 {
     // Definição de variáveis.
@@ -326,7 +386,12 @@ Cliente* lerFicheiroClientes(Cliente* inicioClientes, FILE* dadosClientes)
     return inicioClientes;
 }
 
-// Apresenta na consola toda a informação existente sobre os clientes.
+/**
+ * Apresenta na consola toda a informação existente sobre os clientes.
+ * 
+ * \FunctionName listarClientes
+ * \param inicioClientes
+ */
 void listarClientes(Cliente* inicioClientes)
 {
     system("cls");
@@ -349,7 +414,15 @@ void listarClientes(Cliente* inicioClientes)
     }
 }
 
-// Escreve todos os dados inseridos sobre os clientes, em ficheiro de texto.
+// 
+/**
+ * Escreve todos os dados inseridos sobre os clientes, em ficheiro de texto.
+ * 
+ * \FunctionName escreverFicheiroClientes
+ * \param inicioClientes
+ * \param dadosClientes
+ * \return Cliente
+ */
 Cliente* escreverFicheiroClientes(Cliente* inicioClientes, FILE* dadosClientes)
 {
     dadosClientes = fopen("clientes.txt", "wt");
@@ -364,9 +437,17 @@ Cliente* escreverFicheiroClientes(Cliente* inicioClientes, FILE* dadosClientes)
         inicioClientes = inicioClientes->seguinteCliente;
     }
     fclose(dadosClientes);
+    return 1;
 }
 
-// Escreve todos os dados inseridos sobre os clientes, em ficheiro binário.
+/**
+ *  Escreve todos os dados inseridos sobre os clientes, em ficheiro binário.
+ * 
+ * \FunctionName escreverFicheiroClientesBin
+ * \param inicioClientes
+ * \param dadosClientes
+ * \return 
+ */
 Cliente* escreverFicheiroClientesBin(Cliente* inicioClientes, FILE* dadosClientes)
 {
     dadosClientes = fopen("clientes.bin", "wb");
@@ -381,9 +462,17 @@ Cliente* escreverFicheiroClientesBin(Cliente* inicioClientes, FILE* dadosCliente
         inicioClientes = inicioClientes->seguinteCliente;
     }
     fclose(dadosClientes);
+    return 1;
 }
 
-// Verifica, consoante o endereço de memória de um certo utilizador, se o seu código é igual ao que foi inserido para um novo utilizador.
+/**
+ * Verifica, consoante o endereço de memória de um certo utilizador, se o seu código é igual ao que foi inserido para um novo utilizador.
+ * 
+ * \FunctionName existeClienteCod
+ * \param inicioClientes
+ * \param cod
+ * \return int
+ */
 int existeClienteCod(Cliente* inicioClientes, int cod)
 {
     while (inicioClientes != NULL)
@@ -398,7 +487,14 @@ int existeClienteCod(Cliente* inicioClientes, int cod)
         return 1;
 }
 
-// Verifica, consoante o endereço de memória de um certo utilizador, se o seu NIF é igual ao que foi inserido para um novo utilizador.
+/**
+ *  Verifica, consoante o endereço de memória de um certo utilizador, se o seu NIF é igual ao que foi inserido para um novo utilizador.
+ * 
+ * \FunctionName existeClienteNIF
+ * \param inicioClientes
+ * \param NIF
+ * \return int
+ */
 int existeClienteNIF(Cliente* inicioClientes, int NIF)
 {
     while (inicioClientes != NULL)
@@ -413,8 +509,13 @@ int existeClienteNIF(Cliente* inicioClientes, int NIF)
         return 1;
 }
 
-// Verifica cada cliente existente, se o seu codigo do elemento que está a verificar for maior que o elemento seguinte, irá ser feita uma troca
-// para ordenar todos os elementos da lista ligada por um valor crescente.
+/**
+ * Verifica cada cliente existente, se o seu codigo do elemento que está a verificar for maior que o elemento seguinte, irá ser feita uma troca
+ * para ordenar todos os elementos da lista ligada por um valor crescente.
+ * \FunctionName bubbleSortClientes
+ * \param inicioClientes
+ * \return Cliente
+ */
 Cliente* bubbleSortClientes(Cliente* inicioClientes) {
     Cliente* atual, * seguinte;
     int b = 1, auxCodigo, auxNIF, auxSaldo;
@@ -467,8 +568,14 @@ Cliente* bubbleSortClientes(Cliente* inicioClientes) {
 
 #pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE GESTORES
 
-// Ler ficheiro de texto, contendo informação sobre os gestores.
-// Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
+/**
+ * Ler ficheiro de texto, contendo informação sobre os gestores.
+ * Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
+ * \FunctionName lerFicheiroGestores
+ * \param inicioGestor
+ * \param dadosGestor
+ * \return Gestor
+ */
 Gestor* lerFicheiroGestores(Gestor* inicioGestor, FILE* dadosGestor)
 {
     char linha[tamanhoLinha];
@@ -487,7 +594,12 @@ Gestor* lerFicheiroGestores(Gestor* inicioGestor, FILE* dadosGestor)
     return inicioGestor;
 }
 
-// Apresenta na consola toda a informação existente sobre os gestores.
+/**
+ * Apresenta na consola toda a informação existente sobre os gestores.
+ * 
+ * \FunctionName listarGestores
+ * \param inicioGestor
+ */
 void listarGestores(Gestor* inicioGestor)
 {
     system("cls");
@@ -509,7 +621,14 @@ void listarGestores(Gestor* inicioGestor)
 
 }
 
-// Escreve todos os dados inseridos sobre os gestores, em ficheiro de texto.
+/**
+ * Escreve todos os dados inseridos sobre os gestores, em ficheiro de texto.
+ * 
+ * \FunctionName escreverFicheiroGestores
+ * \param inicioGestores
+ * \param dadosGestores
+ * \return Gestor
+ */
 Gestor* escreverFicheiroGestores(Gestor* inicioGestores, FILE* dadosGestores)
 {
     dadosGestores = fopen("gestores.txt", "wt");
@@ -527,7 +646,14 @@ Gestor* escreverFicheiroGestores(Gestor* inicioGestores, FILE* dadosGestores)
     fclose(dadosGestores);
 }
 
-// Escreve todos os dados inseridos sobre os gestores, em ficheiro binário.
+/**
+ * Escreve todos os dados inseridos sobre os gestores, em ficheiro binário.
+ * 
+ * \FunctionName escreverFicheiroGestoresBin
+ * \param inicioGestores
+ * \param dadosGestores
+ * \return Gestor
+ */
 Gestor* escreverFicheiroGestoresBin(Gestor* inicioGestores, FILE* dadosGestores)
 {
     dadosGestores = fopen("gestores.bin", "wb");
@@ -544,7 +670,14 @@ Gestor* escreverFicheiroGestoresBin(Gestor* inicioGestores, FILE* dadosGestores)
     fclose(dadosGestores);
 }
 
-// Verifica, consoante o endereço de memória de um certo gestor, se o seu código é igual ao que foi inserido para um novo gestor.
+/**
+ * Verifica, consoante o endereço de memória de um certo gestor, se o seu código é igual ao que foi inserido para um novo gestor.
+ * 
+ * \FunctionName existeGestor
+ * \param inicioGestores
+ * \param cod
+ * \return int
+ */
 int existeGestor(Gestor* inicioGestores, int cod)
 {
     while (inicioGestores != NULL)
@@ -559,8 +692,14 @@ int existeGestor(Gestor* inicioGestores, int cod)
         return 1;
 }
 
-// Verifica cada gestor existente, se o seu codigo do elemento que está a verificar for maior que o elemento seguinte, irá ser feita uma troca
-// para ordenar todos os elementos da lista ligada por um valor crescente.
+/**
+ * Verifica cada gestor existente, se o seu codigo do elemento que está a verificar for maior que o elemento seguinte, irá ser feita uma troca
+ * para ordenar todos os elementos da lista ligada por um valor crescente.
+ * 
+ * \FunctionName bubbleSortGestores
+ * \param inicioGestor
+ * \return Gestor
+ */
 Gestor* bubbleSortGestores(Gestor* inicioGestor) {
     Gestor* atual, * seguinte;
     int auxCodigo, b = 1, auxEncriptado;
@@ -614,8 +753,14 @@ Gestor* bubbleSortGestores(Gestor* inicioGestor) {
 // ---------------------------------------------------INICIO-ADICIONAR/REMOVER/ALTERAR MEIOS/CLIENTES/GESTORES----------------------------------------------------
 #pragma region INSERIR
 
-// Função para entrar em modo gestor, no qual é pedido um codigo e uma senha. Caso sejam iguais ao que está no ficheiro é garantido o acesso
-// a funções de gestor.
+/**
+ * Função para entrar em modo gestor, no qual é pedido um codigo e uma senha. Caso sejam iguais ao que está no ficheiro é garantido o acesso
+ * a funções de gestor.
+ * 
+ * \FunctionName modoGestor
+ * \param inicioGestores
+ * \return Gestor
+ */
 Gestor* modoGestor(Gestor* inicioGestores) {
     int codigoInserido;
     char senha[20];
@@ -663,8 +808,21 @@ Gestor* modoGestor(Gestor* inicioGestores) {
     }
 }
 
-// Função para inserir um novo meio elétrico, é pedido ao gestor na função main, um novo codigo, nome, nivel bateria, autonomia, o seu custo 
-// e a sua geolocalização. De seguida é inserido no ultimo lugar da lista ligada dos meios, quando é o ultimo endereço NULL.
+/**
+ * Função para inserir um novo meio elétrico, é pedido ao gestor na função main, um novo codigo, nome, nivel bateria, autonomia, o seu custo
+ * e a sua geolocalização. De seguida é inserido no ultimo lugar da lista ligada dos meios, quando é o ultimo endereço NULL.
+ * 
+ * \FunctionName inserirMeio
+ * \param inicioGrafo
+ * \param inicioMeios
+ * \param cod
+ * \param nome
+ * \param bat
+ * \param aut
+ * \param custo
+ * \param geo
+ * \return Meio
+ */
 Meio* inserirMeio(Grafo* inicioGrafo, Meio* inicioMeios, int cod, char nome[], float bat, float aut, int custo, char geo[])
 {
     Grafo* aux = inicioGrafo;
@@ -748,8 +906,19 @@ Meio* inserirMeio(Grafo* inicioGrafo, Meio* inicioMeios, int cod, char nome[], f
     return inicioMeios;
 }
 
-// Função para inserir um novo cliente, é pedido ao gestor na função main, um novo codigo, nome, NIF e saldo.  
-// De seguida é inserido no ultimo lugar da lista ligada dos clientes, quando é o ultimo endereço NULL.
+/**
+ * Função para inserir um novo cliente, é pedido ao gestor na função main, um novo codigo, nome, NIF e saldo.  
+ * De seguida é inserido no ultimo lugar da lista ligada dos clientes, quando é o ultimo endereço NULL.
+ * 
+ * \FunctionName inserirCliente
+ * \param inicioClientes
+ * \param cod
+ * \param nome
+ * \param NIF
+ * \param saldo
+ * \param geocodigo
+ * \return Cliente
+ */
 Cliente* inserirCliente(Cliente* inicioClientes, int cod, char nome[], int NIF, int saldo, char geocodigo[])
 {
     int inserir = 0;
@@ -791,8 +960,18 @@ Cliente* inserirCliente(Cliente* inicioClientes, int cod, char nome[], int NIF, 
     return inicioClientes;
 }
 
-// Função para inserir um novo gestor, é pedido ao gestor na função main, um novo codigo, nome e senha.  
-// De seguida é inserido no ultimo lugar da lista ligada dos gestores, quando é o ultimo endereço NULL.
+/**
+ * Função para inserir um novo gestor, é pedido ao gestor na função main, um novo codigo, nome e senha.
+ * De seguida é inserido no ultimo lugar da lista ligada dos gestores, quando é o ultimo endereço NULL.
+ * 
+ * \FunctionName inserirGestor
+ * \param inicioGestor
+ * \param cod
+ * \param nome
+ * \param senha
+ * \param area
+ * \return Gestor
+ */
 Gestor* inserirGestor(Gestor* inicioGestor, int cod, char nome[], char senha[], char area[])
 {
     int inserir = 0, encriptado;
@@ -857,7 +1036,14 @@ Gestor* inserirGestor(Gestor* inicioGestor, int cod, char nome[], char senha[], 
     return inicioGestor;
 }
 
-// Pequena função para encriptação da senha do gestor.
+/**
+ * Pequena função para encriptação da senha do gestor.
+ * 
+ * \FunctionName encryptSenha
+ * \param inicioGestor
+ * \param senha
+ * \return int
+ */
 int encryptSenha(Gestor* inicioGestor, char senha[])
 {
     for (int i = 0; i < strlen(senha); i++)
@@ -867,7 +1053,15 @@ int encryptSenha(Gestor* inicioGestor, char senha[])
     return 1;
 }
 
-// Pequena função para desencriptação da senha do gestor.
+// 
+/**
+ * Pequena função para desencriptacao da senha do gestor.
+ * 
+ * \FunctionName decryptSenha
+ * \param inicioGestor
+ * \param senha
+ * \return int
+ */
 int decryptSenha(Gestor* inicioGestor, char senha[])
 {
     for (int i = 0; i < strlen(senha); i++)
@@ -880,8 +1074,15 @@ int decryptSenha(Gestor* inicioGestor, char senha[])
 
 #pragma region REMOVER
 
-// Função para remover algum meio, a partir do código inserido pelo gestor. É removido o meio e de seguida é retornada toda a lista ligada
-// com o meio removido.
+/**
+ * Função para remover algum meio, a partir do código inserido pelo gestor. É removido o meio e de seguida é retornada toda a lista ligada
+ * com o meio removido.
+ * 
+ * \FunctionName removerMeio
+ * \param inicioMeios
+ * \param cod
+ * \return Meio
+ */
 Meio* removerMeio(Meio* inicioMeios, int cod)
 {
     Meio* anterior = inicioMeios, * atual = inicioMeios, * aux;
@@ -916,8 +1117,15 @@ Meio* removerMeio(Meio* inicioMeios, int cod)
     }
 }
 
-// Função para remover algum cliente, a partir do código inserido pelo gestor. É removido o cliente e de seguida é retornada toda a lista ligada
-// com o meio removido.
+/**
+ * Função para remover algum cliente, a partir do código inserido pelo gestor. É removido o cliente e de seguida é retornada toda a lista ligada
+ * com o meio removido.
+ * 
+ * \FunctionName removerCliente
+ * \param inicioClientes
+ * \param cod
+ * \return Cliente
+ */
 Cliente* removerCliente(Cliente* inicioClientes, int cod)
 {
     Cliente* anterior = inicioClientes, * atual = inicioClientes, * aux;
@@ -952,8 +1160,15 @@ Cliente* removerCliente(Cliente* inicioClientes, int cod)
     }
 }
 
-// Função para remover algum gestor, a partir do código inserido pelo gestor. É removido o gestor e de seguida é retornada toda a lista ligada
-// com o meio removido.
+/**
+ * Função para remover algum gestor, a partir do código inserido pelo gestor. É removido o gestor e de seguida é retornada toda a lista ligada
+ * com o meio removido.
+ * 
+ * \FunctionName removerGestor
+ * \param inicioGestores
+ * \param cod
+ * \return Gestor
+ */
 Gestor* removerGestor(Gestor* inicioGestores, int cod)
 {
     Gestor* anterior = inicioGestores, * atual = inicioGestores, * aux;
@@ -987,8 +1202,14 @@ Gestor* removerGestor(Gestor* inicioGestores, int cod)
 
 #pragma region ALTERAR
 
-// Função para alteração de dados de algum gestor.
-// Apenas é pedido o codigo de gestor. É possivel alterar codigo, nome, senha, area responsavel.
+/**
+ * Função para alteração de dados de algum gestor.
+ * Apenas é pedido o codigo de gestor. É possivel alterar codigo, nome, senha, area responsavel.
+ * 
+ * \FunctionName alterarGestor
+ * \param inicioGestores
+ * \return Gestor
+ */
 Gestor* alterarGestor(Gestor* inicioGestores)
 {
     int cod, escolha, novoCodigo, encriptar, acabadoAlterar = 1;
@@ -1099,19 +1320,23 @@ Gestor* alterarGestor(Gestor* inicioGestores)
     }
 }
 
-// Função para alteração de dados do cliente.
-// É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel fazer alteração de nome, codigo e NIF.
-ResFuncoes alterarDadosCliente(Cliente* inicioClientes, Transacao* inicioTransacao) {
-    int codigo, NIF, novoCodigoigo, novoNIF, inserir = 1, escolha, codigoAux;
+/**
+ *  Função para alteração de dados do cliente.
+ *  É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel fazer alteração de nome, codigo e NIF.
+ * \FunctionName alterarDadosCliente
+ * \param inicioClientes
+ * \param inicioTransacao
+ * \param inicioAluguer
+ * \return ResFuncoes
+ */
+ResFuncoes alterarDadosCliente(Cliente* inicioClientes, Transacao* inicioTransacao, Aluguer* inicioAluguer) {
+    int codigo, NIF, novoCodigo, novoNIF, inserir = 1, escolha, codigoAux;
     char novoNome[50], novoGeocodigo[100];
     Cliente* aux = inicioClientes;
     Transacao* auxTrans = inicioTransacao;
+    Aluguer* auxAluguer = inicioAluguer;
     if (inicioClientes == NULL)
     {
-       /* printf("Nao existem clientes.\n");
-        Sleep(2000);
-        system("cls");*/
-        fprintf(stderr, "Nao existem clientes registados.\n");
         return clientesNaoExistem;
     }
     printf("Introduza o seu codigo:");
@@ -1124,9 +1349,6 @@ ResFuncoes alterarDadosCliente(Cliente* inicioClientes, Transacao* inicioTransac
     }
     else if (existeClienteNIF(aux, NIF) == 1)
     {
-        /*printf("O codigo %d, nao esta registado com o NIF %d.\n", codigo, NIF);
-        Sleep(2000);
-        system("cls");*/
         return nifClienteNaoExiste;
     }
     while (inicioClientes != NULL)
@@ -1160,11 +1382,11 @@ ResFuncoes alterarDadosCliente(Cliente* inicioClientes, Transacao* inicioTransac
                     break;
                 case 2:
                     printf("Insira o seu novo codigo:");
-                    scanf("%d", &novoCodigoigo);
-                    if (existeClienteCod(aux, novoCodigoigo))
+                    scanf("%d", &novoCodigo);
+                    if (existeClienteCod(aux, novoCodigo))
                     {
                         codigoAux = inicioClientes->codigo;
-                        inicioClientes->codigo = novoCodigoigo;
+                        inicioClientes->codigo = novoCodigo;
                         printf("O seu novo codigo %d\n", inicioClientes->codigo);
                         if (existeClienteTransacao(auxTrans, codigoAux))
                         {
@@ -1172,9 +1394,20 @@ ResFuncoes alterarDadosCliente(Cliente* inicioClientes, Transacao* inicioTransac
                             {
                                 if (auxTrans->codigoUtilizador == codigoAux)
                                 {
-                                    auxTrans->codigoUtilizador = novoCodigoigo;
+                                    auxTrans->codigoUtilizador = novoCodigo;
                                 }
                                 auxTrans = auxTrans->seguinteTransacao;
+                            }
+                        }
+                        if(existeClienteAluguer(auxAluguer,codigoAux))
+                        {
+                            while (auxAluguer != NULL)
+                            {
+                                if (auxAluguer->codComprador == codigoAux)
+                                {
+                                    auxAluguer->codComprador = novoCodigo;
+                                }
+                                auxAluguer = auxAluguer->seguinteCompra;
                             }
                         }
                         Sleep(2000);
@@ -1182,7 +1415,7 @@ ResFuncoes alterarDadosCliente(Cliente* inicioClientes, Transacao* inicioTransac
                     }
                     else
                     {
-                        printf("O codigo %d ja existe.\n", novoCodigoigo);
+                        printf("O codigo %d ja existe.\n", novoCodigo);
                         Sleep(2000);
                         system("cls");
                         break;
@@ -1235,8 +1468,14 @@ ResFuncoes alterarDadosCliente(Cliente* inicioClientes, Transacao* inicioTransac
     }
 }
 
-// Função para alteração de dados de algum meio.
-// É pedido o codigo do meio a alterar. É possivel alterar o seu codigo, tipo, se está ativo, custo, bat, aut, etc...
+/**
+ * Função para alteração de dados de algum meio.
+ * É pedido o codigo do meio a alterar. É possivel alterar o seu codigo, tipo, se está ativo, custo, bat, aut, etc...
+ * 
+ * \FunctionName alterarMeio
+ * \param inicioMeios
+ * \return Meio
+ */
 Meio* alterarMeio(Meio* inicioMeios)
 {
     int cod, codAlterar, ativoAlterar, custoAlterar, escolha;
@@ -1403,8 +1642,15 @@ Meio* alterarMeio(Meio* inicioMeios)
 
 // ---------------------------------------------------------------INICIO_OP_UTILIZADOR-----------------------------------------------------------------
 #pragma region opUtilizador
-// Função para carregamento de saldo, de um certo utilizador.
-// É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel carregar o saldo desse mesmo utilizador.
+/**
+ * Função para carregamento de saldo, de um certo utilizador.
+ * É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel carregar o saldo desse mesmo utilizador.
+ * 
+ * \FunctionName carregarSaldo
+ * \param inicioClientes
+ * \param inicioTransacao
+ * \return Cliente
+ */
 Cliente* carregarSaldo(Cliente* inicioClientes, Transacao* inicioTransacao) {
     if (inicioClientes == NULL)
     {
@@ -1461,38 +1707,52 @@ Cliente* carregarSaldo(Cliente* inicioClientes, Transacao* inicioTransacao) {
     system("cls");
 }
 
-// Função para consulta de saldo, de um certo utilizador.
-// É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel visualizar quando saldo está disponível.
-ResFuncoes consultaSaldo(Cliente* inicioClientes) {
+/**
+ * Função para consulta de saldo, de um certo utilizador.
+ * É pedido o codigo e o NIF, caso coincidam com algum dos utilizadores existentes é possivel visualizar quando saldo está disponível.
+ * 
+ * \FunctionName consultaSaldo
+ * \param inicioClientes
+ * \param saldo
+ * \return ResFuncoes
+ */
+ResFuncoes consultaSaldo(Cliente* inicioClientes, int** saldo) {
     int codigo, NIF;
     printf("Introduza o seu codigo:");
     scanf("%d", &codigo);
-    //printf("Introduza o seu NIF:");
-    //scanf("%d", &NIF);
+    printf("Introduza o seu NIF:");
+    scanf("%d", &NIF);
     if (inicioClientes == NULL)
     {
         return clientesNaoExistem;
     }
     while (inicioClientes != NULL)
     {
-        if (inicioClientes->codigo == codigo /*&& inicioClientes->NIF == NIF*/)
+        if (inicioClientes->codigo == codigo && inicioClientes->NIF == NIF)
         {
-            printf("Voce tem %d de saldo.\n", inicioClientes->saldo);
+            *saldo = &inicioClientes->saldo;
             return saldoAtual;
         }
         inicioClientes = inicioClientes->seguinteCliente;
     }
     if (inicioClientes == NULL)
     {
-        //printf("Nao existe o cliente com o cod %d.\n", codigo);
         return codNifNaoExiste;
     }
 }
 
-// Funçáo para realização de aluguer de qualquer meio existente, que não esteja ativo.
-// É pedido o codigo de utilizador, é verificado se existe esse mesmo utilizador. De seguida é perguntado qual o meio que deseja alugar. 
-// São apresentados dados, tais como o tipo de meio, o seu custo e o saldo do utilizador. Caso o utilizador, decida comprar o meio
-// É criado um novo registo na lista ligada de alugueres.
+/**
+ * Funcao para realização de aluguer de qualquer meio existente, que não esteja ativo.
+ * É pedido o codigo de utilizador, é verificado se existe esse mesmo utilizador. De seguida é perguntado qual o meio que deseja alugar.
+ * São apresentados dados, tais como o tipo de meio, o seu custo e o saldo do utilizador. Caso o utilizador, decida comprar o meio
+ * É criado um novo registo na lista ligada de alugueres.
+ * 
+ * \FunctionName realizarAluguer
+ * \param inicioClientes
+ * \param inicioAluguer
+ * \param inicioMeios
+ * \return Aluguer
+ */
 Aluguer* realizarAluguer(Cliente* inicioClientes, Aluguer* inicioAluguer, Meio* inicioMeios)
 {
     int meioAlugar, codigoUtilizador, NIF;
@@ -1598,8 +1858,14 @@ Aluguer* realizarAluguer(Cliente* inicioClientes, Aluguer* inicioAluguer, Meio* 
     }
 }
 
-// Função para listar na consola, todos os meios existentes com um certo geocodigo.
-void listarGeocodigo(Meio* inicioMeios)
+/**
+ * Função para listar na consola, todos os meios existentes com um certo geocodigo.
+ * 
+ * \FunctionName listarGeocodigo
+ * \param inicioMeios
+ * \return int
+ */
+int listarGeocodigo(Meio* inicioMeios)
 {
     system("cls");
     int verificado = 0, existe = 0;
@@ -1610,7 +1876,7 @@ void listarGeocodigo(Meio* inicioMeios)
     getchar();
 
     if (inicioMeios == NULL)
-        return 0;
+        return meiosNaoExistem;
     while (auxPrint != NULL && existe == 0)
     {
         if (strcmp(verificarGeocodigo, auxPrint->geocodigo) == 0)
@@ -1625,9 +1891,7 @@ void listarGeocodigo(Meio* inicioMeios)
     }
     else
     {
-        printf("Nao existe o geocodigo inserido.\n");
-        Sleep(2000);
-        system("cls");
+        return geocodigoNaoExiste;
     }
     while (inicioMeios != NULL)
     {
@@ -1638,6 +1902,7 @@ void listarGeocodigo(Meio* inicioMeios)
         inicioMeios = inicioMeios->seguinteMeio;
     }
     printf("------------------------------------------------------------------------------------------------------------------------\n");
+    return SUCESSO;
 }
 #pragma endregion
 // -----------------------------------------------------------------FIM_OP_UTILIZADOR-------------------------------------------------------------------
@@ -1646,8 +1911,15 @@ void listarGeocodigo(Meio* inicioMeios)
 // ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE ALUGUER----------------------------------------------------
 
 #pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE ALUGUER
-// Ler ficheiro de texto, contendo informação sobre os alugueres.
-// Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
+/**
+ * Ler ficheiro de texto, contendo informação sobre os alugueres.
+ * Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
+ * 
+ * \FunctionName lerFicheiroAluguer
+ * \param inicioAluguer
+ * \param dadosAluguer
+ * \return Aluguer
+ */
 Aluguer* lerFicheiroAluguer(Aluguer* inicioAluguer, FILE* dadosAluguer)
 {
     char linha[tamanhoLinha];
@@ -1662,7 +1934,12 @@ Aluguer* lerFicheiroAluguer(Aluguer* inicioAluguer, FILE* dadosAluguer)
     return inicioAluguer;
 }
 
-// Função para listar na consola, o historico dos alugueres já feitos.
+/**
+ * Função para listar na consola, o historico dos alugueres já feitos.
+ * 
+ * \FunctionName listarAluguer
+ * \param inicioAluguer
+ */
 void listarAluguer(Aluguer* inicioAluguer)
 {
     system("cls");
@@ -1682,8 +1959,14 @@ void listarAluguer(Aluguer* inicioAluguer)
     printf("------------------------------------------------------------------------------------------------------------------------\n");
 }
 
-// Verifica cada aluguer existente, se a sua data for maior que a do seguinte elemento, irá ser feita uma troca
-// para ordenar todos os elementos por ordem de compra.
+/**
+ * Verifica cada aluguer existente, se a sua data for maior que a do seguinte elemento, irá ser feita uma troca
+ * para ordenar todos os elementos por ordem de compra.
+ * 
+ * \FunctionName bubbleSortAluguer
+ * \param inicioAluguer
+ * \return Aluguer
+ */
 Aluguer* bubbleSortAluguer(Aluguer* inicioAluguer) {
     Aluguer* atual, * seguinte;
     int auxCodigo, b = 1;
@@ -1724,7 +2007,14 @@ Aluguer* bubbleSortAluguer(Aluguer* inicioAluguer) {
     return inicioAluguer;
 }
 
-// Escreve todos os dados sobre os alugueres, em ficheiro de texto.
+/**
+ * Escreve todos os dados sobre os alugueres, em ficheiro de texto.
+ * 
+ * \FunctionName escreverFicheiroAluguer
+ * \param inicioAluguer
+ * \param dadosAluguer
+ * \return Aluguer
+ */
 Aluguer* escreverFicheiroAluguer(Aluguer* inicioAluguer, FILE* dadosAluguer)
 {
     if (inicioAluguer == NULL)
@@ -1746,7 +2036,14 @@ Aluguer* escreverFicheiroAluguer(Aluguer* inicioAluguer, FILE* dadosAluguer)
     fclose(dadosAluguer);
 }
 
- //Escreve todos os dados sobre os alugueres, em ficheiro binário.
+/**
+ * Escreve todos os dados sobre os alugueres, em ficheiro binário.
+ * 
+ * \FunctionName escreverFicheiroAluguerBin
+ * \param inicioAluguer
+ * \param dadosAluguer
+ * \return Aluguer
+ */
 Aluguer* escreverFicheiroAluguerBin(Aluguer* inicioAluguer, FILE* dadosAluguer)
 {
     if (inicioAluguer == NULL)
@@ -1768,9 +2065,16 @@ Aluguer* escreverFicheiroAluguerBin(Aluguer* inicioAluguer, FILE* dadosAluguer)
     fclose(dadosAluguer);
 }
 
+/**
+ * Verifica se existe transacao de um cliente, para auxiliar em funcoes em que o codigo do cliente seja mudado, assim mudando o codigo tambem na estrutura de transacoes.
+ * 
+ * \FunctionName existeClienteTransacao
+ * \param inicioTransacao
+ * \param codVerificar
+ * \return int
+ */
 int existeClienteTransacao(Transacao* inicioTransacao, int codVerificar)
 {
-    int teste = 0;
     Transacao* aux = inicioTransacao;
     while (aux != NULL)
     {
@@ -1780,14 +2084,42 @@ int existeClienteTransacao(Transacao* inicioTransacao, int codVerificar)
     }
     return 0;
 }
+
+/**
+ * Verifica se existe Aluguer de algum cliente, para auxiliar em funcoes em que o codigo do cliente seja mudado, assim mudando tambem o codigo na estrutura de Aluguer.
+ * 
+ * \FunctionName existeClienteAluguer
+ * \param inicioTransacao
+ * \param codVerificar
+ * \return int
+ */
+int existeClienteAluguer(Aluguer* inicioTransacao, int codVerificar)
+{
+    Aluguer* aux = inicioTransacao;
+    while (aux != NULL)
+    {
+        if (aux->codComprador == codVerificar)
+            return 1;
+        aux = aux->seguinteCompra;
+    }
+    return 0;
+}
 #pragma endregion
 // ---------------------------------------------------FIM-LEITURA/ESCRITA/REPRESENTAÇÃO DE ALUGUER----------------------------------------------------
 
 
 // ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE TRANSACOES----------------------------------------------------
 #pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE TRANSACOES
-// Ler ficheiro de texto, contendo informação sobre transacoes efetuadas.
-// Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
+
+/**
+ * Ler ficheiro de texto, contendo informação sobre transacoes efetuadas.
+ * Serão todos os dados, inseridos numa lista ligada, que de inicio é vazia.
+ * 
+ * \FunctionName lerFicheiroTransacao
+ * \param inicioTransacao
+ * \param dadosTransacao
+ * \return Transacao
+ */
 Transacao* lerFicheiroTransacao(Transacao* inicioTransacao, FILE* dadosTransacao)
 {
     char linha[tamanhoLinha];
@@ -1802,7 +2134,14 @@ Transacao* lerFicheiroTransacao(Transacao* inicioTransacao, FILE* dadosTransacao
     return inicioTransacao;
 }
 
-// Escreve todos os dados sobre transacoes, em ficheiro de texto.
+/**
+ * Escreve todos os dados sobre transacoes, em ficheiro de texto.
+ * 
+ * \FunctionName escreverFicheiroTransacao
+ * \param inicioTransacao
+ * \param dadosTransacao
+ * \return Transacao
+ */
 Transacao* escreverFicheiroTransacao(Transacao* inicioTransacao, FILE* dadosTransacao)
 {
     if (inicioTransacao == NULL)
@@ -1824,7 +2163,14 @@ Transacao* escreverFicheiroTransacao(Transacao* inicioTransacao, FILE* dadosTran
     fclose(dadosTransacao);
 }
 
-// Escreve todos os dados sobre os alugueres, em ficheiro binario.
+/**
+ * Escreve todos os dados sobre os alugueres, em ficheiro binario.
+ * 
+ * \FunctionName escreverFicheiroTransacaoBin
+ * \param inicioTransacao
+ * \param dadosTransacao
+ * \return Transacao
+ */
 Transacao* escreverFicheiroTransacaoBin(Transacao* inicioTransacao, FILE* dadosTransacao)
 {
     if (inicioTransacao == NULL)
@@ -1846,7 +2192,12 @@ Transacao* escreverFicheiroTransacaoBin(Transacao* inicioTransacao, FILE* dadosT
     fclose(dadosTransacao);
 }
 
-// Listar transacoes existentes.
+/**
+ * Listar transacoes existentes.
+ * 
+ * \FunctionName listarTransacao
+ * \param inicioTransacao
+ */
 void listarTransacao(Transacao* inicioTransacao)
 {
     system("cls");
@@ -1866,7 +2217,16 @@ void listarTransacao(Transacao* inicioTransacao)
     printf("------------------------------------------------------------------------------------------------------------------------\n");
 }
 
-// Sendo executada, cria uma nova transacao
+/**
+ * Sendo executada, cria uma nova transacao
+ * 
+ * \FunctionName criarTransacao
+ * \param inicioTransacao
+ * \param codigoCliente
+ * \param saldoCarregar
+ * \param nomeCliente
+ * \return Transacao
+ */
 Transacao* criarTransacao(Transacao* inicioTransacao, int codigoCliente, int saldoCarregar, char nomeCliente[])
 {
     Transacao* novaTransacao = malloc(sizeof(Transacao));
@@ -1905,8 +2265,17 @@ Transacao* criarTransacao(Transacao* inicioTransacao, int codigoCliente, int sal
 // ---------------------------------------------------INICIO-LEITURA/ESCRITA/REPRESENTAÇÃO DE CIDADES----------------------------------------------------
 
 #pragma region LEITURA/ESCRITA/REPRESENTAÇÃO DE CIDADES
-// Le do ficheiro e cria o grafo a partir dos valores lidos. Esta funcao e executada em primeiro lugar
-// Para ser possivel para a funcao lerFicheirAdjacentes executar.
+
+/**
+ * Le do ficheiro e cria o grafo a partir dos valores lidos. Esta funcao e executada em primeiro lugar
+ * Para ser possivel para a funcao lerFicheirAdjacentes executar.
+ * 
+ * \FunctionName lerFicheiroVertices
+ * \param inicioGrafo
+ * \param inicioMeios
+ * \param dadosGrafo
+ * \return Grafo
+ */
 Grafo* lerFicheiroVertices(Grafo* inicioGrafo,Meio* inicioMeios, FILE* dadosGrafo)
 {
     char* tokenVertice;
@@ -1934,7 +2303,15 @@ Grafo* lerFicheiroVertices(Grafo* inicioGrafo,Meio* inicioMeios, FILE* dadosGraf
     }
     return inicioGrafo;
 }
-// Le do ficheiro e cria os adjacentes dos vertices existentes, a partir dos valores lidos.
+
+/**
+ * Le do ficheiro e cria os adjacentes dos vertices existentes, a partir dos valores lidos.
+ * 
+ * \FunctionName lerFicheiroAdjacentes
+ * \param inicioGrafo
+ * \param dadosAdjacentes
+ * \return Grafo
+ */
 Grafo* lerFicheiroAdjacentes(Grafo* inicioGrafo, FILE* dadosAdjacentes)
 {
     Adjacente* novoAdj = NULL;
@@ -2000,7 +2377,15 @@ Grafo* lerFicheiroAdjacentes(Grafo* inicioGrafo, FILE* dadosAdjacentes)
     }
     return inicioGrafo;
 }
-// Funcao para fixar os clientes ao grafo.
+
+/**
+ * Funcao para fixar os clientes ao grafo.
+ * 
+ * \FunctionName adicionarClientesGrafo
+ * \param inicioGrafo
+ * \param inicioClientes
+ * \return Grafo
+ */
 Grafo* adicionarClientesGrafo(Grafo* inicioGrafo, Cliente* inicioClientes)
 {
     int teste = 0;
@@ -2026,7 +2411,15 @@ Grafo* adicionarClientesGrafo(Grafo* inicioGrafo, Cliente* inicioClientes)
     }
     return inicioGrafo->clientes;
 }
-// Funcao para fixar os meios ao grafo.
+
+/**
+ *  Funcao para fixar os meios ao grafo.
+ * 
+ * \FunctionName adicionarMeiosGrafo
+ * \param inicioGrafo
+ * \param inicioMeios
+ * \return Grafo
+ */
 Grafo* adicionarMeiosGrafo(Grafo* inicioGrafo, Meio* inicioMeios)
 {
     Grafo* aux = inicioGrafo;
@@ -2060,7 +2453,15 @@ Grafo* adicionarMeiosGrafo(Grafo* inicioGrafo, Meio* inicioMeios)
     }
     return inicioGrafo->meios;
 }
-// Funcao para fixar os meios aos adjacentes.
+
+/**
+ * Funcao para fixar os meios aos adjacentes.
+ * 
+ * \FunctionName adicionarMeiosAdjacente
+ * \param inicioGrafo
+ * \param inicioMeios
+ * \return Adjacente
+ */
 Adjacente* adicionarMeiosAdjacente(Grafo* inicioGrafo, Meio* inicioMeios)
 {
     Grafo* auxGrafo = inicioGrafo;
@@ -2099,7 +2500,18 @@ Adjacente* adicionarMeiosAdjacente(Grafo* inicioGrafo, Meio* inicioMeios)
     }
     return inicioGrafo->adjacentes;
 }
-// Dado um raio de distancia, e localizado o veiculo a partir do geocodigo do utilizador inserido.
+
+/**
+ * Dado um raio de distancia, e localizado o veiculo a partir do geocodigo do utilizador inserido.
+ * 
+ * \FunctionName localizacaoRaio
+ * \param inicioGrafo
+ * \param inicioClientes
+ * \param raio
+ * \param codigo
+ * \param tipoMeio
+ * \return ResFuncoes
+ */
 ResFuncoes localizacaoRaio(Grafo* inicioGrafo, Cliente* inicioClientes, float raio, int codigo, char tipoMeio[])
 {
     Grafo* aux = inicioGrafo;
@@ -2119,6 +2531,11 @@ ResFuncoes localizacaoRaio(Grafo* inicioGrafo, Cliente* inicioClientes, float ra
     while (strcmp(geocodigoProcurar, aux->vertice) != 0)
     {
         aux = aux->seguinteVertice;
+    }
+    if ((strcmp(aux->meios->tipo, tipoMeio) == 0) && (strcmp(aux->meios->geocodigo, geocodigoProcurar) == 0))
+    {
+        printf("O veiculo pretendido esta na sua localizacao.\n");
+        return SUCESSO;
     }
     Adjacente* auxAdj = aux->adjacentes;
     while (auxAdj != NULL)
@@ -2144,12 +2561,17 @@ ResFuncoes localizacaoRaio(Grafo* inicioGrafo, Cliente* inicioClientes, float ra
     }
     if (print == 0)
     {
-        printf("Nao e possivel ir para nenhuma localizacao com a distancia definida.\n");
         return ERRO;
     }
     return SUCESSO;
 }
 
+/**
+ * Verificar se todos os meios e clientes foram, colocados com sucesso no grafo.
+ * 
+ * \FunctionName printtestgrafo
+ * \param inicioGrafo
+ */
 void printtestgrafo(Grafo* inicioGrafo)
 {
     Grafo* aux = inicioGrafo;
@@ -2174,7 +2596,13 @@ void printtestgrafo(Grafo* inicioGrafo)
     aux = aux->seguinteVertice;
     }
 }
-// Lista o grafo.
+
+/**
+ * Lista o grafo.
+ * 
+ * \FunctionName listarGrafo
+ * \param inicioGrafo
+ */
 void listarGrafo(Grafo* inicioGrafo)
 {
     char aux[100];
@@ -2202,7 +2630,13 @@ void listarGrafo(Grafo* inicioGrafo)
         }
     }
 }
-// Lista os adjacentes.
+
+/**
+ * Lista os adjacentes.
+ * 
+ * \FunctionName listarAdjacentes
+ * \param inicioGrafo
+ */
 void listarAdjacentes(Grafo* inicioGrafo)
 {
     char continuar = 0;
@@ -2232,11 +2666,19 @@ void listarAdjacentes(Grafo* inicioGrafo)
             printf("Voltando ao menu.\n");
             Sleep(2000);
             system("cls");
-            return 0;
+            return SUCESSO;
         }
     }
 }
 
+/**
+ * Funcao para verificar se existe um dado vertice, dentro do grafo.
+ * 
+ * \FunctionName existeVertice
+ * \param inicioGrafo
+ * \param verticeVerificar
+ * \return int
+ */
 int existeVertice(Grafo* inicioGrafo, char verticeVerificar[])
 {
     Grafo* aux = inicioGrafo;
@@ -2251,6 +2693,14 @@ int existeVertice(Grafo* inicioGrafo, char verticeVerificar[])
     return 0;
 }
 
+/**
+ * Funcao para inserir um vertice, sendo introduzido pelo utilizador
+ * 
+ * \FunctionName inserirVertice
+ * \param inicioGrafo
+ * \param verticeInserir
+ * \return int
+ */
 int inserirVertice(Grafo* inicioGrafo, char verticeInserir[])
 {
     Grafo* aux = inicioGrafo;
@@ -2276,6 +2726,13 @@ int inserirVertice(Grafo* inicioGrafo, char verticeInserir[])
     return inicioGrafo, 1;
 }
 
+/**
+ * E copiada a ordem do grafo para uma array bidimensional e de seguida escrita para um ficheiro
+ * 
+ * \FunctionName escreverFicheiroGrafo
+ * \param inicioGrafo
+ * \param dadosGrafo
+ */
 void escreverFicheiroGrafo(Grafo* inicioGrafo, FILE* dadosGrafo)
 {
     Grafo* aux = inicioGrafo;
@@ -2303,7 +2760,14 @@ void escreverFicheiroGrafo(Grafo* inicioGrafo, FILE* dadosGrafo)
     }
     fclose(dadosGrafo);
 }
-
+ 
+/**
+ * E copiada a ordem do grafo para uma array bidimensional e de seguida escrita para um ficheiro binario
+ * 
+ * \FunctionName escreverFicheiroGrafoBin
+ * \param inicioGrafo
+ * \param dadosGrafo
+ */
 void escreverFicheiroGrafoBin(Grafo* inicioGrafo, FILE* dadosGrafo)
 {
     Grafo* aux = inicioGrafo;
@@ -2332,6 +2796,13 @@ void escreverFicheiroGrafoBin(Grafo* inicioGrafo, FILE* dadosGrafo)
     fclose(dadosGrafo);
 }
 
+/**
+ * E copiada a ordem dos adjacentes de todos os vertices para uma array bidimensional e de seguida escrita para um ficheiro
+ * 
+ * \FunctionName escreverFicheiroAdjacentes
+ * \param inicioGrafo
+ * \param dadosAdjacentes
+ */
 void escreverFicheiroAdjacentes(Grafo* inicioGrafo, FILE* dadosAdjacentes)
 {
     Grafo* aux = inicioGrafo;
@@ -2361,6 +2832,13 @@ void escreverFicheiroAdjacentes(Grafo* inicioGrafo, FILE* dadosAdjacentes)
     fclose(dadosAdjacentes);
 }
 
+/**
+ * E copiada a ordem dos adjacentes de todos os vertices para uma array bidimensional e de seguida escrita para um ficheiro binario
+ * 
+ * \FunctionName escreverFicheiroAdjacentesBin
+ * \param inicioGrafo
+ * \param dadosAdjacentes
+ */
 void escreverFicheiroAdjacentesBin(Grafo* inicioGrafo, FILE* dadosAdjacentes)
 {
     Grafo* aux = inicioGrafo;
@@ -2390,6 +2868,14 @@ void escreverFicheiroAdjacentesBin(Grafo* inicioGrafo, FILE* dadosAdjacentes)
     fclose(dadosAdjacentes);
 }
 
+/**
+ * Funcao para verificar se existe um adjacente de algum vertice existente.
+ * 
+ * \FunctionName existeAdjacente
+ * \param inicioGrafo
+ * \param verticeFinal
+ * \return int
+ */
 int existeAdjacente(Grafo* inicioGrafo, char verticeFinal[])
 {
     Grafo* aux = inicioGrafo;
@@ -2404,6 +2890,17 @@ int existeAdjacente(Grafo* inicioGrafo, char verticeFinal[])
     return 0;
 }
 
+
+/**
+ * Funcao para inserir um novo adjacente, tendo em conta o vertice inicial, adjacente e peso.
+ * 
+ * \FunctionName inserirAdjacente
+ * \param inicioGrafo
+ * \param verticeInicial
+ * \param verticeFinal
+ * \param peso
+ * \return int
+ */
 int inserirAdjacente(Grafo* inicioGrafo, char verticeInicial[], char verticeFinal[], float peso)
 {
     Grafo* aux = inicioGrafo;
@@ -2422,16 +2919,23 @@ int inserirAdjacente(Grafo* inicioGrafo, char verticeInicial[], char verticeFina
             novoAdj->seguinteAdjacente = aux->adjacentes;
             aux->adjacentes = novoAdj;
             inicioGrafo = aux;
-            return inicioGrafo,1;
+            return inicioGrafo,adjacenteInserido;
         }
         else
         {
-            return 2;
+            return adjacenteExiste;
         }
     }
     return 0;
 }
 
+/**
+ * Indica quantos vertices existem no grafo.
+ * 
+ * \FunctionName totalVertices
+ * \param inicioGrafo
+ * \return int
+ */
 int totalVertices(Grafo* inicioGrafo)
 {
     int total = 0;
@@ -2444,6 +2948,17 @@ int totalVertices(Grafo* inicioGrafo)
     return total;
 }
 
+/**
+ * Algoritmo para mostrar o ciclo de um vertice base, percorrer todos os vertices existentes.
+ * 
+ * \FunctionName mostrarCaminhoIda
+ * \param inicioGrafo
+ * \param verticeAtual
+ * \param inicioStack
+ * \param inicioLista
+ * \param Tamanho
+ * \return ListaStack
+ */
 ListaStack* mostrarCaminhoIda(Grafo* inicioGrafo, char verticeAtual[], Stack* inicioStack, ListaStack* inicioLista, float Tamanho)
 {
     Grafo* aux = inicioGrafo;
@@ -2484,7 +2999,6 @@ ListaStack* mostrarCaminhoIda(Grafo* inicioGrafo, char verticeAtual[], Stack* in
         {
             Stack* novaStack = NULL;
             Stack* auxStack2 = inicioStack;
-            Stack* stackBateriaBaixa = NULL;
             while (auxStack2 != NULL)
             {
                 Stack* novoNodo = malloc(sizeof(Stack));
@@ -2512,6 +3026,18 @@ ListaStack* mostrarCaminhoIda(Grafo* inicioGrafo, char verticeAtual[], Stack* in
     return inicioLista;
 }
 
+/**
+ * Algoritmo para mostrar o caminho de volta, onde o vertice destino sera o vertice base da funcao acima e o atual, ira ser retirado usando a funcao obterUltimoVertice
+ * 
+ * \FunctionName mostrarCaminhoVolta
+ * \param inicioGrafo
+ * \param verticeAtual
+ * \param verticeDestino
+ * \param inicioStack
+ * \param inicioLista
+ * \param Tamanho
+ * \return ListaStack
+ */
 ListaStack* mostrarCaminhoVolta(Grafo* inicioGrafo, char verticeAtual[],char verticeDestino[], Stack* inicioStack, ListaStack* inicioLista, float Tamanho)
 {
     Grafo* aux = inicioGrafo;
@@ -2530,7 +3056,7 @@ ListaStack* mostrarCaminhoVolta(Grafo* inicioGrafo, char verticeAtual[],char ver
             aux = aux->seguinteVertice;
         }
     }
-    if (/*todosVisitados(inicioStack, inicioGrafo) && */strcmp(verticeDestino, verticeAtual)==0)
+    if (strcmp(verticeDestino, verticeAtual)==0)
     {
         ListaStack* novaListaStack = malloc(sizeof(ListaStack));
         novaListaStack->novaStack = inicioStack;
@@ -2548,7 +3074,6 @@ ListaStack* mostrarCaminhoVolta(Grafo* inicioGrafo, char verticeAtual[],char ver
         {
             Stack* novaStack = NULL;
             Stack* auxStack2 = inicioStack;
-            Stack* stackBateriaBaixa = NULL;
             while (auxStack2 != NULL)
             {
                 Stack* novoNodo = malloc(sizeof(Stack));
@@ -2576,210 +3101,15 @@ ListaStack* mostrarCaminhoVolta(Grafo* inicioGrafo, char verticeAtual[],char ver
     return inicioLista;
 }
 
-ListaStack* mostrarCaminhoCamiao(Grafo* inicioGrafo, char verticeAtual[], Stack* inicioStack, ListaStack* inicioLista, float Tamanho)
-{
-    Grafo* aux = inicioGrafo;
-    Stack* auxStack = inicioStack;
-    Adjacente* auxAdj = NULL;
-    if (existeVertice(aux, verticeAtual))
-    {
-        while (aux != NULL)
-        {
-            if (strcmp(aux->vertice, verticeAtual) == 0)
-            {
-                auxStack = inserirStack(auxStack, aux->vertice);
-                inicioStack = auxStack;
-                break;
-            }
-            aux = aux->seguinteVertice;
-        }
-    }
-    else
-    {
-        return NULL;
-    }
-    if (todosVisitados(inicioStack, inicioGrafo))
-    {
-        ListaStack* novaListaStack = malloc(sizeof(ListaStack));
-        novaListaStack->novaStack = inicioStack;
-        novaListaStack->tamanho = Tamanho;
-        novaListaStack->seguinteLista = inicioLista;
-        inicioLista = novaListaStack;
-        Tamanho = 0;
-        return inicioLista;
-    }
-
-    auxAdj = aux->adjacentes;
-    ListaStack* camiaoCheioCaminho = NULL;
-    static int camiao = 0;
-    while (auxAdj != NULL)
-    {
-        if (!verticeVisitado(inicioStack, auxAdj->vertice))
-        {
-            Adjacente* auxAdjMeio = auxAdj;
-            while (auxAdjMeio->meios != NULL)
-            {
-                if (auxAdjMeio->meios->bateria < 50 && auxAdjMeio->meios->recolhido==0)
-                {
-                    auxAdjMeio->meios->recolhido = 1;
-                    camiao++;
-                }
-                auxAdjMeio->meios = auxAdjMeio->meios->seguinteMeio;
-            }
-            Stack* novaStack = NULL;
-            Stack* auxStack2 = inicioStack;
-            Stack* stackBateriaBaixa = NULL;
-            while (auxStack2 != NULL)
-            {
-                Stack* novoNodo = malloc(sizeof(Stack));
-                strcpy(novoNodo->vertice, auxStack2->vertice);
-                novoNodo->seguinteStack = NULL;
-                if (novaStack == NULL)
-                    novaStack = novoNodo;
-                else
-                {
-                    Stack* aux = novaStack;
-                    while (aux->seguinteStack != NULL)
-                        aux = aux->seguinteStack;
-                    aux->seguinteStack = novoNodo;
-                }
-                auxStack2 = auxStack2->seguinteStack;
-            }
-            if (novaStack != NULL)
-            {
-                novaStack->visitado = true;
-            }
-            if (camiao >= 2)
-            {
-                camiao = 0;
-                camiaoCheioCaminho = novaStack;
-                inicioLista = mostrarCaminhoCamiao(inicioGrafo, auxAdj->vertice, novaStack, inicioLista, Tamanho + auxAdj->peso);
-            }
-            inicioLista = mostrarCaminhoCamiao(inicioGrafo, auxAdj->vertice, novaStack, inicioLista, Tamanho + auxAdj->peso);
-        }
-        auxAdj = auxAdj->seguinteAdjacente;
-    }
-    return inicioLista;
-}
-
-ListaStack* mostrarCaminhoTeste(Grafo* inicioGrafo, char verticeAtual[], Stack* inicioStack, ListaStack* inicioLista, float Tamanho)
-{
-    ListaStack* caminhoAtual = NULL;
-    ListaStack* caminhoArmazenado = NULL;
-    Stack* camiaoStack = NULL;
-    int camiao = 0;
-    int camiaoCheio = 0;
-
-    do {
-        Grafo* aux = inicioGrafo;
-        Stack* auxStack = inicioStack;
-        Adjacente* auxAdj = NULL;
-
-        // Find the starting vertex
-        if (existeVertice(aux, verticeAtual))
-        {
-            while (aux != NULL)
-            {
-                if (strcmp(aux->vertice, verticeAtual) == 0)
-                {
-                    auxStack = inserirStack(auxStack, aux->vertice);
-                    break;
-                }
-                aux = aux->seguinteVertice;
-            }
-        }
-        else
-        {
-            return NULL;
-        }
-
-        // Traverse the graph
-        while (auxStack != NULL)
-        {
-            Stack* topoStack = auxStack;
-            auxStack = auxStack->seguinteStack;
-
-            //if (!verticeVisitado(topoStack, topoStack->vertice))
-            //{
-                Adjacente* auxAdjMeio = aux->adjacentes;
-
-                while (auxAdjMeio != NULL)
-                {
-                    if (!verticeVisitado(topoStack, auxAdjMeio->vertice))
-                    {
-                        Meio* auxMeio = auxAdjMeio->meios;
-                        while (auxMeio != NULL)
-                        {
-                            if (auxMeio->bateria < 50 && auxMeio->recolhido == 0)
-                            {
-                                auxMeio->recolhido = 1;
-                                camiao++;
-                            }
-                            auxMeio = auxMeio->seguinteMeio;
-                        }
-
-                        Stack* novaStack = NULL;
-                        Stack* auxStack2 = topoStack;
-
-                        while (auxStack2 != NULL)
-                        {
-                            Stack* novoNodo = malloc(sizeof(Stack));
-                            strcpy(novoNodo->vertice, auxStack2->vertice);
-                            novoNodo->seguinteStack = NULL;
-
-                            if (novaStack == NULL)
-                                novaStack = novoNodo;
-                            else
-                            {
-                                Stack* aux = novaStack;
-                                while (aux->seguinteStack != NULL)
-                                    aux = aux->seguinteStack;
-                                aux->seguinteStack = novoNodo;
-                            }
-
-                            auxStack2 = auxStack2->seguinteStack;
-                        }
-
-                        if (novaStack != NULL)
-                            novaStack->visitado = true;
-
-                        if (camiao >= 2)
-                        {
-                            caminhoArmazenado = adicionarCaminho(camiaoStack, caminhoArmazenado, Tamanho + auxAdjMeio->peso);
-                            camiaoStack = NULL;
-                            camiaoCheio = 1;
-                            break;
-                        }
-                        else
-                        {
-                            if (auxAdjMeio->seguinteAdjacente == NULL && caminhoAtual != NULL && camiaoCheio == 0)
-                            {
-                                caminhoArmazenado = adicionarCaminho(novaStack, caminhoArmazenado, Tamanho + auxAdjMeio->peso);
-                                caminhoAtual = NULL;
-                            }
-                            else
-                            {
-                                camiaoStack = novaStack;
-                                caminhoAtual = adicionarCaminho(novaStack, caminhoAtual, Tamanho + auxAdjMeio->peso);
-                            }
-                        }
-                    }
-                    auxAdjMeio = auxAdjMeio->seguinteAdjacente;
-                }
-            //}
-            free(topoStack);
-        }
-
-        caminhoAtual = caminhoArmazenado;
-        caminhoArmazenado = NULL;
-        camiao = 0;
-        camiaoCheio = 0;
-
-    } while (caminhoAtual != NULL);
-
-    return caminhoArmazenado;
-}
-
+/**
+ * Funcao para adicionar novos caminhos a uma lista de caminhos.
+ * 
+ * \FunctionName adicionarCaminho
+ * \param caminho
+ * \param listaCaminhos
+ * \param tamanho
+ * \return ListaStack
+ */
 ListaStack* adicionarCaminho(Stack* caminho, ListaStack* listaCaminhos, float tamanho)
 {
     ListaStack* novoCaminho = malloc(sizeof(ListaStack));
@@ -2789,6 +3119,15 @@ ListaStack* adicionarCaminho(Stack* caminho, ListaStack* listaCaminhos, float ta
     return novoCaminho;
 }
 
+// 
+/**
+ * Funcao auxiliar do algoritmo de dijsktra.
+ * 
+ * \FunctionName todosVisitados
+ * \param inicioStack
+ * \param inicioGrafo
+ * \return int
+ */
 int todosVisitados(Stack* inicioStack, Grafo* inicioGrafo)
 {
     Grafo* aux = inicioGrafo;
@@ -2812,6 +3151,14 @@ int todosVisitados(Stack* inicioStack, Grafo* inicioGrafo)
     return 1;
 }
 
+/**
+ * Funcao auxiliar do algoritmo de dijsktra.
+ * 
+ * \FunctionName verticeVisitado
+ * \param inicioStack
+ * \param vertice
+ * \return bool
+ */
 bool verticeVisitado(Stack* inicioStack, char vertice[])
 {
     Stack* auxStack = inicioStack;
@@ -2829,6 +3176,14 @@ bool verticeVisitado(Stack* inicioStack, char vertice[])
 
 #pragma region STACK
 
+/**
+ * Insere um novo endereco de memoria numa estrutura de dados stack
+ * 
+ * \FunctionName inserirStack
+ * \param inicioStack
+ * \param vertice
+ * \return Stack
+ */
 Stack* inserirStack(Stack* inicioStack, char vertice[])
 {
     Stack* aux = inicioStack;
@@ -2853,19 +3208,14 @@ Stack* inserirStack(Stack* inicioStack, char vertice[])
     }
     return aux;  
 }
-
-int tamanhoStack(Stack* inicioStack)
-{
-    Stack* aux = inicioStack;
-    float tamanho = 0;
-    while (aux != NULL)
-    {
-        tamanho++;
-        aux = aux->seguinteStack;
-    }
-    return tamanho;
-}
-
+ 
+/**
+ * De todas as listas da stack criadas, compara o tamanho de todas e apenas fica a com menor tamanho.
+ * 
+ * \FunctionName retirarStackMaior
+ * \param inicioLista
+ * \return ListaStack
+ */
 ListaStack* retirarStackMaior(ListaStack* inicioLista)
 {
     ListaStack* aux = inicioLista, * anterior = NULL;
@@ -2906,6 +3256,13 @@ ListaStack* retirarStackMaior(ListaStack* inicioLista)
     return inicioLista;
 }
 
+/**
+ * Funcao para obter o ultimo vertice, de uma lista.
+ * 
+ * \FunctionName obterUltimoVertice
+ * \param inicioLista
+ * \param vertice
+ */
 void obterUltimoVertice(ListaStack* inicioLista, char* vertice)
 {
     ListaStack* auxLista = inicioLista;
@@ -2922,6 +3279,12 @@ void obterUltimoVertice(ListaStack* inicioLista, char* vertice)
     return 1;
 }
 
+/**
+ * Funcao que mostra o caminho armazenado numa listaStack.
+ * 
+ * \FunctionName mostrarCaminho
+ * \param inicioLista
+ */
 void mostrarCaminho(ListaStack* inicioLista) {
     if (inicioLista == NULL)
     {
@@ -2941,6 +3304,7 @@ void mostrarCaminho(ListaStack* inicioLista) {
             }
             auxStack = auxStack->seguinteStack;
         }
+        printf("\n");
         auxLista = auxLista->seguinteLista;
     }
 }

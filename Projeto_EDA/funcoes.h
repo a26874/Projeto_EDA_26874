@@ -1,4 +1,4 @@
-/*****************************************************************//**
+/*****************************************************************
  * @file   funcoes.h
  * @brief  Listagem Funcoes
  *
@@ -30,6 +30,9 @@ typedef enum ResultadoFuncoes {
 	adjacenteNaoExiste,
 	semEspacoMem,
 	verticeExiste,
+	adjacenteInserido,
+	adjacenteExiste,
+	geocodigoNaoExiste,
 
 }ResFuncoes;
 
@@ -135,7 +138,7 @@ Meio* lerFicheiroMeios(Meio* inicioMeios, FILE* dadosMeios);
 
 ResFuncoes listarMeios(Meio* inicioMeios);
 
-void listarGeocodigo(Meio* inicioMeios);
+int listarGeocodigo(Meio* inicioMeios);
 
 Meio* escreverFicheiroMeios(Meio* inicioMeios, FILE* dadosMeios);
 
@@ -166,9 +169,9 @@ Cliente* escreverFicheiroClientesBin(Cliente* inicioClientes, FILE* dadosCliente
 
 Cliente* carregarSaldo(Cliente* inicioClientes, Transacao* inicioTransacao);
 
-ResFuncoes consultaSaldo(Cliente* inicioClientes);
+ResFuncoes consultaSaldo(Cliente* inicioClientes, int** saldo);
 
-ResFuncoes alterarDadosCliente(Cliente* inicioClientes,Transacao* inicioTransacao);
+ResFuncoes alterarDadosCliente(Cliente* inicioClientes,Transacao* inicioTransacao, Aluguer* inicioAluguer);
 
 int existeClienteCod(Cliente* inicioClientes, int cod);
 
@@ -276,6 +279,8 @@ Grafo* lerFicheiroAdjacentes(Grafo* inicioGrafo, FILE* dadosAdjacentes);
 
 void escreverFicheiroGrafo(Grafo* inicioGrafo, FILE* dadosGrafo);
 
+void escreverFicheiroGrafoBin(Grafo* inicioGrafo, FILE* dadosGrafo);
+
 void escreverFicheiroAdjacentes(Grafo* inicioGrafo, FILE* dadosAdjacentes);
 
 void escreverFicheiroAdjacentesBin(Grafo* inicioGrafo, FILE* dadosAdjacentes);
@@ -306,13 +311,7 @@ ListaStack* mostrarCaminhoIda(Grafo* inicioGrafo, char verticeAtual[], Stack* in
 
 ListaStack* mostrarCaminhoVolta(Grafo* inicioGrafo, char verticeAtual[], char verticeDestino[], Stack* inicioStack, ListaStack* inicioLista, float Tamanho);
 
-ListaStack* mostrarCaminhoCamiao(Grafo* inicioGrafo, char verticeAtual[], Stack* inicioStack, ListaStack* inicioLista, float Tamanho);
-
-ListaStack* mostrarCaminhoTeste(Grafo* inicioGrafo, char verticeAtual[], Stack* inicioStack, ListaStack* inicioLista, float Tamanho);
-
 int todosVisitados(Stack* inicioStack, Grafo* inicioGrafo);
-
-ListaStack* teste123(inicioGrafo, verticeInicial, inicioStack, inicioLista, tamanhoAdj);
 
 bool verticeVisitado(Stack* inicioStack, char vertice[]);
 

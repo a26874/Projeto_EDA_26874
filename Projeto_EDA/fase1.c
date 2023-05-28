@@ -25,12 +25,11 @@ int main() {
     Grafo* inicioGrafo = NULL;
     ResFuncoes resFunc;
     Stack* inicioStack = NULL;
-    ListaStack* inicioLista = NULL;
-    Stack* caminhoBateria = NULL;
+    ListaStack* inicioLista;
     FILE* dadosMeios, * dadosClientes, * dadosGestor, * dadosAluguer, * dadosTransacao, * dadosGrafo, * dadosAdjacentes;
     int op, opUtilizador, utilizadorLogin = 0, gestorLogin = 0, opGestor, retFunc;
     int novoClienteCodigo, novoClienteNIF, novoClienteSaldo, novoMeioCodigo, novoMeioCusto, novoGestorCodigo, codigoMeioRemover
-        , codigoClienteRemover, codigoGestorRemover;
+        , codigoClienteRemover, codigoGestorRemover, *saldo;
     float novoMeioBateria, novoMeioAutonomia, novoPesoAdjacente, tamanhoIda = 0, tamanhoVolta = 0, tamanhoTotal = 0;
     char novoClienteNome[50], novoMeioNome[50], novoMeioGeocodigo[50], novoGestorNome[50], novoGestorSenha[50], novoGestorArea[50], novoVerticeInicial[50], novoVerticeFinal[50]
         , verticeInicial[50], novoClienteGeocodigo[100], verticePartida[100];
@@ -60,6 +59,7 @@ int main() {
     inicioGrafo->clientes = adicionarClientesGrafo(inicioGrafo, inicioClientes);
     inicioGrafo->meios = adicionarMeiosGrafo(inicioGrafo, inicioMeios);
     inicioGrafo->adjacentes = adicionarMeiosAdjacente(inicioGrafo, inicioMeios);
+    printf("\n");
     // Criação de Menu.
     do
     {
@@ -81,10 +81,7 @@ int main() {
                     resFunc = listarMeios(inicioMeios);
                     switch (resFunc)
                     {
-                    case SUCESSO:
-                        printf("sucesso.\n");
-                        break;
-                    case clientesNaoExistem:
+                    case meiosNaoExistem:
                         printf("Nao existem clientes.\n");
                         Sleep(2000);
                         system("cls");
@@ -124,7 +121,7 @@ int main() {
                     }
                     break;
                 case 3:
-                    resFunc = consultaSaldo(inicioClientes);
+                    resFunc = consultaSaldo(inicioClientes, &saldo);
                     switch (resFunc)
                     {
                     case clientesNaoExistem:
@@ -138,13 +135,14 @@ int main() {
                         system("cls");
                         break;
                     case saldoAtual:
+                        printf("Voce tem %d de saldo.\n", *saldo);
                         Sleep(2000);
                         system("cls");
                         break;
                     }
                     break;
                 case 4:
-                    resFunc = alterarDadosCliente(inicioClientes,inicioTransacao);
+                    resFunc = alterarDadosCliente(inicioClientes,inicioTransacao, inicioAluguer);
                     switch (resFunc)
                     {
                         case SUCESSO:
@@ -165,6 +163,7 @@ int main() {
                         }
                         case clientesNaoExistem:
                         {
+                            printf("Nao existem clientes.\n");
                             Sleep(2000);
                             system("cls");
                             break;
@@ -189,11 +188,30 @@ int main() {
                     }
                     break;
                 case 6:
-                    listarGeocodigo(inicioMeios);
+                    resFunc = listarGeocodigo(inicioMeios);
+                    switch (resFunc)
+                    {
+                        case meiosNaoExistem:
+                        {
+                            printf("Nao existem meios para listar.\n");
+                            Sleep(2000);
+                            system("cls");
+                            break;
+                        }
+                        case geocodigoNaoExiste:
+                        {
+                            printf("Nao existe o geocodigo inserido.\n");
+                            Sleep(2000);
+                            system("cls");
+                            break;
+                        }
+                        case SUCESSO:
+                            break;
+                    }
                     break;
                 case 7:
                     printf("Qual pretende saber:\n");
-                    printf("1- Distancia de uma cidade a outra.\n");
+                    printf("1- Ciclo de um vertice inicial e caminho de volta.\n");
                     int escolhaDist;
                     printf("A sua escolha:");
                     scanf("%d", &escolhaDist);
@@ -202,7 +220,7 @@ int main() {
                     case 1:
                         printf("Insira a partida:\n");
                         scanf("%s", verticePartida);
-                        //strcpy(verticePartida, "fagocitose.crestar.esperanca");
+                        inicioLista = NULL;
                         inicioLista = mostrarCaminhoIda(inicioGrafo, verticePartida, inicioStack, inicioLista,tamanhoIda);
                         if (inicioLista == NULL)
                         {
@@ -215,9 +233,6 @@ int main() {
                         tamanhoTotal = inicioLista->tamanho;
                         obterUltimoVertice(inicioLista, verticeInicial);
 
-
-
-
                         printf("\nCaminho de volta: ");
                         inicioLista = mostrarCaminhoVolta(inicioGrafo, verticeInicial, verticePartida, inicioStack, inicioLista, tamanhoVolta);
                         inicioLista = retirarStackMaior(inicioLista);
@@ -225,20 +240,7 @@ int main() {
                         tamanhoTotal += inicioLista->tamanho;
 
                         printf("\nKm's percorridos:%.2f\n", tamanhoTotal);
-                       
-                        
-                        inicioLista= mostrarCaminhoTeste(inicioGrafo, verticePartida, inicioStack, inicioLista, tamanhoVolta);
-                        inicioLista = retirarStackMaior(inicioLista);
-                        mostrarCaminho(inicioLista);
-                        while (1)
-                        {
-                            if (getchar())
-                            {
-                                break;
-                            }
-                        }
-                        Sleep(5000);
-                        system("cls");
+                        free(inicioLista);
                         break;
                     }
                     break;
@@ -255,7 +257,30 @@ int main() {
                     scanf("%d", &codigoCliente);
                     printf("Introduza o nome do meio a procurar:");
                     scanf("%s", tipoMeio);
-                    localizacaoRaio(inicioGrafo,inicioClientes, raioVerificar, codigoCliente, tipoMeio);
+                    resFunc = localizacaoRaio(inicioGrafo,inicioClientes, raioVerificar, codigoCliente, tipoMeio);
+                    {
+                        switch(resFunc)
+                        {
+                            case clientesNaoExistem:
+                            {
+                                printf("Nao existem clientes.\n");
+                                Sleep(2000);
+                                system("cls");
+                                break;
+                            }
+                            case SUCESSO:
+                                Sleep(2000);
+                                system("cls");
+                                break;
+                            case ERRO:
+                            {
+                                printf("Nao e possivel ir para nenhuma localizacao com a distancia definida.\n");
+                                Sleep(2000);
+                                system("cls");
+                                break;
+                            }
+                        }
+                    }
                 case 0:
                     utilizadorLogin = 0;
                     break;
@@ -483,7 +508,7 @@ int main() {
                         alterarMeio(inicioMeios);
                         break;
                     case 13:
-                        alterarDadosCliente(inicioClientes,inicioTransacao);
+                        alterarDadosCliente(inicioClientes,inicioTransacao, inicioAluguer);
                         break;
                     case 14:
                         mediaAutonomia(inicioMeios);
@@ -499,14 +524,14 @@ int main() {
                         scanf("%s", novoVerticeFinal);
                         printf("Distancia em km:");
                         scanf("%f", &novoPesoAdjacente);
-                        int resultado = inserirAdjacente(inicioGrafo, novoVerticeInicial, novoVerticeFinal, novoPesoAdjacente);
-                        if (resultado==1)
+                        resFunc = inserirAdjacente(inicioGrafo, novoVerticeInicial, novoVerticeFinal, novoPesoAdjacente);
+                        if (resFunc==adjacenteInserido)
                         { 
-                            printf("Adjacente de %s, adicionado com sucesso.\n", novoVerticeInicial);
+                            printf("Adjacente de %s com o nome %s, adicionado com sucesso.\n", novoVerticeInicial, novoVerticeFinal);
                             Sleep(2000);
                             system("cls");
                         }  
-                        else if (resultado == 2)
+                        else if (resFunc == adjacenteExiste)
                         {
                             printf("O Adjacente %s ja existe, no vertice %s.\n", novoVerticeFinal, novoVerticeInicial);
                             Sleep(2000);
@@ -514,7 +539,7 @@ int main() {
                         }
                         break;
                     case 17:
-                        printf("vertice a inserir:");
+                        printf("Nome do vertice que deseja inserir:");
                         scanf("%s", novoVerticeInicial);
                         resFunc = inserirVertice(inicioGrafo, novoVerticeInicial);
                         if (resFunc == verticeExiste)
