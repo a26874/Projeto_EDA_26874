@@ -16,7 +16,7 @@
 
 
 int main() {
-    // Definição de variáveis.
+    // DefiniÃ§Ã£o de variÃ¡veis.
     Meio* inicioMeios = NULL;
     Cliente* inicioClientes = NULL;
     Gestor* inicioGestor = NULL;
@@ -35,7 +35,7 @@ int main() {
         , verticeInicial[50], novoClienteGeocodigo[100], verticePartida[100];
 
 
-    // No arranque é feito de imediato a leitura dos ficheiros.
+    // No arranque Ã© feito de imediato a leitura dos ficheiros.
     dadosMeios = fopen("meios.txt", "rt");
     inicioMeios = lerFicheiroMeios(inicioMeios, dadosMeios);
     dadosClientes = fopen("clientes.txt", "rt");
@@ -59,8 +59,7 @@ int main() {
     inicioGrafo->clientes = adicionarClientesGrafo(inicioGrafo, inicioClientes);
     inicioGrafo->meios = adicionarMeiosGrafo(inicioGrafo, inicioMeios);
     inicioGrafo->adjacentes = adicionarMeiosAdjacente(inicioGrafo, inicioMeios);
-    printf("\n");
-    // Criação de Menu.
+    // CriaÃ§Ã£o de Menu.
     do
     {
         op = menu();
@@ -562,7 +561,7 @@ int main() {
             }
             break;
         case 0:
-            // No encerramento do programa é escrito tudo que foi adicionado/removido/alterado de novo para os seus respetivos ficheiros.
+            // No encerramento do programa Ã© escrito tudo que foi adicionado/removido/alterado de novo para os seus respetivos ficheiros.
             dadosMeios = fopen("meios.txt", "rt");
             escreverFicheiroMeios(inicioMeios, dadosMeios);
             escreverFicheiroMeiosBin(inicioMeios, dadosMeios);
